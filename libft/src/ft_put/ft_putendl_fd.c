@@ -13,12 +13,10 @@
 
 void	ft_putendl_fd(char *s, int fd)
 {
-	unsigned int	len;
-
-	if (s)
+	while (*s)
 	{
-		len = ft_strlen(s);
-		write (fd, s, len);
-		write (fd, "\n", 1);
+		write(fd, &*s, 1);
+		s++;
 	}
+	write(fd, "\n", 1);
 }

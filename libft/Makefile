@@ -1,3 +1,10 @@
+# Color
+RESET	= \033[0m
+RED		= \033[31m
+GREEN	= \033[32m
+YELLOW	= \033[33m
+
+
 # Library Name
 NAME    =	libft.a
 
@@ -74,7 +81,10 @@ FT_PRINTF_DIR	=	$(SRC_DIR)printf/$(FT_PRINTF_UTIL_DIR)/ft_char_format.c\
 					$(SRC_DIR)printf/ft_format.c\
 					$(SRC_DIR)printf/ft_printf.c
 
-SRCS 	=			$(FT_IS_DIR) $(FT_LST_DIR) $(FT_MEM_DIR) $(FT_PUT_DIR) $(FT_STR_DIR) $(FT_TO_DIR) $(FT_PRINTF_DIR)
+GNL_DIR		=	$(SRC_DIR)get_next_line/get_next_line.c\
+				$(SRC_DIR)get_next_line/get_next_line_utils.c
+
+SRCS 	=			$(FT_IS_DIR) $(FT_LST_DIR) $(FT_MEM_DIR) $(FT_PUT_DIR) $(FT_STR_DIR) $(FT_TO_DIR) $(FT_PRINTF_DIR) $(GNL_DIR)
 
 OBJ		=			$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 # 		patsubst (pattern, replacement, text)
@@ -86,12 +96,13 @@ OBJ		=			$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(AR) $(NAME) $(OBJ)
+	$(AR) $(NAME) $(OBJ)
+	@echo "\n[ $(YELLOW)$(NAME)$(RESET) ] | $(GREEN)Creaded successfully$(RESET)\n"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 #	@echo "Creating $(@D)/ $(@F)"
-	@mkdir -p $(@D)
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	mkdir -p $(@D)
+	$(CC) $(CFLAGS) $(INC) -c $< -o $@
 # 	-p: Ensures that:
 # 		---->	Parent directories are created if they don't exist.
 # 		---->	It doesn't throw an error if the directory already exists.
@@ -100,15 +111,15 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 # 		---->	$(@D): Extracts the directory part of $@.
 
 clean:
-	@$(RM) -r $(OBJ_DIR)
-	@$(RM) .cache_exists
+	$(RM) -r $(OBJ_DIR)
+	$(RM) .cache_exists
 #	.cache_exists:
 #		---->	This is the specific file being removed.
 #		---->	It could be used as a marker or a temporary file in the build process.
 
 
 fclean: clean
-	@$(RM) $(NAME)
+	$(RM) $(NAME)
 
 re: fclean all
 

@@ -1,34 +1,27 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_calloc.c                                        :+:      :+:    :+:   */
+/*   gnl.h                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/28 13:32:26 by aaljazza          #+#    #+#             */
-/*   Updated: 2024/09/28 13:32:35 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/02/15 11:32:30 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/02/15 11:32:32 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../includes/libft.h"
 
-/*
-* to allocate a specified amount of memory and then initialize it to zero
-*/
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	void	*c;
-	size_t	i;
+#ifndef GNL_H
+# define GNL_H
+# ifndef BUFFER_SIZE
+#  define BUFFER_SIZE 15
+# endif
+# include <stdlib.h>
 
-	c = malloc(nmemb * size);
-	if (!c)
-	{
-		return (NULL);
-	}
-	i = 0;
-	while (i < nmemb * size)
-	{
-		((unsigned char *)c)[i] = 0;
-		i++;
-	}
-	return (c);
-}
+char	*get_next_line(int fd);
+
+char	*ft_gnl_strdup(char *s);
+char	*ft_gnl_substr(char *s, unsigned int start, size_t len);
+char	*ft_gnl_strjoin(char *s1, char *s2);
+void	fill_str(char *res, char *s1, char *s2);
+
+#endif

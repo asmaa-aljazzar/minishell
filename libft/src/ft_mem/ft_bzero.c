@@ -13,14 +13,16 @@
 /*
 * Fill memory bytes by zeros
 */
-void	ft_bzero(void *ptr, size_t len)
+void	ft_bzero(void *s, size_t n)
 {
-	unsigned char	*temp;
+	size_t	i;
+	char	*cpy;
 
-	temp = (unsigned char *)ptr;
-	while (len > 0)
+	i = 0;
+	cpy = (char *) s;
+	while (i < n)
 	{
-		*temp++ = 0;
-		len--;
+		cpy[i] = '\0';
+		i++;
 	}
 }
