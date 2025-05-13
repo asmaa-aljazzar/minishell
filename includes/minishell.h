@@ -25,13 +25,19 @@
 // ***[ Macros ]***
 # define PROMPT "\e[35mminishell\e[32m$ \e[0m"
 //***[ Structures ]***
-typedef struct s_node
-{
 
-}	t_node;
+// Each Command line has a node
+typedef struct s_cmd {
+    char **args;          // ["grep", "main"]
+    char *infile;         // for <
+    char *outfile;        // for > or >>
+    int   append;         // 1 if >>, 0 if >
+    struct s_cmd *next;   // next command in a pipe
+} t_cmd;
+
 
 //***[ Functions Definition ]***
-
-//? - Display a Prompt on  
-
+void  parse_and_execute (char *input, t_cmd *cmd);
+// char  **parse_and_execute (char *input); //? for test
+void    init_cmd (t_cmd *cmd);
 #endif

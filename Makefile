@@ -34,10 +34,10 @@ LIBFT		=	./libft/libft.a
 SECOND_DIR	= 	$(SRCS_DIR)
 
 
-THIRD_DIR	= 	$(SRCS_DIR)
+PARS_DIR	= 	$(PARS)parse_and_execute.c
 
 
-SRCS	= $(SRCS_DIR)main.c
+SRCS	= $(SRCS_DIR)main.c $(SRCS_DIR)init_cmd.c $(PARS_DIR)
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 
