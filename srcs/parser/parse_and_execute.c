@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 06:49:01 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/05/13 09:41:29 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/05/13 13:25:25 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 
 void  parse_and_execute (char *input, t_cmd *cmd)
 {
-    cmd->args = ft_split(input, ' ');
+    cmd->args = ft_split(input, ' ');// TODO change malloc to calloc
 }
 
 // char  **parse_and_execute (char *input)
@@ -47,3 +47,4 @@ void  parse_and_execute (char *input, t_cmd *cmd)
 //     }
 //     return 0;
 // }
+

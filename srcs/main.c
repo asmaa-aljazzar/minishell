@@ -8,10 +8,14 @@ static void minishell_loop (t_cmd *cmd)
 	{
 		input = readline(PROMPT);
 		if (!input) // Ctrl+D
-			return ;
-		// if (is_valid_input(input)) // TODO
+		{
+			printf("exit\n");
+			break;
+		}
+		if (input)
+			add_history(input);
+		// if (is_valid_input(input)) // TODO [name of folde/file] >> will create the file if there is a folder not exist print error, if quoted [Quotes close], [no pipe without command after it], [valid command at the start], [handle flags if required (check)], 
 		// {
-		// 	add_history(input);
 		parse_and_execute(input, cmd); // TODO
 		i = 0;
 		while (cmd->args && cmd->args[i])
@@ -29,6 +33,7 @@ static void minishell_loop (t_cmd *cmd)
 		cmd->args = NULL;
 		// }
 		free(input);
+		input = NULL;
 	}
 }
 
@@ -44,3 +49,4 @@ int	main(int argc, char **argv, char **envp)
 	// cleanup_minishell(); // TODO Optional cleanup if needed
 	return (0);
 }
+
