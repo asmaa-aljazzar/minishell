@@ -96,13 +96,13 @@ OBJ		=			$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	$(AR) $(NAME) $(OBJ)
+	@$(AR) $(NAME) $(OBJ) > /dev/null
 	@echo "\n[ $(YELLOW)$(NAME)$(RESET) ] | $(GREEN)Creaded successfully$(RESET)\n"
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 #	@echo "Creating $(@D)/ $(@F)"
-	mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+	@mkdir -p $(@D) > /dev/null
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ > /dev/null
 # 	-p: Ensures that:
 # 		---->	Parent directories are created if they don't exist.
 # 		---->	It doesn't throw an error if the directory already exists.
@@ -111,15 +111,15 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 # 		---->	$(@D): Extracts the directory part of $@.
 
 clean:
-	$(RM) -r $(OBJ_DIR)
-	$(RM) .cache_exists
+	@$(RM) -r $(OBJ_DIR) 
+	@$(RM) .cache_exists
 #	.cache_exists:
 #		---->	This is the specific file being removed.
 #		---->	It could be used as a marker or a temporary file in the build process.
 
 
 fclean: clean
-	$(RM) $(NAME)
+	@$(RM) $(NAME) 
 
 re: fclean all
 

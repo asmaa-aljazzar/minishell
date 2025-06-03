@@ -37,7 +37,7 @@ SECOND_DIR	= 	$(SRCS_DIR)
 PARS_DIR	= 	$(PARS)parse_and_execute.c
 
 
-SRCS	= $(SRCS_DIR)main.c $(SRCS_DIR)init_cmd.c $(PARS_DIR)
+SRCS	= $(SRCS_DIR)main.c  $(PARS_DIR)
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 
@@ -49,26 +49,26 @@ OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 all: $(NAME) $(LIBFT)
 
 $(LIBFT):
-	make -C ./libft
+	@make -s -C ./libft > /dev/null
 
 $(NAME): $(OBJS) $(LIBFT)
-	$(CC) $(CFLAGS) $(INC) $(OBJS) $(LIBFT) -o $(NAME) -lreadline
+	@$(CC) $(CFLAGS) $(INC) $(OBJS) $(LIBFT) -o $(NAME) -lreadline > /dev/null
 	@echo "\n[ $(YELLOW)$(NAME) $(RESET)] $(GREEN)has been created!$(RESET)\n"
 
 $(OBJS_DIR)%.o: $(SRCS_DIR)%.c
-	@echo "Creating $(YELLOW)$(@D)$(RESET)/ $(GREEN)$(@F)$(RESET)"
-	mkdir -p $(@D)
-	$(CC) $(CFLAGS) $(INC) -c $< -o $@
+#   @echo "Creating $(YELLOW)$(@D)$(RESET)/ $(GREEN)$(@F)$(RESET)"
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ > /dev/null
 
 clean:
-	$(RM) -r $(OBJS_DIR)
-	make clean -C libft
+	@$(RM) -r $(OBJS_DIR)
+	@make clean -s -C libft
 	@echo "\n$(BLUE)Obj files cleaned.$(RESET)\n"
 
 fclean: clean
-	$(RM) $(NAME)
-	make fclean -C libft
-	@echo "\n$(BLUE) Binary files cleaned.$(RESET)\n"
+	@$(RM) $(NAME)
+	@make fclean -s -C libft
+	@echo "\n$(BLUE)Binary files cleaned.$(RESET)\n"
 
 re: fclean all
 
