@@ -14,21 +14,19 @@
 /*
 * to allocate a specified amount of memory and then initialize it to zero
 */
-void	*ft_calloc(size_t nmemb, size_t size)
+void	*ft_calloc(size_t count, size_t size)
 {
-	void	*c;
-	size_t	i;
+	unsigned char	*temp;
+	size_t			i;
 
-	c = malloc(nmemb * size);
-	if (!c)
-	{
-		return (NULL);
-	}
 	i = 0;
-	while (i < nmemb * size)
+	temp = malloc(count * size);
+	if (!temp)
+		return (NULL);
+	while (i < count * size)
 	{
-		((unsigned char *)c)[i] = 0;
+		temp[i] = 0;
 		i++;
 	}
-	return (c);
+	return (temp);
 }

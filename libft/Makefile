@@ -1,21 +1,13 @@
-# Color
-RESET	= \033[0m
-RED		= \033[31m
-GREEN	= \033[32m
-YELLOW	= \033[33m
-
-
 # Library Name
 NAME    =	libft.a
 
 # Compiler and Flags
 CC      =	cc
-CFLAGS  =	-Wall -Wextra -Werror -g -I
+CFLAGS  =	-Wall -Wextra -Werror -g -Iinclude
 AR		=	ar rcs
 RM		=	rm -f
 
 # Directories
-INC		=	includes/
 SRC_DIR	=	src/
 OBJ_DIR =	obj/
 
@@ -81,10 +73,7 @@ FT_PRINTF_DIR	=	$(SRC_DIR)printf/$(FT_PRINTF_UTIL_DIR)/ft_char_format.c\
 					$(SRC_DIR)printf/ft_format.c\
 					$(SRC_DIR)printf/ft_printf.c
 
-GNL_DIR		=	$(SRC_DIR)get_next_line/get_next_line.c\
-				$(SRC_DIR)get_next_line/get_next_line_utils.c
-
-SRCS 	=			$(FT_IS_DIR) $(FT_LST_DIR) $(FT_MEM_DIR) $(FT_PUT_DIR) $(FT_STR_DIR) $(FT_TO_DIR) $(FT_PRINTF_DIR) $(GNL_DIR)
+SRCS 	=			$(FT_IS_DIR) $(FT_LST_DIR) $(FT_MEM_DIR) $(FT_PUT_DIR) $(FT_STR_DIR) $(FT_TO_DIR) $(FT_PRINTF_DIR)
 
 OBJ		=			$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 # 		patsubst (pattern, replacement, text)
@@ -96,13 +85,12 @@ OBJ		=			$(patsubst $(SRC_DIR)%.c,$(OBJ_DIR)%.o,$(SRCS))
 all: $(NAME)
 
 $(NAME): $(OBJ)
-	@$(AR) $(NAME) $(OBJ) > /dev/null
-	@echo "\n[ $(YELLOW)$(NAME)$(RESET) ] | $(GREEN)Creaded successfully$(RESET)\n"
+	@$(AR) $(NAME) $(OBJ)
 
 $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 #	@echo "Creating $(@D)/ $(@F)"
-	@mkdir -p $(@D) > /dev/null
-	@$(CC) $(CFLAGS) $(INC) -c $< -o $@ > /dev/null
+	@mkdir -p $(@D)
+	@$(CC) $(CFLAGS) $(INC) -c $< -o $@
 # 	-p: Ensures that:
 # 		---->	Parent directories are created if they don't exist.
 # 		---->	It doesn't throw an error if the directory already exists.
@@ -111,7 +99,7 @@ $(OBJ_DIR)%.o: $(SRC_DIR)%.c
 # 		---->	$(@D): Extracts the directory part of $@.
 
 clean:
-	@$(RM) -r $(OBJ_DIR) 
+	@$(RM) -r $(OBJ_DIR)
 	@$(RM) .cache_exists
 #	.cache_exists:
 #		---->	This is the specific file being removed.
@@ -119,7 +107,7 @@ clean:
 
 
 fclean: clean
-	@$(RM) $(NAME) 
+	@$(RM) $(NAME)
 
 re: fclean all
 

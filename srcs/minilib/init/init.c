@@ -1,24 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   init.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/28 13:38:11 by aaljazza          #+#    #+#             */
-/*   Updated: 2024/09/28 13:38:16 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/02 22:14:38 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/02 22:14:39 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../includes/libft.h"
 
-// Put a string in a file description
-void	ft_putstr_fd(char *s, int fd)
+#include "minishell.h"
+
+void init(t_minishell *shell)
 {
-	unsigned int	len;
-
-	if (s)
-	{
-		len = ft_strlen(s);
-		write (fd, s, len);
-	}
+	shell->i = 0;
+	shell->j = 0;
+	shell->fd_in = -1;
+	shell->fd_out = -1;
+	shell->fd_app = -1;
+	shell->tok = NULL;
 }

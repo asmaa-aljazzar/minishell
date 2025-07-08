@@ -16,29 +16,42 @@
 * returns the new string; NULL if the memory allocation failed.
 * if one of them is NULL we will return strdub from the other string.
 */
+static char	*joining(const char *s1, const char *s2, char *result);
 
-char	*ft_strjoin(char const *s1, char const *s2)
+char	*ft_strjoin(const char *s1, const char *s2)
 {
-	char	*t;
-	int		i;
-	int		j;
+	char	*result;
 
-	t = (char *) malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
-	if (!t)
+	if (!s1 && !s2)
 		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (ft_strdup(s1));
+	result = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
+	if (!result)
+		return (NULL);
+	joining(s1, s2, result);
+	return (result);
+}
+
+static char	*joining(const char *s1, const char *s2, char *result)
+{
+	unsigned int	i;
+	unsigned int	j;
+
 	i = 0;
-	while (s1[i])
-	{
-		t[i] = s1[i];
-		i++;
-	}
 	j = 0;
-	while (s2[j])
+	while (s1[i] != '\0')
 	{
-		t[i] = s2[j];
-		j++;
+		result[i] = s1[i];
 		i++;
 	}
-	t[i] = '\0';
-	return (t);
+	while (s2[j] != '\0')
+	{
+		result[i + j] = s2[j];
+		j++;
+	}
+	result[i + j] = '\0';
+	return (result);
 }

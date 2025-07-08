@@ -16,22 +16,15 @@
 * does the copy, and returns a pointer to it.
 * The pointer may subsequently be used as an argument to the function free(3).
 */
-char	*ft_strdup(const char *s)
+char	*ft_strdup(const char *s1)
 {
-	char	*x;
-	int		len;
-	int		i;
+	unsigned int	len;
+	char			*dst;
 
-	len = ft_strlen(s);
-	x = (char *) malloc(len + 1);
-	if (!x)
+	len = ft_strlen(s1) + 1;
+	dst = malloc(len);
+	if (!dst)
 		return (NULL);
-	i = 0;
-	while (i < len)
-	{
-		x[i] = (char) s[i];
-		i++;
-	}
-	x[i] = '\0';
-	return (x);
+	ft_memcpy(dst, s1, len);
+	return (dst);
 }

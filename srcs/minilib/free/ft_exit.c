@@ -1,24 +1,20 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_putstr_fd.c                                     :+:      :+:    :+:   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/28 13:38:11 by aaljazza          #+#    #+#             */
-/*   Updated: 2024/09/28 13:38:16 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/03 00:42:57 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/03 00:50:16 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-#include "../../includes/libft.h"
 
-// Put a string in a file description
-void	ft_putstr_fd(char *s, int fd)
+#include "minishell.h"
+
+void ft_exit(t_minishell *minishell, char *str, int status)
 {
-	unsigned int	len;
-
-	if (s)
-	{
-		len = ft_strlen(s);
-		write (fd, s, len);
-	}
+	perror(str);
+	ft_free(minishell);
+	exit(status);
 }
