@@ -1,25 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_to_free.c                                    :+:      :+:    :+:   */
+/*   commands.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/03 00:25:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:28:29 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/09 07:12:10 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/09 07:12:53 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void check_to_free (t_minishell *minishell)
+void call_env(t_minishell *minishell)
 {
-    	if (strcmp(minishell->input, "exit") == 0)
-			exit(1);
-		if (minishell->cmd)
-		    free_2d(minishell->cmd);
-		if (minishell->tok)
-		    free_2d(minishell->tok);
-		if (minishell->input)
-		    free(minishell->input);
+    printf("call env\n");
+    int fd;
+    
+    fd = minishell->fd_out;
+    if (fd == -1)
+        fd = STDOUT_FILENO;
+
+    int i;
+    i = 0;
+    while (environ[i] != NULL) {
+        if (write(fd, environ[i], ft_strlen(environ[i])) == -1)
+        {
+            perror("write error");
+            exit(1);
+        }
+        write(fd, "\n", 1);
+        i++;
+    }
 }

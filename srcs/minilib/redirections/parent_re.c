@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_to_free.c                                    :+:      :+:    :+:   */
+/*   parent_re.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/03 00:25:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:28:29 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/09 07:19:50 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/09 07:19:51 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void check_to_free (t_minishell *minishell)
+void parent_re(t_minishell *minishell)
 {
-    	if (strcmp(minishell->input, "exit") == 0)
-			exit(1);
-		if (minishell->cmd)
-		    free_2d(minishell->cmd);
-		if (minishell->tok)
-		    free_2d(minishell->tok);
-		if (minishell->input)
-		    free(minishell->input);
+	if (minishell->fd_app > 0)
+	{
+		close(minishell->fd_app);
+		minishell->fd_app = -1;
+	}
+	if (minishell->fd_in > 0)
+	{
+		close(minishell->fd_in);
+		minishell->fd_in = -1;
+	}
+	if (minishell->fd_out > 0)
+	{
+		close(minishell->fd_out);
+		minishell->fd_out = -1;
+	}
 }

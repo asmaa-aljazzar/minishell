@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/03 00:25:40 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/09 07:27:53 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -31,7 +31,7 @@ SRCS_DIR				=	srcs/
 OBJS_DIR				=	objs/
 LIBFT					=	./libft/libft.a
 MAIN_DIR				=	$(SRCS_DIR)main/
-MINILIB_DIR				=	$(SRCS_DIR)utils/
+MINILIB_DIR				=	$(SRCS_DIR)minilib/
 INIT_DIR				=	$(MINILIB_DIR)init/
 FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
@@ -49,8 +49,7 @@ REDIR_DIR				=	$(MINILIB_DIR)redirections/
 INIT_SRC	=	$(INIT_DIR)init.c\
 				$(INIT_DIR)init_shell.c\
 
-FREE_SRC	=	$(FREE_DIR)ft_free.c\
-				$(FREE_DIR)ft_exit.c\
+FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_2d.c\
 				$(FREE_DIR)check_to_free.c\
 
@@ -73,7 +72,8 @@ COMMANDS_SRC	=	$(BULTIN_COMM_SRC) $(EXTERNAL_COMM_SRC)
 REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)parent_re.c\
 					$(REDIR_DIR)redirection.c\
-					$(REDIR_DIR)redir_compare.c\
+					$(REDIR_DIR)redir_compare1.c\
+					$(REDIR_DIR)redir_compare2.c\
 
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(INIT_SRC)\
@@ -83,7 +83,7 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
-		   $(MAIN_DIR)compare_input.c\
+		#    $(MAIN_DIR)compare_input.c\
 
 # PARS_DIR	= 	$(PARS)parse_and_execute.c
 

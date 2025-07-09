@@ -1,25 +1,31 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_to_free.c                                    :+:      :+:    :+:   */
+/*   normal_string.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/03 00:25:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:28:29 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/09 07:14:49 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/09 07:14:59 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void check_to_free (t_minishell *minishell)
+void normal_string(char **tokens, int *k, const char *input, int *i)
 {
-    	if (strcmp(minishell->input, "exit") == 0)
-			exit(1);
-		if (minishell->cmd)
-		    free_2d(minishell->cmd);
-		if (minishell->tok)
-		    free_2d(minishell->tok);
-		if (minishell->input)
-		    free(minishell->input);
+    char *tok;
+    int size;
+    int start = *i;
+
+    while (input[*i] && input[*i] != ' ' 
+        && input[*i] != '\'' && input[*i] != '"' 
+        && input[*i] != '>' && input[*i] != '<' 
+        && input[*i] != '|')
+        (*i)++;
+
+    size = *i - start;
+    tok = malloc(size + 1);
+    ft_strlcpy(tok, &input[start], size + 1);
+    tokens[(*k)++] = tok;
 }

@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   check_to_free.c                                    :+:      :+:    :+:   */
+/*   redir_op1.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/03 00:25:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:28:29 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/09 07:17:12 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/09 07:17:17 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void check_to_free (t_minishell *minishell)
+void redir_op1(char **tokens, int *k, const char *input, int *i)
 {
-    	if (strcmp(minishell->input, "exit") == 0)
-			exit(1);
-		if (minishell->cmd)
-		    free_2d(minishell->cmd);
-		if (minishell->tok)
-		    free_2d(minishell->tok);
-		if (minishell->input)
-		    free(minishell->input);
+    if (input[*i] == '<')
+    {
+        if (input[*i + 1] == '<')
+        {
+            tokens[*k++] = ft_strdup("<<");
+            i += 2;
+        }
+        else
+        {
+            tokens[*k++] = ft_strdup("<");
+            i++;
+        }
+    }
+    else if (input[*i] == '>')
+        redir_op2(tokens, k, input, i);
 }

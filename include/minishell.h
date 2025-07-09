@@ -65,23 +65,23 @@ typedef struct s_minishell {
 //* #### Initialize some of elements in the antshell structure. ####
 //- 	integer values
 //- 	tokens array
-void init(t_minishell *shell);
+void init(t_minishell *minishell);
 //
 //* #### Display prompt, take an input, and initialize other structure elements.
 //- It is also count the number of tokens
 //- exit if error occured
-void init_shell(t_minishell *shell);
+void init_shell(t_minishell *minishell);
 //
 //* #### loop over tokens array to check for redirections ###
-void redirection(t_minishell *shell);
+void redirection(t_minishell *minishell);
 //
-void redir_compare1(t_minishell *shell);
-void redir_compare2(t_minishell *shell);
-void child_re(t_minishell *shell);
-void parent_re(t_minishell *shell);
-void call_echo(t_minishell *shell, int op);
-void call_pwd(t_minishell *shell);
-void call_env(t_minishell *shell);
+void redir_compare1(t_minishell *minishell);
+void redir_compare2(t_minishell *minishell);
+void child_re(t_minishell *minishell);
+void parent_re(t_minishell *minishell);
+void call_echo(t_minishell *minishell, int op);
+void call_pwd(t_minishell *minishell);
+void call_env(t_minishell *minishell);
 //
 // - write an error message
 // - free minishell
@@ -89,7 +89,6 @@ void call_env(t_minishell *shell);
 void ft_exit(t_minishell *minishell, char *str, int status);
 //
 void free_2d(char **arr);
-void ft_free(t_minishell *shell);
 void    redir_op1 (char **tokens, int *k, const char *input, int *i);
 void	redir_op2(char **tokens, int *k, const char *input, int *i);
 void quoted(char **tokens, int *k, const char *input, int *i);
@@ -106,8 +105,7 @@ void compare_commands (t_minishell *minishell);
 // - Input String
 //* #### 2. Exit from the program if the input is [ exit ]
 void check_to_free (t_minishell *minishell);
-void compare_input(t_minishell *minishell);
 char **get_tokens (const char *input);
 
 
-# endif
+#endif
