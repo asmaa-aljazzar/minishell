@@ -13,54 +13,39 @@
 #ifndef ANTSHELL_H
 #define ANTSHELL_H
 
+//#region	[ Includes ]
 #include "../libft/includes/libft.h"
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <fcntl.h>
-
+//#region	[ Macros ]
 #define PROMPT "\033[33mantshell\033[32m$ \033[0m"
+//extern char **environ;
 
-extern char **environ;
-
+//#region	[ Structures ]
 typedef struct s_minishell {
 	char *input;
-	char **cmd;
-	char ***cmdList;
+	t_command *cmd;
 	int i;
 	int j;
 	int count;
 	char **tok;
-	int fd_in;
-	int fd_out;
-	int fd_app;
 	char buff[1024];
 }	t_minishell;
 
-//! New Struct asmaa
-// //Todo need to init
-// typedef struct s_cmd_node
-// {
-// 	char **cmd;
-// 	struct s_cmd *next;
-	
-// } t_cmd_node;
+typedef struct s_command {
+    char **argv;                  // ["cat"]
+    int input_type;               // NONE / REDIR_IN / HEREDOC / PIPE_IN
+    char *input_file;
+    int output_type;              // NONE / REDIR_OUT / APPEND / PIPE_OUT
+    char *output_file;
 
-// t_antshell {
-// 	char *input;
-// 	// char **cmd;
-// 	// char ***cmdList;
-// 	t_cmd_node	*cmd;
-// 	int i;
-// 	int j;
-// 	int count;
-// 	char **tok;
-// 	int fd_in;
-// 	int fd_out;
-// 	int fd_app;
-// 	char buff[1024];
-// };
-//! End
+    struct s_command *next;       // Next command in pipe sequence
+} t_command;
+
+//#region	[ Functions ]
+// Todo: organize by files
 
 //* #### Initialize some of elements in the antshell structure. ####
 //- 	integer values
@@ -106,6 +91,4 @@ void compare_commands (t_minishell *minishell);
 //* #### 2. Exit from the program if the input is [ exit ]
 void check_to_free (t_minishell *minishell);
 char **get_tokens (const char *input);
-
-
 #endif
