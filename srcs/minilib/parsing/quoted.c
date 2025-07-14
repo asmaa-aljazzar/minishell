@@ -6,34 +6,54 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:15:51 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/14 05:52:08 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void quoted(char **tokens, int *k, const char *input, int *i)
+void quoted(t_minishell *minishell, int *k, int *i)
 {
     int size;
-    char *tok;
+    int start;
+    char *word;
     char quote;
 
-    if (input[*i] == '\'' || input[*i] == '"')
+    if (minishell->input[*i] == '\'' || minishell->input[*i] == '"')
     {
-        quote = input[(*i)++];
-        int start = *i;
-        while (input[*i] && input[*i] != quote)
+        quote = minishell->input[(*i)++];
+        start = *i;
+        while (minishell->input[*i] && minishell->input[*i] != quote)
             (*i)++;
-        if (!input[*i])
-            return ;
+        if (minishell->input[*i] != quote)
+        {
+            fprintf(stderr, "syntax error: unexpected EOF while looking for matching `%c`\n", quote);
+            return;
+        }
+        
         size = *i - start;
-        tok = malloc(size + 1);
-        ft_strlcpy(tok, &input[start], size + 1);
-        tokens[(*k)++] = tok;
+        word = malloc(size + 1);
+        if (!word)
+            ft_exit(minishell, "Memory allocation failed", 1);
+            
+        ft_strlcpy(word, &minishell->input[start], size + 1);
+        
+        // Allocate the token structure
+        minishell->tok[*k] = calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+            ft_exit(minishell, "Memory allocation failed", 1);
+            
+        minishell->tok[*k]->word = word;
+        minishell->tok[*k]->type = INUPT_WORD;
+        if (quote == '"')
+            minishell->tok[*k]->qtype = QUOTE_DOUBLE;
+        else
+            minishell->tok[*k]->qtype = QUOTE_SINGLE;        
+        (*k)++;
         (*i)++;
     }
     else
     {
-        normal_string(tokens, k, input, i);
+        normal_string(minishell, k, i);  // Updated to match your likely implementation
     }
 }

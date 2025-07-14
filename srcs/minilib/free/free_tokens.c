@@ -1,37 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_fork.c                                        :+:      :+:    :+:   */
+/*   free_tokens.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/02 22:14:18 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:34:57 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/14 06:00:26 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/14 06:00:42 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Fork a child process in the main.
-// Redirection in child.
-// Compare the command in commands array to execute them
-// Redirection in child.
-
-void main_fork(t_minishell *minishell)
+void free_tokens(t_token **tokens)
 {
-    (void)minishell;
-    int pid;
-    pid = fork ();
-    if (pid == 0)
-    {
-        // child_re(minishell);
-        // compare_commands (minishell);
-    }
-    else
-    {
-        // parent_re(minishell);
-        int status;
-        waitpid(pid, &status, 0);
-    }
-}
+    int i = 0;
 
+    if (!tokens)
+        return;
+    while (tokens[i])
+    {
+        free(tokens[i]->word);  // Free the string inside the token
+        free(tokens[i]);        // Free the token structure itself
+        i++;
+    }
+    free(tokens);               // Free the array of pointers
+}

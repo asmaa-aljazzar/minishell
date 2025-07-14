@@ -1,37 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main_fork.c                                        :+:      :+:    :+:   */
+/*   count_pipe.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/02 22:14:18 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:34:57 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/11 21:52:42 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-// Fork a child process in the main.
-// Redirection in child.
-// Compare the command in commands array to execute them
-// Redirection in child.
-
-void main_fork(t_minishell *minishell)
+void count_pipe(t_minishell *minishell)
 {
-    (void)minishell;
-    int pid;
-    pid = fork ();
-    if (pid == 0)
+    int i = 0;
+    int pipes = 0;
+    char *input = minishell->input;
+    while (input[i])
     {
-        // child_re(minishell);
-        // compare_commands (minishell);
+        if (input[i] == '|')
+            pipes += 1;
+        i++;
     }
-    else
-    {
-        // parent_re(minishell);
-        int status;
-        waitpid(pid, &status, 0);
-    }
+    minishell->pipe_count = pipes;
 }
-

@@ -6,22 +6,34 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:17:47 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/09 07:17:53 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/14 05:42:35 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void redir_op2(char **tokens, int *k, const char *input, int *i)
+void redir_op2(t_minishell *minishell, int *k, int *i)
 {
-    if (input[*i + 1] == '>')
+    if (minishell->input[*i + 1] == '>')
     {
-        tokens[*k++] = ft_strdup(">>");
-        i += 2;
+        minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+            ft_exit(minishell, "Memory allocation failed", 1);
+        minishell->tok[*k]->word = ft_strdup(">>");
+        minishell->tok[*k]->type = OUTPUT_APPEND;
+        minishell->tok[*k]->qtype = QUOTE_NONE;
+        (*k)++;
+        (*i) += 2;
     }
     else
     {
-        tokens[*k++] = (">");
-        i++;
+        minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+            ft_exit(minishell, "Memory allocation failed", 1);
+        minishell->tok[*k]->word = ft_strdup(">");
+        minishell->tok[*k]->type = OUTPUT_FILE;
+        minishell->tok[*k]->qtype = QUOTE_NONE;
+        (*k)++;
+        (*i)++;
     }
 }
