@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 05:52:08 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/14 06:52:29 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,11 +26,7 @@ void quoted(t_minishell *minishell, int *k, int *i)
         while (minishell->input[*i] && minishell->input[*i] != quote)
             (*i)++;
         if (minishell->input[*i] != quote)
-        {
-            fprintf(stderr, "syntax error: unexpected EOF while looking for matching `%c`\n", quote);
-            return;
-        }
-        
+            ft_exit(minishell, "Syntax error: unmatched quote", 1);
         size = *i - start;
         word = malloc(size + 1);
         if (!word)

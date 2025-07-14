@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/14 06:16:27 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/14 06:30:55 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,6 +35,7 @@ MINILIB_DIR				=	$(SRCS_DIR)minilib/
 INIT_DIR				=	$(MINILIB_DIR)init/
 FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
+ENV_DIR					=	$(PARS_DIR)env/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
 BUILTIN_COMM_DIR		=	$(COMMANDS_DIR)builtin/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
@@ -56,14 +57,16 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
 
-PARS_SRC	= 	$(PARS_DIR)quoted.c\
+ENV_SRC		=	$(ENV_DIR)test.c
+
+PARS_SRC	= 	$(ENV_SRC)\
+				$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
 				$(PARS_DIR)redir_op1.c\
 				$(PARS_DIR)redir_op2.c\
 				$(PARS_DIR)count_pipe.c\
 				$(PARS_DIR)normal_string.c\
-
 
 BULTIN_COMM_SRC	=	$(BUILTIN_COMM_DIR)commands.c\
 					$(BUILTIN_COMM_DIR)call_pwd.c\
