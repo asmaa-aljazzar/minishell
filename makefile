@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/16 14:34:49 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/16 15:01:23 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,7 +35,7 @@ MINILIB_DIR				=	$(SRCS_DIR)minilib/
 INIT_DIR				=	$(MINILIB_DIR)init/
 FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
-ENV_DIR					=	$(PARS_DIR)env/
+ENV_DIR					=	$(MINILIB_DIR)env/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
 BUILTIN_COMM_DIR		=	$(COMMANDS_DIR)builtin/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
@@ -60,10 +60,10 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)unset_builtin.c\
 				$(ENV_DIR)env_builtin.c\
+				$(ENV_DIR)init_env.c\
 				$(ENV_DIR)expand_variables.c\
-
-PARS_SRC	= 	$(ENV_SRC)
-				$(PARS_DIR)quoted.c\
+ 	
+PARS_SRC	=	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
 				$(PARS_DIR)redir_op1.c\
@@ -87,6 +87,7 @@ REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)redir_compare2.c\
 
 MINILIB_SRC	= 	$(PARS_SRC)\
+				$(ENV_SRC)\
 				$(INIT_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\

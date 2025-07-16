@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 06:56:34 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/16 14:59:47 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,11 +19,15 @@
 //* 4. Forking.
 //* 5. Free if allocated or exit.
 
-int main(void)
+int main(int ac, char **av, char **env)
 {
+	(void)ac;
+	(void)av;
+	(void)env;
 	t_minishell minishell;
-
+	
 	init(&minishell);
+	// init_env (&minishell, env); // Todo
 	while (1)
 	{
 		init_shell(&minishell);
