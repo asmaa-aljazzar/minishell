@@ -54,11 +54,19 @@ typedef enum e_type
 
 //#region	[ Structures ]
 //
-typedef struct s_token {//? this is the array of tokens: we can create a custome arrays
+typedef struct s_env
+{
+    char *name;
+    char *value;
+    struct s_env *next;
+} t_env;
+typedef struct s_token 
+{//? this is the array of tokens: we can create a custome arrays
     char    *word;      /* already without the surrounding quotes   */
     t_type      type;      /* WORD | PIPE | REDIR_*                    */
     t_quote  qtype;     /* how it was quoted                        */
 }   t_token;
+
 
 typedef struct s_command {
     char **argv;                  // ["cat"]
@@ -76,6 +84,7 @@ typedef struct s_minishell {
     int pipe_count;
     t_token **tok;
     char buff[1024];
+    t_env *env;
 }	t_minishell;
 
 

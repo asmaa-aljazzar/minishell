@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/14 06:30:55 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/16 14:34:49 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -57,9 +57,12 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
 
-ENV_SRC		=	$(ENV_DIR)test.c
+ENV_SRC		=	$(ENV_DIR)export_builtin.c\
+				$(ENV_DIR)unset_builtin.c\
+				$(ENV_DIR)env_builtin.c\
+				$(ENV_DIR)expand_variables.c\
 
-PARS_SRC	= 	$(ENV_SRC)\
+PARS_SRC	= 	$(ENV_SRC)
 				$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
