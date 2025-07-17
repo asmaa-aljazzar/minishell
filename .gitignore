@@ -1,5 +1,6 @@
 .vscode
 *.o
 */*.o
-antshell
+libft.a
+minishell
 echo.c
