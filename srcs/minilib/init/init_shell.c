@@ -6,14 +6,14 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/16 14:13:19 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/17 07:04:25 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 // 1. Display the prompt.
-// 2. Read the input line into a buffer. 
+// 2. Read the input line into a buffer.
 // 3. Add this line to the history.
 // 4. Parsing the input.
 // 5. Split it into tokens.
@@ -28,34 +28,35 @@ void init_shell(t_minishell *minishell)
     {
         // Handle EOF (Ctrl+D) gracefully
         printf("exit\n");
-        exit(EXIT_SUCCESS);  // Clean exit on Ctrl+D
+        exit(EXIT_SUCCESS); // Clean exit on Ctrl+D
     }
-    
+
     // Add non-empty commands to history
     if (*minishell->input)
         add_history(minishell->input);
-        
+
     // Skip processing for empty commands
     if (!*minishell->input)
     {
         free(minishell->input);
         minishell->input = NULL;
-        return;  // Return to main loop for a new prompt
+        return; // Return to main loop for a new prompt
     }
-    
+
     // Tokenize the input
     get_tokens(minishell);
     if (!minishell->tok)
         ft_exit(minishell, "ERROR\nNULL tok", EXIT_FAILURE);
-        
+
     // Count pipes to determine number of commands
     count_pipe(minishell);
-    
+
     // Allocate command array
     minishell->cmd = malloc(sizeof(t_command) * (minishell->pipe_count + 1));
     if (!minishell->cmd)
         ft_exit(minishell, "ERROR\nNULL CMD", EXIT_FAILURE);
-        
+
+    minishell->exit_code = 0;
     // Initialize each command structure
     init_cmmands(minishell);
 }

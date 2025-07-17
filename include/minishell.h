@@ -110,6 +110,7 @@ typedef struct s_minishell {
     t_token **tok;
     char buff[1024];
     t_env *env;
+    int exit_code;
 }	t_minishell;
 
 
@@ -163,4 +164,6 @@ void check_to_free (t_minishell *minishell);
 void init_cmmands(t_minishell *minishell);
 void count_pipe(t_minishell *minishell);
 void get_tokens (t_minishell *minishell);
+// void init_tokens (t_minishell *minishell);
+t_env *init_env (t_minishell *minishell, char **env);
 # endif
