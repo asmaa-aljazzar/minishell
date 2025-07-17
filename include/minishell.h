@@ -31,6 +31,31 @@
 * A command cannot simultaneously have both.
 */
 
+typedef enum e_error_code // Todo: use this later
+{
+    ERR_NONE = 0,              // No error
+    ERR_SYNTAX_UNMATCHED_QUOTE, // Unmatched quote in input
+    ERR_SYNTAX_UNEXPECTED_TOKEN, // Unexpected token like ; or |
+    ERR_SYNTAX_NEAR_EOL,         // Syntax error near end of line/input
+    ERR_MEMORY_ALLOCATION,       // malloc/calloc failed
+    ERR_COMMAND_NOT_FOUND,       // command not found
+    ERR_PERMISSION_DENIED,       // permission error
+    ERR_EXPORT_INVALID,          // invalid export argument
+    ERR_UNSET_INVALID,           // invalid unset argument
+    ERR_ENV_NOT_FOUND,           // environment variable not found
+    ERR_EXECVE_FAILED,           // execve system call failed
+    ERR_PIPE_FAILED,             // pipe system call failed
+    ERR_FORK_FAILED,             // fork system call failed
+    ERR_DUP2_FAILED,             // dup2 system call failed
+    ERR_SIGNAL_HANDLING,         // signal handling error
+}   t_error_code;
+
+typedef struct s_error // Todo: add this to code later
+{
+    t_error_code    code;
+    char           *message;
+}   t_error;
+
 typedef enum e_quote { // use to detect what kind of word in the tokens array
     QUOTE_NONE,
     QUOTE_SINGLE,

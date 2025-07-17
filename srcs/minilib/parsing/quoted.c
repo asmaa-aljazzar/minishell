@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/16 14:21:34 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/17 05:38:57 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,24 +21,12 @@ void quoted(t_minishell *minishell, int *k, int *i)
 
     if (minishell->input[*i] == '\'' || minishell->input[*i] == '"')
     {
-        // Todo: Create qoutes_type
-        if (minishell->input[*i] == '\'')
-        {
-            minishell->tok[*k]->type = INUPT_WORD;
-            minishell->tok[*k]->qtype = QUOTE_SINGLE;
-        }
-        else
-        {
-            minishell->tok[*k]->type = INUPT_WORD;
-            minishell->tok[*k]->qtype = QUOTE_DOUBLE;
-        }
-        //! End qoutes_type
         quote = minishell->input[(*i)++];
         start = *i;
         while (minishell->input[*i] && minishell->input[*i] != quote)
             (*i)++;
         if (minishell->input[*i] != quote)
-            ft_exit(minishell, "Syntax error: unmatched quote", 1);
+            ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
         size = *i - start;
         word = malloc(size + 1);
         if (!word)
