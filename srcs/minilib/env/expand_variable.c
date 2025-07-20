@@ -6,12 +6,11 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:49:07 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/20 17:48:12 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/20 18:11:46 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-
-#include "minishell.h"   // ensure libft.h is included inside this
+#include "minishell.h" // ensure libft.h is included inside this
 
 static char *get_env_value(t_env *env, const char *var)
 {
@@ -27,13 +26,13 @@ static char *get_env_value(t_env *env, const char *var)
 
 char *expand_variable(t_minishell *minishell, char *token)
 {
-    char    *result = ft_strdup("");
-    size_t  i = 0;
-    size_t  start;
-    char    *temp;
-    char    *var_name;
-    char    *value;
-    char    *literal;
+    char *result = ft_strdup("");
+    size_t i = 0;
+    size_t start;
+    char *temp;
+    char *var_name;
+    char *value;
+    char *literal;
 
     if (!result || !token)
         return NULL;
@@ -43,12 +42,20 @@ char *expand_variable(t_minishell *minishell, char *token)
         if (token[i] == '$')
         {
             i++;
-            start = i;
-            while (token[i] && (ft_isalnum(token[i]) || token[i] == '_'))
+            if (token[i] == '?')
+            {
+                value = ft_itoa(minishell->exit_code);
                 i++;
-            var_name = ft_substr(token, start, i - start);
-            value = get_env_value(minishell->env, var_name);
-            free(var_name);
+            }
+            else
+            {
+                start = i;
+                while (token[i] && (ft_isalnum(token[i]) || token[i] == '_'))
+                    i++;
+                var_name = ft_substr(token, start, i - start);
+                value = get_env_value(minishell->env, var_name);
+                free(var_name);
+            }
             temp = result;
             result = ft_strjoin(result, value);
             free(temp);
