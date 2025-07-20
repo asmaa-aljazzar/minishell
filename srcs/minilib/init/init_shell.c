@@ -42,7 +42,6 @@ void init_shell(t_minishell *minishell)
         minishell->input = NULL;
         return; // Return to main loop for a new prompt
     }
-
     // Tokenize the input
     get_tokens(minishell);
     if (!minishell->tok)

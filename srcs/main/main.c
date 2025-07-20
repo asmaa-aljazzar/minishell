@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/17 07:05:59 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/20 17:39:17 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,11 @@ int main(int ac, char **av, char **environ)
 	t_minishell minishell;
 
 	init(&minishell);
-	t_env *env;
-	env = init_env(&minishell, environ);
-	(void)env;
+	minishell.env = init_env(&minishell, environ);
 	while (1)
 	{
 		init_shell(&minishell);
+		expand_tokens (&minishell);
 		//! Start Debug1
 		int i = 0;
 		if (minishell.tok)
@@ -50,7 +49,6 @@ int main(int ac, char **av, char **environ)
 			}
 		}
 		//! End Debug1
-
 		// redirection (&minishell); // Todo
 		// main_fork (&minishell);	 // Todo
 		check_to_free(&minishell);
