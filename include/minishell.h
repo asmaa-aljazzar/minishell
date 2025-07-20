@@ -168,5 +168,5 @@ void get_tokens (t_minishell *minishell);
 t_env *init_env (t_minishell *minishell, char **env);
 void    expand_tokens(t_minishell *minishell);
 char *expand_variable(t_minishell *minishell, char *token);
-
+void builtin_env(t_minishell *minishell);
 # endif
