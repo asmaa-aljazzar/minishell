@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:25:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 07:21:02 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/21 11:53:56 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,7 @@
 void check_to_free(t_minishell *minishell)
 {
     if (minishell->input && strcmp(minishell->input, "exit") == 0)
-        exit(1);
+        ft_exit (minishell, "", 0);
     if (minishell->cmd)
     {
         free_commands(minishell);
