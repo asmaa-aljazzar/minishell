@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/21 12:01:00 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/22 15:59:59 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,19 +57,19 @@ void init_shell(t_minishell *minishell)
     //? env command
     if (minishell->tok[0] && minishell->tok[1] == NULL && ft_strncmp(minishell->tok[0]->word, "env", ft_strlen ("env") + 1) == 0)
     {
-        builtin_env(minishell);
+        env_builtin(minishell);
         check_to_free(minishell);
         return;
     }
     //? export
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "export", ft_strlen ("export") + 1))
+    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "export", ft_strlen ("export") + 1) == 0)
     {
         export_builtin (minishell);
         check_to_free (minishell);
         return ;
     }
     //? unset
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "unset", ft_strlen ("unset") + 1))
+    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "unset", ft_strlen ("unset") + 1) == 0)
     {
         unset_builtin (minishell);
         check_to_free (minishell);

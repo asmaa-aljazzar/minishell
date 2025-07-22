@@ -59,7 +59,8 @@ typedef struct s_error // Todo: add this to code later
 typedef enum e_quote { // use to detect what kind of word in the tokens array
     QUOTE_NONE,
     QUOTE_SINGLE,
-    QUOTE_DOUBLE
+    QUOTE_DOUBLE,
+    QUOTE_MIXED
 }   t_quote;
 
 
@@ -168,8 +169,8 @@ void get_tokens (t_minishell *minishell);
 t_env *init_env (t_minishell *minishell, char **env);
 void    expand_tokens(t_minishell *minishell);
 char *expand_variable(t_minishell *minishell, char *token);
-void builtin_env(t_minishell *minishell);
+void env_builtin(t_minishell *minishell);
 void export_builtin(t_minishell *minisell);
 void unset_builtin(t_minishell *minisell);
 void print_sorted_env (t_minishell *minishell);
-# endif
+#endif

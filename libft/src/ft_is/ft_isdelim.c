@@ -1,24 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   env_builtin.c                                      :+:      :+:    :+:   */
+/*   ft_isdelim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/16 14:49:10 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 15:58:46 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/22 15:33:21 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/22 15:39:23 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/libft.h"
 
-void env_builtin(t_minishell *minishell)
+int ft_isdelim(char c)
 {
-    t_env *curr = minishell->env;
-    while (curr)
-    {
-        if (curr->value)
-            printf("%s=%s\n", curr->name, curr->value);
-        curr = curr->next;
-    }
+    return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>');
 }
