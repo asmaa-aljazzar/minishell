@@ -31,10 +31,36 @@
 * A command cannot simultaneously have both.
 */
 
+typedef enum e_error_code // Todo: use this later
+{
+    ERR_NONE = 0,              // No error
+    ERR_SYNTAX_UNMATCHED_QUOTE, // Unmatched quote in input
+    ERR_SYNTAX_UNEXPECTED_TOKEN, // Unexpected token like ; or |
+    ERR_SYNTAX_NEAR_EOL,         // Syntax error near end of line/input
+    ERR_MEMORY_ALLOCATION,       // malloc/calloc failed
+    ERR_COMMAND_NOT_FOUND,       // command not found
+    ERR_PERMISSION_DENIED,       // permission error
+    ERR_EXPORT_INVALID,          // invalid export argument
+    ERR_UNSET_INVALID,           // invalid unset argument
+    ERR_ENV_NOT_FOUND,           // environment variable not found
+    ERR_EXECVE_FAILED,           // execve system call failed
+    ERR_PIPE_FAILED,             // pipe system call failed
+    ERR_FORK_FAILED,             // fork system call failed
+    ERR_DUP2_FAILED,             // dup2 system call failed
+    ERR_SIGNAL_HANDLING,         // signal handling error
+}   t_error_code;
+
+typedef struct s_error // Todo: add this to code later
+{
+    t_error_code    code;
+    char           *message;
+}   t_error;
+
 typedef enum e_quote { // use to detect what kind of word in the tokens array
     QUOTE_NONE,
     QUOTE_SINGLE,
-    QUOTE_DOUBLE
+    QUOTE_DOUBLE,
+    QUOTE_MIXED
 }   t_quote;
 
 
@@ -54,11 +80,19 @@ typedef enum e_type
 
 //#region	[ Structures ]
 //
-typedef struct s_token {//? this is the array of tokens: we can create a custome arrays
+typedef struct s_env
+{
+    char *name;
+    char *value;
+    struct s_env *next;
+} t_env;
+typedef struct s_token 
+{//? this is the array of tokens: we can create a custome arrays
     char    *word;      /* already without the surrounding quotes   */
     t_type      type;      /* WORD | PIPE | REDIR_*                    */
     t_quote  qtype;     /* how it was quoted                        */
 }   t_token;
+
 
 typedef struct s_command {
     char **argv;                  // ["cat"]
@@ -76,6 +110,8 @@ typedef struct s_minishell {
     int pipe_count;
     t_token **tok;
     char buff[1024];
+    t_env *env;
+    int exit_code;
 }	t_minishell;
 
 
@@ -129,4 +165,12 @@ void check_to_free (t_minishell *minishell);
 void init_cmmands(t_minishell *minishell);
 void count_pipe(t_minishell *minishell);
 void get_tokens (t_minishell *minishell);
-# endif
+// void init_tokens (t_minishell *minishell);
+t_env *init_env (t_minishell *minishell, char **env);
+void    expand_tokens(t_minishell *minishell);
+char *expand_variable(t_minishell *minishell, char *token);
+void env_builtin(t_minishell *minishell);
+void export_builtin(t_minishell *minisell);
+void unset_builtin(t_minishell *minisell);
+void print_sorted_env (t_minishell *minishell);
+#endif

@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:52:12 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 06:15:14 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/22 16:05:20 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,5 +34,6 @@ void get_tokens(t_minishell *minishell)
             quoted(minishell, &k, &i);
         }
     }
+    minishell->tok[k] = NULL;
     minishell->tokens_count = k;
 }

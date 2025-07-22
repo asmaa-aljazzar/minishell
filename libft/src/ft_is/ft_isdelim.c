@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   ft_isdelim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/28 13:32:44 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/20 18:00:52 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/22 15:33:21 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/22 15:39:23 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/libft.h"
-/* Tests for any character for which isalpha() or isdigit() is true. 
-* The value of the argument must be representable as an 
-*/
-int	ft_isalnum(int c)
+
+int ft_isdelim(char c)
 {
-	if (ft_isalpha(c) || ft_isdigit(c))
-		return (1);
-	return (0);
+    return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>');
 }

@@ -1,22 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   ft_isalnum.c                                       :+:      :+:    :+:   */
+/*   print_sorted_env.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/09/28 13:32:44 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/20 18:00:52 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/21 11:23:38 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/21 11:52:13 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/libft.h"
-/* Tests for any character for which isalpha() or isdigit() is true. 
-* The value of the argument must be representable as an 
-*/
-int	ft_isalnum(int c)
+#include "minishell.h"
+
+void print_sorted_env (t_minishell *minishell)
 {
-	if (ft_isalpha(c) || ft_isdigit(c))
-		return (1);
-	return (0);
+    (void)minishell;
 }

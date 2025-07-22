@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/14 06:16:27 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/21 11:54:46 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -35,8 +35,8 @@ MINILIB_DIR				=	$(SRCS_DIR)minilib/
 INIT_DIR				=	$(MINILIB_DIR)init/
 FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
+ENV_DIR					=	$(MINILIB_DIR)env/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
-BUILTIN_COMM_DIR		=	$(COMMANDS_DIR)builtin/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
 
@@ -48,6 +48,7 @@ REDIR_DIR				=	$(MINILIB_DIR)redirections/
 
 INIT_SRC	=	$(INIT_DIR)init.c\
 				$(INIT_DIR)init_shell.c\
+				$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init_commands.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
@@ -56,7 +57,14 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
 
-PARS_SRC	= 	$(PARS_DIR)quoted.c\
+ENV_SRC		=	$(ENV_DIR)export_builtin.c\
+				$(ENV_DIR)env_builtin.c\
+				$(ENV_DIR)print_sorted_env.c\
+				$(ENV_DIR)unset_builtin.c\
+				$(ENV_DIR)expand_tokens.c\
+				$(ENV_DIR)expand_variable.c\
+ 	
+PARS_SRC	=	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
 				$(PARS_DIR)redir_op1.c\
@@ -64,15 +72,10 @@ PARS_SRC	= 	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)count_pipe.c\
 				$(PARS_DIR)normal_string.c\
 
-
-BULTIN_COMM_SRC	=	$(BUILTIN_COMM_DIR)commands.c\
-					$(BUILTIN_COMM_DIR)call_pwd.c\
-					$(BUILTIN_COMM_DIR)call_echo.c\
-					$(BUILTIN_COMM_DIR)compare_commands.c
-
-EXTERNAL_COMM_SRC	= 
-
-COMMANDS_SRC	=	$(BULTIN_COMM_SRC) $(EXTERNAL_COMM_SRC)
+COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
+					$(COMMANDS_DIR)call_pwd.c\
+					$(COMMANDS_DIR)call_echo.c\
+					$(COMMANDS_DIR)compare_commands.c 
 
 REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)parent_re.c\
@@ -81,6 +84,7 @@ REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)redir_compare2.c\
 
 MINILIB_SRC	= 	$(PARS_SRC)\
+				$(ENV_SRC)\
 				$(INIT_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\

@@ -17,7 +17,8 @@ FT_IS_DIR	= 	$(SRC_DIR)ft_is/ft_isalnum.c\
 				$(SRC_DIR)ft_is/ft_isalpha.c\
 				$(SRC_DIR)ft_is/ft_isascii.c\
 				$(SRC_DIR)ft_is/ft_isdigit.c\
-				$(SRC_DIR)ft_is/ft_isprint.c
+				$(SRC_DIR)ft_is/ft_isprint.c\
+				$(SRC_DIR)ft_is/ft_isdelim.c
 
 FT_LST_DIR	= 	$(SRC_DIR)ft_lst/ft_lstadd_back.c\
 				$(SRC_DIR)ft_lst/ft_lstadd_front.c\
