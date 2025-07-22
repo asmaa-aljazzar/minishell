@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/02 22:14:23 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/13 23:07:12 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,15 +22,23 @@
 int main(void)
 {
 	t_minishell minishell;
-	int pid;
 
 	init(&minishell);	
 	while (1)
 	{
-		init_shell(&minishell);
-		redirection(&minishell);
-		pid = fork();
-		main_fork (&minishell, pid);
+		init_shell (&minishell);
+		
+		//! Start Debug1 
+		int i = 0;
+		while (minishell.tok[i])
+		{
+			printf ("Token [%d]: %s\n", i + 1, minishell.tok[i]->word);
+			i++;
+		}
+		//! End Debug1
+		
+		// redirection (&minishell); // Todo
+		// main_fork (&minishell);	 // Todo
 		check_to_free (&minishell);
 	}
 	return (0);

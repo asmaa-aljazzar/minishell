@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/09 07:27:53 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/14 06:16:27 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -48,16 +48,21 @@ REDIR_DIR				=	$(MINILIB_DIR)redirections/
 
 INIT_SRC	=	$(INIT_DIR)init.c\
 				$(INIT_DIR)init_shell.c\
+				$(INIT_DIR)init_commands.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_2d.c\
+				$(FREE_DIR)free_tokens.c\
+				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
 
-PARS_SRC	= 	$(PARS_DIR)get_tokens.c\
+PARS_SRC	= 	$(PARS_DIR)quoted.c\
+				$(PARS_DIR)get_tokens.c\
+				$(PARS_DIR)pipe_op.c\
 				$(PARS_DIR)redir_op1.c\
 				$(PARS_DIR)redir_op2.c\
+				$(PARS_DIR)count_pipe.c\
 				$(PARS_DIR)normal_string.c\
-				$(PARS_DIR)quoted.c\
 
 
 BULTIN_COMM_SRC	=	$(BUILTIN_COMM_DIR)commands.c\

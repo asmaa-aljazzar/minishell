@@ -6,37 +6,33 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:52:12 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/03 00:52:32 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/14 06:15:14 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 
-char **get_tokens(const char *input)
+void get_tokens(t_minishell *minishell)
 {
-    size_t len = ft_strlen(input);
-    char **tokens = (char **)malloc(sizeof(char *) * (len + 1));
+    size_t len = ft_strlen(minishell->input);
+    minishell->tok = ft_calloc((len + 1), sizeof(t_token *));
     int i = 0, k = 0;
 
-    while (input[i])
+    while (minishell->input[i])
     {
-        while (input[i] == ' ')
+        while (minishell->input[i] == ' ')
             i++;
-        if (!input[i])
+        if (!minishell->input[i])
             break;
-        if (input[i] == '|')
-        {
-            tokens[k++] = ft_strdup("|");
-            i++;
-        }
-        else if (input[i] == '<' || input[i] == '>')
-            redir_op1(tokens, &k, input, &i);
+        if (minishell->input[i] == '|')
+            pipe_op(minishell, &k, &i);
+        else if (minishell->input[i] == '<' || minishell->input[i] == '>')
+            redir_op1(minishell, &k, &i);
         else
         {
-            quoted(tokens, &k, input, &i);
+            quoted(minishell, &k, &i);
         }
     }
-    tokens[k] = NULL;
-    return tokens;
+    minishell->tokens_count = k;
 }
