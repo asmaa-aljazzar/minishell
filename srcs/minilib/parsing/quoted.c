@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   quoted.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/17 05:38:57 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:17:10 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,10 @@ void quoted(t_minishell *minishell, int *k, int *i)
         while (minishell->input[*i] && minishell->input[*i] != quote)
             (*i)++;
         if (minishell->input[*i] != quote)
-            ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+            {
+                ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+                minishell->exit_code = ERR_SYNTAX_UNMATCHED_QUOTE;
+            }
         size = *i - start;
         word = malloc(size + 1);
         if (!word)

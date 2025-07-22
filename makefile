@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
+#    By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/21 11:54:46 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/22 17:28:34 by baah-moh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -63,7 +63,7 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)unset_builtin.c\
 				$(ENV_DIR)expand_tokens.c\
 				$(ENV_DIR)expand_variable.c\
- 	
+
 PARS_SRC	=	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
@@ -79,7 +79,8 @@ COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
 
 REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)parent_re.c\
-					$(REDIR_DIR)redirection.c\
+					$(REDIR_DIR)input_redirection.c\
+					$(REDIR_DIR)output_redirection.c\
 					$(REDIR_DIR)redir_compare1.c\
 					$(REDIR_DIR)redir_compare2.c\
 
@@ -91,7 +92,8 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 				$(COMMANDS_SRC)\
 
 MAIN_SRC = $(MAIN_DIR)main.c\
-		   $(MAIN_DIR)main_fork.c\
+			$(MAIN_DIR)main_fork.c\
+			$(MAIN_DIR)main_redirection.c\
 		#    $(MAIN_DIR)compare_input.c\
 
 # PARS_DIR	= 	$(PARS)parse_and_execute.c

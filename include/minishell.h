@@ -128,7 +128,9 @@ void init(t_minishell *minishell);
 void init_shell(t_minishell *minishell);
 //
 //* #### loop over tokens array to check for redirections ###
-// void redirection(t_minishell *minishell);
+void redirection(t_minishell *minishell);
+void input_redirection(t_command *cmd); //new -> stdin -> with the file descriptor of the input file.
+void output_redirection(t_command *cmd); //new -> stdout -> with the file descriptor of the output file.
 // //
 // void redir_compare1(t_minishell *minishell);
 // void redir_compare2(t_minishell *minishell);

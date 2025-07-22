@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_shell.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/21 12:01:00 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/21 16:06:53 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -62,14 +62,14 @@ void init_shell(t_minishell *minishell)
         return;
     }
     //? export
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "export", ft_strlen ("export") + 1))
+    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "export", ft_strlen ("export") + 1) == 0)
     {
         export_builtin (minishell);
         check_to_free (minishell);
         return ;
     }
     //? unset
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "unset", ft_strlen ("unset") + 1))
+    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "unset", ft_strlen ("unset") + 1) == 0)
     {
         unset_builtin (minishell);
         check_to_free (minishell);
