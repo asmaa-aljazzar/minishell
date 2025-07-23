@@ -1,0 +1,1607 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void allocate_argv_for_commands(t_minishell *minishell)
+{
+	t_command *cmd = minishell->cmd;
+	int i = 0;
+	int argc = 0;
+
+	while (minishell->tok[i])
+	{
+		if (ft_strncmp(minishell->tok[i]->word, "|", 1) == 0)
+		{
+			// allocate argv for current cmd (+1 for NULL)
+			cmd->argv = malloc(sizeof(char *) * (argc + 1));
+			if (!cmd->argv)
+				ft_exit(minishell, "malloc failed", EXIT_FAILURE);
+			argc = 0;
+			cmd = cmd->next;
+		}
+		else if (minishell->tok[i]->type != INPUT_FILE && minishell->tok[i]->type != INPUT_HEREDOC && minishell->tok[i]->type != OUTPUT_FILE && minishell->tok[i]->type != OUTPUT_APPEND)
+		{
+			argc++;
+		}
+		i++;
+	}
+	// last command
+	if (cmd)
+	{
+		cmd->argv = malloc(sizeof(char *) * (argc + 1));
+		if (!cmd->argv)
+			ft_exit(minishell, "malloc failed", EXIT_FAILURE);
+	}
+}
+
+void debug_commands(t_minishell *minishell)
+{
+	int cmd_num = 0;
+	t_command *cmd = minishell->cmd;
+
+	while (cmd)
+	{
+		printf("─── Command #%d ───\n", cmd_num);
+
+		printf("ARGV: ");
+		if (cmd->argv)
+		{
+			int i = 0;
+			while (cmd->argv[i])
+			{
+				printf("[%s] ", cmd->argv[i]);
+				i++;
+			}
+			printf("\n");
+		}
+		else
+			printf("(null)\n");
+
+		printf("Input Type: %d\n", cmd->input_type);
+		printf("Input File: %s\n", cmd->input_file ? cmd->input_file : "(null)");
+		printf("Output Type: %d\n", cmd->output_type);
+		printf("Output File: %s\n", cmd->output_file ? cmd->output_file : "(null)");
+
+		printf("Next Command: %s\n\n", cmd->next ? "exists" : "NULL");
+
+		cmd = cmd->next;
+		cmd_num++;
+	}
+}
+
+//? Steps:
+//* 1. Initialize some of elements in the structure.
+//* 2. Each new prompt will initialize the rest of elements in the structure.
+//* 3. Handle redirections.
+//* 4. Forking.
+//* 5. Free if allocated or exit.
+
+int main(int ac, char **av, char **environ)
+{
+	
+	(void)ac;
+    (void)av;
+    t_minishell minishell;
+
+    init(&minishell);
+    minishell.env = init_env(&minishell, environ);
+    while (1)
+    {
+        init_shell(&minishell);
+        if (minishell.input && strcmp(minishell.input, "exit") == 0)
+        {
+            check_to_free(&minishell);
+            free_env(minishell.env);
+            rl_clear_history();
+            printf("exit\n");
+            exit(0);
+        }
+		init_commands(&minishell);
+		expand_tokens(&minishell);
+		merge_words(&minishell);
+		allocate_argv_for_commands(&minishell);
+		tokens_to_commands(&minishell); // Todo
+		debug_commands(&minishell);		//! Debug2
+		/*//! Start Debug1
+		// int i = 0;
+		// if (minishell.tok)
+		// {
+		// 	while (minishell.tok[i])
+		// 	{
+		// 		if (minishell.tok[i]->word)
+		// 		{
+		// 			printf("Token [%d]: %s\n", i + 1, minishell.tok[i]->word);
+		// 		}
+		// 		else
+		// 		{
+		// 			printf("Token [%d]: (null word)\n", i + 1);
+		// 		}
+		// 		i++;
+		// 	}
+		// }
+		//! End Debug1
+		*/
+		// redirection (&minishell); // Todo
+		// main_fork (&minishell);	 // Todo
+		check_to_free(&minishell);
+	}
+	rl_clear_history();
+	return (0);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main_fork.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// Fork a child process in the main.
+// Redirection in child.
+// Compare the command in commands array to execute them
+// Redirection in child.
+
+void main_fork(t_minishell *minishell)
+{
+    (void)minishell;
+    int pid;
+    pid = fork ();
+    if (pid == 0)
+    {
+        // child_re(minishell);
+        // compare_commands (minishell);
+    }
+    else
+    {
+        // parent_re(minishell);
+        int status;
+        waitpid(pid, &status, 0);
+    }
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   call_echo.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void call_echo(t_minishell *minishell, int op)
+// {
+    // int fd;
+    // int i;
+	
+    // fd = minishell->fd_out;
+    // if (fd == -1)
+	// fd = 1;
+    // i = 1;
+    // if (op)
+    // 	i++;
+    // while (minishell->cmd[i])
+    // {
+	//     if (write(fd, minishell->cmd[i], ft_strlen(minishell->cmd[i])) == -1)
+	//     {
+	//     	printf("error\n");
+	// 	perror("ECHO error\n");
+	// 	exit(1);
+	//     }
+	//     i++;
+	//     if (!minishell->cmd[i])
+	//     	break;
+	//     write(fd, " ", 1);
+    // }
+    // if (!op)
+    //     write(fd, "\n", 1);
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   call_pwd.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void call_pwd(t_minishell *minishell)
+// {
+	// printf("call pwd\n");
+	// if (getcwd(minishell->buff, sizeof(minishell->buff)) != NULL) 
+	// {
+	// 	if (minishell->fd_out == -1)
+	// 		minishell->fd_out = STDOUT_FILENO;
+	// 	write(minishell->fd_out, minishell->buff, ft_strlen(minishell->buff));
+	// 	write(minishell->fd_out, "\n", 1);
+	// }
+	// else
+	// {
+    //             perror("getcwd() error");
+    //     }
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   commands.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+
+
+
+//?env
+// void call_env(t_minishell *minishell)
+// {
+    // printf("call env\n");
+    // int fd;
+    
+    // fd = minishell->fd_out;
+    // if (fd == -1)
+    //     fd = STDOUT_FILENO;
+
+    // int i;
+    // i = 0;
+    // while (environ[i] != NULL) {
+    //     if (write(fd, environ[i], ft_strlen(environ[i])) == -1)
+    //     {
+    //         perror("write error");
+    //         exit(1);
+    //     }
+    //     write(fd, "\n", 1);
+    //     i++;
+    // }
+// }
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   compare_commands.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void compare_commands (t_minishell *minishell)
+// {
+        // if (!strcmp(minishell->cmd[0], "env"))
+        //     call_env(minishell);
+        // if (!strcmp(minishell->cmd[0], "echo"))
+        // {
+        //     if (!strcmp(minishell->cmd[1], "-n"))
+        //         call_echo(minishell, 1);
+        //     else
+        //         call_echo(minishell, 0);
+        // }
+        // else if (!strcmp(minishell->cmd[0], "pwd"))
+        //     call_pwd(minishell);
+        // else
+        // {
+        //     execvp(minishell->cmd[0], minishell->cmd);
+        //     perror("execvp");
+        //     exit(1);
+        // }
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   tokens_to_commands.c                               :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void tokens_to_commands(t_minishell *minishell)
+{
+    t_command *cmd = minishell->cmd;
+    int i = 0;
+    int argc = 0;
+
+    while (minishell->tok[i])
+    {
+        t_token *token = minishell->tok[i];
+
+        if (ft_strncmp(token->word, "|", 1) == 0)
+        {
+            cmd->argv[argc] = NULL;
+            cmd = cmd->next;
+            argc = 0;
+        }
+        else if (token->type == INPUT_FILE || token->type == INPUT_HEREDOC)
+        {
+            cmd->input_type = token->type;
+            if (minishell->tok[i + 1])
+                cmd->input_file = minishell->tok[++i]->word;
+        }
+        else if (token->type == OUTPUT_FILE || token->type == OUTPUT_APPEND)
+        {
+            cmd->output_type = token->type;
+            if (minishell->tok[i + 1])
+                cmd->output_file = minishell->tok[++i]->word;
+        }
+        else
+        {
+            cmd->argv[argc++] = token->word;
+        }
+        i++;
+    }
+    if (cmd && cmd->argv)
+        cmd->argv[argc] = NULL;
+}
+
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   env_builtin.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void env_builtin(t_minishell *minishell)
+{
+    t_env *curr = minishell->env;
+    while (curr)
+    {
+        if (curr->value)
+            printf("%s=%s\n", curr->name, curr->value);
+        curr = curr->next;
+    }
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_tokens.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void expand_tokens(t_minishell *minishell)
+{
+    int i = 0;
+    char *expanded;
+    t_token **tokens = minishell->tok;
+    if (!tokens)
+        return ;
+    while (tokens[i])
+    {
+        if (tokens[i]->qtype != QUOTE_SINGLE)
+        {
+            if (tokens[i]->word)
+            {
+                expanded = expand_variable(minishell, tokens[i]->word);
+                if (!expanded)
+                    ft_exit(minishell, "Memory allocation failure during expansion", 1);
+                free(tokens[i]->word);
+                tokens[i]->word = expanded;
+            }
+        }
+        i++;
+    }
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   expand_variable.c                                  :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h" // ensure libft.h is included inside this
+
+static char *get_env_value(t_env *env, const char *var)
+{
+    while (env)
+    {
+        if (ft_strncmp(env->name, var, ft_strlen(env->name) + 1) == 0)
+            return env->value;
+        env = env->next;
+    }
+    // Not found → expand to empty string
+    return "";
+}
+
+char *expand_variable(t_minishell *minishell, char *token)
+{
+    char *result = ft_strdup("");
+    size_t i = 0;
+    size_t start;
+    char *temp;
+    char *var_name;
+    char *value;
+    char *literal;
+    int should_free_value = 0;
+
+    if (!result || !token)
+        return NULL;
+
+    while (token[i])
+    {
+        if (token[i] == '$')
+        {
+            i++;
+            if (token[i] == '?')
+            {
+                value = ft_itoa(minishell->exit_code);
+                should_free_value = 1; 
+                i++;
+            }
+            else
+            {
+                start = i;
+                while (token[i] && (ft_isalnum(token[i]) || token[i] == '_'))
+                    i++;
+                var_name = ft_substr(token, start, i - start);
+                value = get_env_value(minishell->env, var_name);
+                should_free_value = 0;
+                free(var_name);
+            }
+            temp = result;
+            result = ft_strjoin(result, value);
+            free(temp);
+            // Free the value if it was allocated by ft_itoa
+            if (should_free_value)
+                free(value);
+        }
+        else
+        {
+            start = i;
+            while (token[i] && token[i] != '$')
+                i++;
+            literal = ft_substr(token, start, i - start);
+            temp = result;
+            result = ft_strjoin(result, literal);
+            free(temp);
+            free(literal);
+        }
+    }
+    return result;
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   export_builtin.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void export_builtin(t_minishell *minishell)
+{
+    t_token **tokens;
+    char *equal_position;
+    int i;
+
+    tokens = minishell->tok;
+    if (!tokens || !tokens[0] || !tokens[0]->word)
+        return;
+    if (ft_strncmp(tokens[0]->word, "export", ft_strlen("export") + 1) == 0)
+    {
+        if (!tokens[1])
+        {
+            // print_sorted_env(&minishell); // Format: declare -x KEY="VALUE"
+            return;
+        }
+        i = 1;
+        while (tokens[i])
+        {
+            if (tokens[i]->word)
+            {
+                equal_position = ft_strchr(tokens[i]->word, '=');
+                if (equal_position)
+                {
+                    // update_or_add_env(&minishell, tokens[i]->word, equal_position); // Todo
+                }
+                else
+                {
+                    // export_without_value(&minishell, tokens[i]->word); // Todo
+                }
+                i++;
+            }
+        }
+    }
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   print_sorted_env.c                                 :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void print_sorted_env (t_minishell *minishell)
+{
+    (void)minishell;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   unset_builtin.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void    unset_builtin (t_minishell *minishell)
+{
+    (void)minishell;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   check_to_free.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void check_to_free(t_minishell *minishell)
+{
+    // Remove this check - handle exit elsewhere
+    // if (minishell->input && strcmp(minishell->input, "exit") == 0)
+    //     ft_exit (minishell, "", 0);
+    
+    if (minishell->cmd)
+    {
+        free_commands(minishell);
+        minishell->cmd = NULL;
+    }
+    if (minishell->tok)
+    {
+        free_tokens(minishell->tok);
+        minishell->tok = NULL;
+    }
+    if (minishell->input)
+    {
+        free(minishell->input);
+        minishell->input = NULL;
+    }
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_2d.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void free_2d(char **arr)
+// {
+//     int i;
+
+//     if (!arr)
+//         return;
+//     i = 0;
+//     while (arr[i])
+//     {
+//         free(arr[i]);
+//         arr[i] = NULL;
+//         i++;
+//     }
+//     free(arr);
+// }
+void free_2d(char **arr)
+{
+    int i;
+
+    if (!arr)
+        return;
+    i = 0;
+    while (arr[i])
+    {
+        free(arr[i]);  // <-- only free if you own these strings separately!
+        arr[i] = NULL;
+        i++;
+    }
+    free(arr);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_commands.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void free_commands(t_minishell *minishell)
+{
+    t_command *current = minishell->cmd;
+    t_command *next;
+
+    while (current)
+    {
+        next = current->next;
+        if (current->argv)
+            free(current->argv);  // just free argv array, not argv[i] strings
+        // Do NOT free input_file or output_file — they point to token->word strings!
+        free(current);
+        current = next;
+    }
+    minishell->cmd = NULL;
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_env.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void free_env(t_env *env)
+{
+    t_env *current = env;
+    t_env *next;
+
+    while (current)
+    {
+        next = current->next;
+        free(current->name);
+        free(current->value);
+        free(current);
+        current = next;
+    }
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   free_tokens.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void free_tokens(t_token **tokens)
+{
+    int i = 0;
+
+    if (!tokens)
+        return;
+    while (tokens[i])
+    {
+        free(tokens[i]->word);  // Free the string inside the token
+        free(tokens[i]);        // Free the token structure itself
+        i++;
+    }
+    free(tokens);               // Free the array of pointers
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_exit.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void ft_exit(t_minishell *minishell, char *str, int status)
+{
+    // Print error message
+    if (str && *str)
+        ft_putendl_fd(str, STDERR_FILENO);
+    
+    // Free resources
+    if (minishell->cmd)
+    {
+        free_commands(minishell);
+        minishell->cmd = NULL;
+    }
+    if (minishell->tok)
+    {
+        free_tokens(minishell->tok);
+        minishell->tok = NULL;
+    }
+    if (minishell->input)
+    {
+        free(minishell->input);
+        minishell->input = NULL;
+    }
+    if (minishell->env)
+    {
+        free_env(minishell->env);
+        minishell->env = NULL;
+    }
+    
+    rl_clear_history();
+    minishell->exit_code = status;
+    exit(status);
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void init(t_minishell *minishell)
+{
+    // Initialize all pointers to NULL
+    minishell->tok = NULL;
+    minishell->input = NULL;
+    minishell->cmd = NULL;
+    
+    // Initialize counters to 0
+    minishell->tokens_count = 0;
+    minishell->pipe_count = 0;
+    
+    // Clear the buffer
+    ft_memset(minishell->buff, 0, sizeof(minishell->buff));
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_commands.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void init_commands(t_minishell *minishell)
+{
+    t_command *head = NULL;
+    t_command *curr = NULL;
+    int count = minishell->pipe_count;
+    int i = 0;
+
+    while (i <= count)
+    {
+        t_command *new = malloc(sizeof(t_command));
+        if (!new)
+            ft_exit(minishell, "malloc failed", EXIT_FAILURE);
+
+        new->argv = NULL;
+        new->input_type = INPUT_NONE;
+        new->output_type = OUTPUT_NONE;
+        new->input_file = NULL;
+        new->output_file = NULL;
+        new->next = NULL;
+
+        if (!head)
+        {
+            head = new;
+            curr = new;
+        }
+        else
+        {
+            curr->next = new;
+            curr = new;
+        }
+        i++;
+    }
+    minishell->cmd = head;
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_env.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// System environment (environ)  -->  Your t_env linked list
+//           (readonly)          -->  (owned by your shell)
+
+t_env *init_env(t_minishell *minishell, char **environ)
+{
+    t_env *head;
+    t_env *tail;
+    t_env *new_node;
+    char *equalOpPosition;
+    int i;
+
+    i = 0;
+    head = NULL;
+    while (environ[i])
+    {
+        equalOpPosition = ft_strchr(environ[i], '=');
+        if (!equalOpPosition)
+            continue;
+        new_node = (t_env *)malloc(sizeof(t_env));
+        if (!new_node)
+            ft_exit(minishell, "Memory allocation failed", 1);
+        new_node->name = ft_substr(environ[i], 0, equalOpPosition - environ[i]);
+        new_node->value = ft_strdup(equalOpPosition + 1);
+        new_node->next = NULL;
+        if (!head)
+            head = new_node;
+        else
+            tail->next = new_node;
+        tail = new_node;
+        i++;
+    }
+    return head;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   init_shell.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+int validate_syntax(t_minishell *ms)
+{
+    int i = 0;
+    
+    while (ms->tok[i])
+    {
+        // Check for empty pipe
+        if (ms->tok[i]->type == OUTPUT_PIPE)
+        {
+            if (i == 0 || !ms->tok[i + 1] || ms->tok[i + 1]->type == OUTPUT_PIPE)
+            {
+                ft_putendl_fd("syntax error near unexpected token `|'", 2);
+                return 0;
+            }
+        }
+        // Check for redirections
+        else if (ms->tok[i]->type == INPUT_FILE || 
+                 ms->tok[i]->type == INPUT_HEREDOC || 
+                 ms->tok[i]->type == OUTPUT_FILE || 
+                 ms->tok[i]->type == OUTPUT_APPEND)
+        {
+            // Must have a word token after redirection
+            if (!ms->tok[i + 1] || ms->tok[i + 1]->type != INUPT_WORD)
+            {
+                ft_putendl_fd("syntax error near unexpected token `newline'", 2);
+                return 0;
+            }
+            i++; // Skip the filename token we just validated
+        }
+        i++;
+    }
+    return 1;
+}
+// 1. Display the prompt.
+// 2. Read the input line into a buffer.
+// 3. Add this line to the history.
+// 4. Parsing the input.
+// 5. Split it into tokens.
+//? 6. Move it into cmd array.
+// 7. After Each initialize check for Null.
+// 8. exit if error occured
+void init_shell(t_minishell *minishell)
+{
+    // Get user input with readline
+    minishell->input = readline(PROMPT);
+    if (!minishell->input)
+    {
+        // Handle EOF (Ctrl+D) gracefullغ
+            printf("exit\n");
+            free_env(minishell->env);
+            rl_clear_history();
+            exit(0);
+
+    }
+
+    // Add non-empty commands to history
+    if (*minishell->input)
+        add_history(minishell->input);
+
+    // Skip processing for empty commands
+    if (!*minishell->input)
+    {
+        free(minishell->input);
+        minishell->input = NULL;
+        return; // Return to main loop for a new prompt
+    }
+
+    // Tokenize the input
+    get_tokens(minishell);
+    if (!minishell->tok)
+        ft_exit(minishell, "ERROR\nNULL tok", EXIT_FAILURE);
+    // In init_shell, after get_tokens:
+    if (!validate_syntax(minishell))
+    {
+        check_to_free(minishell);
+        return;
+    }
+    //! Start env_function
+    // *export should only update the environment
+    // if it runs in the main shellprocess.
+    //* If it's part of a pipeline or forked command
+    //(like inside ls | export VAR=val or export VAR && echo), it should not update the environment permanently — only for that child.*/
+    //? env command
+
+    if (minishell->tok[0] && minishell->tok[1] == NULL && ft_strncmp(minishell->tok[0]->word, "env", ft_strlen("env") + 1) == 0)
+    {
+        env_builtin(minishell);
+        check_to_free(minishell);
+        return;
+    }
+    //? export
+    else if (minishell->tok[0] && ft_strncmp(minishell->tok[0]->word, "export", ft_strlen("export") + 1) == 0)
+    {
+        export_builtin(minishell);
+        check_to_free(minishell);
+        return;
+    }
+    //? unset
+    else if (minishell->tok[0] && ft_strncmp(minishell->tok[0]->word, "unset", ft_strlen("unset") + 1) == 0)
+    {
+        unset_builtin(minishell);
+        check_to_free(minishell);
+        return;
+    }
+    //! End env_function
+
+    // Count pipes to determine number of commands
+    count_pipe(minishell);
+
+    // Allocate command array
+    // minishell->cmd = malloc(sizeof(t_command) * (minishell->pipe_count + 1));
+    // if (!minishell->cmd)
+    //     ft_exit(minishell, "ERROR\nNULL CMD", EXIT_FAILURE);
+
+    minishell->exit_code = 0;
+    // Initialize each command structure
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void count_pipe(t_minishell *minishell)
+{
+    int i = 0;
+    int pipes = 0;
+    char *input = minishell->input;
+    while (input[i])
+    {
+        if (input[i] == '|')
+            pipes += 1;
+        i++;
+    }
+    minishell->pipe_count = pipes;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   get_tokens.c                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void get_tokens(t_minishell *ms)
+{
+    size_t len = ft_strlen(ms->input);
+    int i = 0;
+    int k = 0;
+
+    ms->tok = ft_calloc(len + 1, sizeof(t_token *));
+    if (!ms->tok)
+        ft_exit(ms, "malloc failed", 1);
+
+    while (ms->input[i])
+    {
+        int glued = 1;  // Default to glued
+
+        /* Skip leading blanks */
+        if (ms->input[i] == ' ')
+        {
+            glued = 0;  // Next token is NOT glued
+            while (ms->input[i] == ' ')
+                i++;
+        }
+        
+        if (!ms->input[i])
+            break;
+
+        // First token is never glued
+        if (k == 0)
+            glued = 0;
+
+        if (ms->input[i] == '|')
+            pipe_op(ms, &k, &i);
+        else if (ms->input[i] == '<' || ms->input[i] == '>')
+            redir_op1(ms, &k, &i);
+        else
+            quoted(ms, &k, &i, glued);
+    }
+    ms->tok[k] = NULL;
+    ms->tokens_count = k;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   merge_words.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+/*
+** This function merges consecutive WORD tokens that should be "glued" together
+** because they appeared in the input string with no spaces between them.
+** For example: "HELLO"'$USER' becomes one token "HELLOasmaa".
+**
+** It works by using two pointers:
+** - 'i' is the "read" pointer, which iterates through the original token array.
+** - 'k' is the "write" pointer, which points to the position in the new,
+**   condensed token array.
+*/
+void merge_words(t_minishell *ms)
+{
+    t_token **orig;
+    int       i;
+    int       k;
+
+    if (!ms || !ms->tok)
+        return;
+
+    orig = ms->tok;
+    i = 0; // read index
+    k = 0; // write index
+
+    while (orig[i])
+    {
+        // Always copy the current token to the write position.
+        // If they are the same token (i == k), this does nothing.
+        // If tokens have been merged, this moves a later token to an earlier slot.
+        ms->tok[k] = orig[i];
+
+        // Check if the NEXT token can be merged into the CURRENT one.
+        while (orig[i + 1]
+               && ms->tok[k]->type == INUPT_WORD
+               && orig[i + 1]->type == INUPT_WORD
+               && orig[i + 1]->glued == 1)
+        {
+            char *joined_word;
+
+            // Merge the two words together.
+            joined_word = ft_strjoin(ms->tok[k]->word, orig[i + 1]->word);
+            if (!joined_word)
+                ft_exit(ms, "malloc failed", 1);
+
+            // Free the old word in our destination token.
+            free(ms->tok[k]->word);
+            // Assign the new, joined word.
+            ms->tok[k]->word = joined_word;
+
+            // *** THE MAIN FIX IS HERE ***
+            // We MUST free the token that we just absorbed, otherwise it is a memory leak.
+            free(orig[i + 1]->word);
+            free(orig[i + 1]);
+
+            // Advance the read pointer ('i') to skip over the token we just merged.
+            i++;
+        }
+        // Advance both pointers to move to the next position.
+        k++;
+        i++;
+    }
+
+    // Null-terminate the new, shorter token array.
+    ms->tok[k] = NULL;
+    // Update the total token count.
+    ms->tokens_count = k;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   normal_string.c                                    :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void normal_string(t_minishell *minishell, int *k, int *i, int glued)
+{
+    char *word;
+    int size;
+    int start = *i;
+    
+    // Move glued assignment AFTER token allocation
+    
+    while (minishell->input[*i] && minishell->input[*i] != ' ' 
+        && minishell->input[*i] != '\'' && minishell->input[*i] != '"' 
+        && minishell->input[*i] != '>' && minishell->input[*i] != '<' 
+        && minishell->input[*i] != '|')
+        (*i)++;
+
+    size = *i - start;
+    
+    // Skip empty tokens
+    if (size == 0)
+        return;
+        
+    // Allocate memory for the word
+    word = calloc(1, size + 1);
+    if (!word)
+        ft_exit(minishell, "Memory allocation failed", 1);
+        
+    ft_strlcpy(word, &minishell->input[start], size + 1);
+    
+    // Allocate and initialize the token structure FIRST
+    minishell->tok[*k] = calloc(1, sizeof(t_token));
+    if (!minishell->tok[*k])
+    {
+        free(word);  // Don't forget to free word on failure
+        ft_exit(minishell, "Memory allocation failed", 1);
+    }
+        
+    // NOW set all token fields (including glued)
+    minishell->tok[*k]->word = word;
+    minishell->tok[*k]->type = INUPT_WORD;
+    minishell->tok[*k]->qtype = QUOTE_NONE;
+    minishell->tok[*k]->glued = glued;  // Moved here
+    
+    (*k)++;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   pipe_op.c                                          :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void pipe_op(t_minishell *minishell, int *k, int *i)
+{
+    minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+    if (!minishell->tok[*k])
+        ft_exit(minishell, "Memory allocation failed", 1);
+    minishell->tok[*k]->word = ft_strdup("|");
+    minishell->tok[*k]->type = OUTPUT_PIPE;
+    minishell->tok[*k]->qtype = QUOTE_NONE;
+    (*k)++;
+    (*i)++;
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   quoted.c                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+void quoted(t_minishell *minishell, int *k, int *i, int glued)
+{
+    int size;
+    int start;
+    char *word;
+    char quote;
+
+    if (minishell->input[*i] == '\'' || minishell->input[*i] == '"')
+    {
+        quote = minishell->input[(*i)++];
+        start = *i;
+        while (minishell->input[*i] && minishell->input[*i] != quote)
+            (*i)++;
+        if (minishell->input[*i] != quote)
+            ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+        size = *i - start;
+        word = malloc(size + 1);
+        if (!word)
+            ft_exit(minishell, "Memory allocation failed", 1);
+
+        ft_strlcpy(word, &minishell->input[start], size + 1);
+
+        // Allocate the token structure
+        minishell->tok[*k] = calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+        {
+            free(word);
+            ft_exit(minishell, "Memory allocation failed", 1);
+        }
+
+        minishell->tok[*k]->word = word;
+        minishell->tok[*k]->type = INUPT_WORD;
+        minishell->tok[*k]->glued = glued;  // Use the passed glued value
+        if (quote == '"')
+            minishell->tok[*k]->qtype = QUOTE_DOUBLE;
+        else
+            minishell->tok[*k]->qtype = QUOTE_SINGLE;
+        (*k)++;
+        (*i)++;
+    }
+    else
+    {
+        normal_string(minishell, k, i, glued);
+    }
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redir_op1.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void redir_op1(t_minishell *minishell, int *k, int *i)
+{
+    if (minishell->input[*i] == '<')
+    {
+        if (minishell->input[*i + 1] == '<')
+        {
+            minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+            if (!minishell->tok[*k])
+                ft_exit(minishell, "Memory allocation failed", 1);
+            minishell->tok[*k]->word = ft_strdup("<<");
+            minishell->tok[*k]->type = INPUT_HEREDOC;
+            minishell->tok[*k]->qtype = QUOTE_NONE;
+            (*k)++;
+            (*i) += 2;
+        }
+        else
+        {
+            minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+            if (!minishell->tok[*k])
+                ft_exit(minishell, "Memory allocation failed", 1);
+            minishell->tok[*k]->word = ft_strdup("<");
+            minishell->tok[*k]->type = INPUT_FILE;
+            minishell->tok[*k]->qtype = QUOTE_NONE;
+            (*k)++;
+            (*i)++;
+        }
+    }
+    else if (minishell->input[*i] == '>')
+        redir_op2(minishell, k, i);
+}
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redir_op2.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+void redir_op2(t_minishell *minishell, int *k, int *i)
+{
+    if (minishell->input[*i + 1] == '>')
+    {
+        minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+            ft_exit(minishell, "Memory allocation failed", 1);
+        minishell->tok[*k]->word = ft_strdup(">>");
+        minishell->tok[*k]->type = OUTPUT_APPEND;
+        minishell->tok[*k]->qtype = QUOTE_NONE;
+        (*k)++;
+        (*i) += 2;
+    }
+    else
+    {
+        minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+        if (!minishell->tok[*k])
+            ft_exit(minishell, "Memory allocation failed", 1);
+        minishell->tok[*k]->word = ft_strdup(">");
+        minishell->tok[*k]->type = OUTPUT_FILE;
+        minishell->tok[*k]->qtype = QUOTE_NONE;
+        (*k)++;
+        (*i)++;
+    }
+}/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   child_re.c                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+
+#include "minishell.h"
+
+// void child_re(t_minishell *minishell)
+// {
+	// if (minishell->fd_in > 0)
+	// {
+	// 	if (dup2(minishell->fd_in, -1) == -1)
+	// 	{
+	// 		perror("ERROR\n");
+	// 	}
+	// 	close(minishell->fd_in);
+	// }
+	// if (minishell->fd_out > 0)
+	// {
+	// 	dup2(minishell->fd_out, 1);
+	// 	close(minishell->fd_out);
+	// }
+	// if (minishell->fd_app > 0)
+	// {
+	// 	dup2(minishell->fd_app, 1);
+	// 	close(minishell->fd_app);
+	// }
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parent_re.c                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void parent_re(t_minishell *minishell)
+// {
+	// if (minishell->fd_app > 0)
+	// {
+	// 	close(minishell->fd_app);
+	// 	minishell->fd_app = -1;
+	// }
+	// if (minishell->fd_in > 0)
+	// {
+	// 	close(minishell->fd_in);
+	// 	minishell->fd_in = -1;
+	// }
+	// if (minishell->fd_out > 0)
+	// {
+	// 	close(minishell->fd_out);
+	// 	minishell->fd_out = -1;
+	// }
+// }
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redir_compare1.c                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// void redir_compare1(t_minishell *minishell)
+// {
+	// if (!strcmp(minishell->tok[minishell->i], "<"))
+	// {
+	// 	minishell->fd_in = open(minishell->tok[minishell->i + 1], O_RDONLY);
+	// 	if (minishell->fd_in == -1)
+	// 		perror("ERROR\n");
+	// 	minishell->i += 2;
+	// }
+	// else if (!strcmp(minishell->tok[minishell->i], ">"))
+	// {
+	// 	minishell->fd_out = open(minishell->tok[minishell->i + 1], O_RDWR | O_CREAT | O_TRUNC, 0777);
+	// 	if (minishell->fd_out == -1)
+	// 		perror("ERROR\n");
+	// 	minishell->i += 2;
+	// }
+	// else
+	// 	redir_compare2(minishell);
+// }#include "minishell.h"
+
+// void redir_compare2(t_minishell *minishell)
+// {
+// 	if (!strcmp(minishell->tok[minishell->i], ">>"))
+// 	{
+// 		minishell->fd_app = open(minishell->tok[minishell->i + 1], O_RDWR | O_CREAT | O_APPEND, 0777);
+// 		if (minishell->fd_app == -1)
+// 			perror("ERROR\n");
+// 		minishell->i += 2;
+// 	}
+// 	else
+// 	{
+// 		minishell->cmd[minishell->j] = strdup(minishell->tok[minishell->i++]);
+// 		if (!minishell->cmd[minishell->j])
+// 			exit(1);
+// 		minishell->j++;
+	// }
+// }/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   redirection.c                                      :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                              
+
+#include "minishell.h"
+
+// Reinitialize i, j each new prompt.
+// Loop over tokens array to search redirections.
+// Set a null termiate in commands array
+
+// void redirection(t_minishell *shell)
+// {
+
+	// while (shell->tok[shell->i])
+	// {
+	// 	redir_compare1(shell);
+	// }
+	// shell->cmd[shell->j] = NULL;
+// }
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/03 00:35:30 by aaljazza        ####  ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef ANTSHELL_H
+#define ANTSHELL_H
+
+// #region	[ Includes ]
+#include "../libft/includes/libft.h"
+#include <sys/wait.h>
+#include <readline/readline.h>
+#include <readline/history.h>
+#include <fcntl.h>
+
+// #region	[ Macros ]
+#define PROMPT "\033[33mminishell\033[32m$ \033[0m"
+// extern char **environ;
+
+// #region	[ enums ]
+/*
+?“Can a command have both input redirection and input pipe?”
+✅ No.
+* A command cannot simultaneously have both.
+*/
+
+typedef enum e_error_code // Todo: use this later
+{
+    ERR_NONE = 0,                // No error
+    ERR_SYNTAX_UNMATCHED_QUOTE,  // Unmatched quote in input
+    ERR_SYNTAX_UNEXPECTED_TOKEN, // Unexpected token like ; or |
+    ERR_SYNTAX_NEAR_EOL,         // Syntax error near end of line/input
+    ERR_MEMORY_ALLOCATION,       // malloc/calloc failed
+    ERR_COMMAND_NOT_FOUND,       // command not found
+    ERR_PERMISSION_DENIED,       // permission error
+    ERR_EXPORT_INVALID,          // invalid export argument
+    ERR_UNSET_INVALID,           // invalid unset argument
+    ERR_ENV_NOT_FOUND,           // environment variable not found
+    ERR_EXECVE_FAILED,           // execve system call failed
+    ERR_PIPE_FAILED,             // pipe system call failed
+    ERR_FORK_FAILED,             // fork system call failed
+    ERR_DUP2_FAILED,             // dup2 system call failed
+    ERR_SIGNAL_HANDLING,         // signal handling error
+} t_error_code;
+
+typedef struct s_error // Todo: add this to code later
+{
+    t_error_code code;
+    char *message;
+} t_error;
+
+typedef enum e_quote
+{ // use to detect what kind of word in the tokens array
+    QUOTE_NONE,
+    QUOTE_SINGLE,
+    QUOTE_DOUBLE,
+    QUOTE_MIXED
+} t_quote;
+
+typedef enum e_type
+{
+    INPUT_NONE,
+    INPUT_FILE,
+    INPUT_PIPE,
+    INUPT_WORD,
+    INPUT_END, //? may delete
+    INPUT_HEREDOC,
+    OUTPUT_NONE,
+    OUTPUT_FILE,
+    OUTPUT_APPEND,
+    OUTPUT_PIPE
+} t_type;
+
+// #region	[ Structures ]
+//
+typedef struct s_env
+{
+    char *name;
+    char *value;
+    struct s_env *next;
+} t_env;
+typedef struct s_token
+{                  //? this is the array of tokens: we can create a custome arrays
+    char *word;    /* already without the surrounding quotes   */
+    t_type type;   /* WORD | PIPE | REDIR_*                    */
+    t_quote qtype; /* how it was quoted       */
+    int glued;     /* 1 → directly attached to previous char 0 → at least one white-space before it   */
+} t_token;
+
+typedef struct s_command
+{
+    char **argv;       // ["cat"]
+    t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
+    char *input_file;
+    t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
+    char *output_file;
+    struct s_command *next; // Next command in pipe sequence
+} t_command;
+
+typedef struct s_minishell
+{
+    char *input;
+    t_command *cmd;
+    int tokens_count;
+    int pipe_count;
+    t_token **tok;
+    char buff[1024];
+    t_env *env;
+    int exit_code;
+} t_minishell;
+
+// #region	[ Functions ]
+//  Todo: organize by files
+
+//* #### Initialize some of elements in the antshell structure. ####
+//- 	integer values
+//- 	tokens array
+void init(t_minishell *minishell);
+//
+//* #### Display prompt, take an input, and initialize other structure elements.
+//- It is also count the number of tokens
+//- exit if error occured
+void init_shell(t_minishell *minishell);
+//
+//* #### loop over tokens array to check for redirections ###
+// void redirection(t_minishell *minishell);
+// //
+// void redir_compare1(t_minishell *minishell);
+// void redir_compare2(t_minishell *minishell);
+// void child_re(t_minishell *minishell);
+// void parent_re(t_minishell *minishell);
+// void call_echo(t_minishell *minishell, int op);
+// void call_pwd(t_minishell *minishell);
+// void call_env(t_minishell *minishell);
+//
+// - write an error message
+// - free minishell
+// - exit with specific status
+void ft_exit(t_minishell *minishell, char *str, int status);
+void free_2d(char **arr);
+void free_env(t_env *env);
+void free_tokens(t_token **arr);
+void free_commands(t_minishell *minishell);
+void pipe_op(t_minishell *minishell, int *k, int *i);
+void redir_op1(t_minishell *minishell, int *k, int *i);
+void redir_op2(t_minishell *minishell, int *k, int *i);
+void quoted(t_minishell *minishell, int *k, int *i, int glued);
+void normal_string(t_minishell *minishell, int *k, int *i, int glued);
+//* #### Do the first fork in the program
+void main_fork(t_minishell *minishell);
+//
+// void compare_commands (t_minishell *minishell);
+//
+//* #### 1. free all allocated memore
+// - Commands array
+// - Tokens array
+// - Input String
+//* #### 2. Exit from the program if the input is [ exit ]
+void check_to_free(t_minishell *minishell);
+void init_commands(t_minishell *minishell);
+void count_pipe(t_minishell *minishell);
+void get_tokens(t_minishell *minishell);
+// void init_tokens (t_minishell *minishell);
+t_env *init_env(t_minishell *minishell, char **env);
+void expand_tokens(t_minishell *minishell);
+char *expand_variable(t_minishell *minishell, char *token);
+void env_builtin(t_minishell *minishell);
+void export_builtin(t_minishell *minisell);
+void unset_builtin(t_minishell *minisell);
+void print_sorted_env(t_minishell *minishell);
+void tokens_to_commands(t_minishell *minishell);
+void merge_words(t_minishell *ms);
+int validate_commands(t_command *cmds);
+#endif
