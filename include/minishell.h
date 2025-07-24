@@ -141,6 +141,11 @@ void count_pipe(t_minishell *minishell);
 //
 void print_sorted_env(t_minishell *minishell);
 //
+// Allocate argv for commands
+void argv_for_commands(t_minishell *minishell);
+//
+void allocate_argv(t_minishell *minishell, int *argc, t_command *cmd, int *i);
+//
 void tokens_to_commands(t_minishell *minishell);
 //
 void exit_command(t_minishell *minishell);

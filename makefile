@@ -5,8 +5,8 @@
 #                                                     +:+ +:+         +:+      #
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/24 15:34:06 by aaljazza         ###   ########.fr        #
+#    Created: 2025/07/24 18:26:06 by aaljazza          #+#    #+#              #
+#    Updated: 2025/07/24 18:28:01 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -101,7 +101,9 @@ DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
 		   $(MAIN_DIR)main_loop.c\
-		#    $(MAIN_DIR)compare_input.c\
+		   $(MAIN_DIR)allocate_argv.c\
+		   $(MAIN_DIR)argv_for_commands.c\
+#          $(MAIN_DIR)compare_input.c\
 
 # PARS_DIR	= 	$(PARS)parse_and_execute.c
 
