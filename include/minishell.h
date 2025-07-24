@@ -20,10 +20,6 @@
 #include <readline/history.h>
 #include <fcntl.h>
 
-//! Could delete 
-//.h + debug folder
-#include "debug.h"
-//!
 
 //* ----------- [ Macros ] -----------
 #define PROMPT "\033[33mminishell\033[32m$ \033[0m"
@@ -126,13 +122,40 @@ typedef struct s_minishell
 
 //* ----------- [ Functions ] -----------
 
+//! Debug functions
+void debug_Display_t_command(t_minishell *minishell);
+//!
+
 //? [[[[[[[[[[ Main ]]]]]]]]]]]
 // #### Do the first fork in the program
 void main_fork(t_minishell *minishell);
+//
+// Each line after prompt will enter this loop
+// to get process
+// tokens -> commands pipeline -> execute
+void main_loop(t_minishell *minishell);
+//
 
 //? [[[[[[[[[[ Commands ]]]]]]]]]]]
+void count_pipe(t_minishell *minishell);
+//
+void print_sorted_env(t_minishell *minishell);
+//
+void tokens_to_commands(t_minishell *minishell);
+//
+void exit_command(t_minishell *minishell);
+//
 
 //? [[[[[[[[[[[[[ Env ]]]]]]]]]]]]]
+void expand_tokens(t_minishell *minishell);
+//
+char *expand_variable(t_minishell *minishell, char *token);
+//
+void env_builtin(t_minishell *minishell);
+//
+void export_builtin(t_minishell *minisell);
+//
+void unset_builtin(t_minishell *minisell);
 
 //? [[[[[[[[[[[[ Free ]]]]]]]]]]]]]
 void ft_exit(t_minishell *minishell, char *str, int status);
@@ -157,8 +180,13 @@ void init(t_minishell *minishell);
 //- It is also count the number of tokens
 //- exit if error occured
 void init_shell(t_minishell *minishell);
+//
+// void init_tokens (t_minishell *minishell);
+t_env *init_env(t_minishell *minishell, char **env);
+//
+void init_commands(t_minishell *minishell);
 
-//? [[[[[[[[[[[[] Parsing ]]]]]]]]]]]]]
+//? [[[[[[[[[[[[ Parsing ]]]]]]]]]]]]]
 void tokenize_pipe_op(t_minishell *minishell, int *k, int *i);
 //
 void tokenize_redir_op1(t_minishell *minishell, int *k, int *i);
@@ -168,6 +196,10 @@ void tokenize_redir_op2(t_minishell *minishell, int *k, int *i);
 void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued);
 //
 void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
+//
+void get_tokens(t_minishell *minishell);
+//
+void merge_words(t_minishell *ms);
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
 // #### loop over tokens array to check for redirections
@@ -189,18 +221,6 @@ void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
 // - Tokens array
 // - Input String
 // #### 2. Exit from the program if the input is [ exit ]
-void init_commands(t_minishell *minishell);
-void count_pipe(t_minishell *minishell);
-void get_tokens(t_minishell *minishell);
-// void init_tokens (t_minishell *minishell);
-t_env *init_env(t_minishell *minishell, char **env);
-void expand_tokens(t_minishell *minishell);
-char *expand_variable(t_minishell *minishell, char *token);
-void env_builtin(t_minishell *minishell);
-void export_builtin(t_minishell *minisell);
-void unset_builtin(t_minishell *minisell);
-void print_sorted_env(t_minishell *minishell);
-void tokens_to_commands(t_minishell *minishell);
-void merge_words(t_minishell *ms);
-int validate_commands(t_command *cmds);
+
+// int validate_commands(t_command *cmds);
 #endif

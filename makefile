@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/24 14:00:06 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/24 15:34:06 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,6 +27,8 @@ RM 		= 	rm -f
 CFLAGS 	= 	-Wall -Wextra -Werror -g -Iinclude
 
 # Directories
+DEBUG_DIR				=	$(SRCS_DIR)debug/
+
 SRCS_DIR				=	srcs/
 OBJS_DIR				=	objs/
 LIBFT					=	./libft/libft.a
@@ -75,6 +77,7 @@ PARS_SRC	=	$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)tokenize_normal_string.c\
 
 COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
+					$(COMMANDS_DIR)exit_command.c\
 					$(COMMANDS_DIR)call_pwd.c\
 					$(COMMANDS_DIR)call_echo.c\
 					$(COMMANDS_DIR)tokens_to_commands.c\
@@ -93,14 +96,17 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
 
+DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
+
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
+		   $(MAIN_DIR)main_loop.c\
 		#    $(MAIN_DIR)compare_input.c\
 
 # PARS_DIR	= 	$(PARS)parse_and_execute.c
 
 
-SRCS	= $(MAIN_SRC) $(MINILIB_SRC)
+SRCS	= $(MAIN_SRC) $(MINILIB_SRC) $(DEBUG_SRC)
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 
