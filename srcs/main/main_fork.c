@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:18 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 23:55:55 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:34:11 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ void main_fork(t_minishell *shell)
     int pid = fork();
     if (pid == 0) // child
     {
-        redirection(shell);   // Apply redirections here in child
+        main_redirection(shell);   // Apply redirections here in child
         exec_command(shell);  // Then exec command
         perror("exec_command failed");
         exit(EXIT_FAILURE);

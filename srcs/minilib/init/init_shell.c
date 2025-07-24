@@ -6,13 +6,10 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-<<<<<<< HEAD
-/*   Updated: 2025/07/21 16:06:53 by baah-moh         ###   ########.fr       */
-=======
-/*   Updated: 2025/07/23 18:51:35 by aaljazza         ###   ########.fr       */
->>>>>>> a243b338e3d38f7e9e4b870c51d1d320694302cc
+/*   Updated: 2025/07/24 15:33:05 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 
 #include "minishell.h"
 int validate_syntax(t_minishell *ms)
@@ -32,9 +29,9 @@ int validate_syntax(t_minishell *ms)
         }
         // Check for redirections
         else if (ms->tok[i]->type == INPUT_FILE || 
-                 ms->tok[i]->type == INPUT_HEREDOC || 
-                 ms->tok[i]->type == OUTPUT_FILE || 
-                 ms->tok[i]->type == OUTPUT_APPEND)
+                ms->tok[i]->type == INPUT_HEREDOC || 
+                ms->tok[i]->type == OUTPUT_FILE || 
+                ms->tok[i]->type == OUTPUT_APPEND)
         {
             // Must have a word token after redirection
             if (!ms->tok[i + 1] || ms->tok[i + 1]->type != INUPT_WORD)  // Note: Fix the typo INUPT_WORD to INPUT_WORD in your enum
@@ -104,14 +101,9 @@ void init_shell(t_minishell *minishell)
         check_to_free(minishell);
         return;
     }
-<<<<<<< HEAD
-    //? export
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "export", ft_strlen ("export") + 1) == 0)
-=======
 
     // Handle single built-in commands (no pipes)
     if (minishell->tok[0] && minishell->tok[1] == NULL)
->>>>>>> a243b338e3d38f7e9e4b870c51d1d320694302cc
     {
         // env command
         if (ft_strncmp(minishell->tok[0]->word, "env", ft_strlen("env") + 1) == 0)
@@ -121,17 +113,6 @@ void init_shell(t_minishell *minishell)
             return;
         }
     }
-<<<<<<< HEAD
-    //? unset
-    else if (minishell->tok[0] && ft_strncmp (minishell->tok[0]->word, "unset", ft_strlen ("unset") + 1) == 0)
-    {
-        unset_builtin (minishell);
-        check_to_free (minishell);
-        return ;
-    }
-    //! End env_function
-=======
->>>>>>> a243b338e3d38f7e9e4b870c51d1d320694302cc
     
     // Handle built-ins that can have arguments
     if (minishell->tok[0])
