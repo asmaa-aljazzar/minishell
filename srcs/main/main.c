@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 17:19:58 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/23 23:54:29 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,8 +49,7 @@ int main(int ac, char **av, char **environ)
 			}
 		}
 		//! End Debug1
-		redirection (&minishell);
-		// main_fork (&minishell);	 // Todo
+		main_fork (&minishell);
 		check_to_free(&minishell);
 	}
 	rl_clear_history();

@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:18 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 17:25:27 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/23 23:55:55 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,21 +17,43 @@
 // Compare the command in commands array to execute them
 // Redirection in child.
 
+// void main_fork(t_minishell *shell)
+// {
+//     int pid;
+//     pid = fork ();
+//     if (pid == 0)
+//     {
+//         redirection(shell);
+//         // child_re(minishell);
+//         // compare_commands (minishell);
+//     }
+//     else
+//     {
+//         // parent_re(minishell);
+//         int status;
+//         waitpid(pid, &status, 0);
+//     }
+// }
+
 void main_fork(t_minishell *shell)
 {
-    int pid;
-    pid = fork ();
-    if (pid == 0)
+    int pid = fork();
+    if (pid == 0) // child
     {
-        redirection(shell);
-        // child_re(minishell);
-        // compare_commands (minishell);
+        redirection(shell);   // Apply redirections here in child
+        exec_command(shell);  // Then exec command
+        perror("exec_command failed");
+        exit(EXIT_FAILURE);
+    }
+    else if (pid > 0) // parent
+    {
+        int status;
+        waitpid(pid, &status, 0);
+        shell->exit_code = WEXITSTATUS(status);
     }
     else
     {
-        // parent_re(minishell);
-        int status;
-        waitpid(pid, &status, 0);
+        perror("fork failed");
     }
 }
 

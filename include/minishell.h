@@ -104,7 +104,7 @@ typedef struct s_command {
 
 typedef struct s_minishell {
     char *input;
-    t_command *cmd;
+    t_command *cmd;             // head of the linked list of commands
     int tokens_count;
     int pipe_count;
     t_token **tok;
@@ -127,11 +127,35 @@ void init(t_minishell *minishell);
 //- exit if error occured
 void init_shell(t_minishell *minishell);
 //
-//* #### loop over tokens array to check for redirections ###
+//* #### while loop iterates over the linked list of commands in shell->cmd ###
+//- processing input/output redirections for each command in the pipeline.
+//- stdout -> with the file descriptor of the output file.
+//- stdin -> with the file descriptor of the input file.
 void redirection(t_minishell *minishell);
-void input_redirection(t_command *cmd); //new -> stdin -> with the file descriptor of the input file.
-void output_redirection(t_command *cmd); //new -> stdout -> with the file descriptor of the output file.
+void input_redirection(t_command *cmd);
+void output_redirection(t_command *cmd);
 // //
+//* ### execution one command 
+//- Single command executed
+//- check its builtin 
+//- External command with path resolution
+int exec_command(t_minishell *shell);
+//int is_builtin(char *cmd);
+//int exec_builtin(t_minishell *shell);
+char **env_to_envp(t_env *env);
+
+//* get path for command 
+//- check if input is already path  and excutable
+//- if not token path after : 
+//- search the rigth path in token 
+//- builds a string: dir + "/" + cmd
+char    *get_path(t_minishell *shell);
+char *already_path(char *cmd);
+int is_executable(char *path);
+char    *find_path(t_env *env);
+char    *find_cmd_path(char *cmd, char *path_env);
+char *join_path(const char *path, const char *cmd);
+
 // void redir_compare1(t_minishell *minishell);
 // void redir_compare2(t_minishell *minishell);
 // void child_re(t_minishell *minishell);

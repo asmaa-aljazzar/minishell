@@ -6,7 +6,7 @@
 #    By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/22 17:28:34 by baah-moh         ###   ########.fr        #
+#    Updated: 2025/07/23 23:42:02 by baah-moh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -36,6 +36,8 @@ INIT_DIR				=	$(MINILIB_DIR)init/
 FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
 ENV_DIR					=	$(MINILIB_DIR)env/
+PATH_DIR				=	$(MINILIB_DIR)path/
+EXEC_ONE_CMD_DIR		=	$(MINILIB_DIR)execution_one_cmd/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
@@ -72,10 +74,24 @@ PARS_SRC	=	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)count_pipe.c\
 				$(PARS_DIR)normal_string.c\
 
+PATH_SRS	=	$(PATH_DIR)already_path.c\
+				$(PATH_DIR)is_executable.c\
+				$(PATH_DIR)get_path.c\
+				$(PATH_DIR)find_cmd_path.c \
+				$(PATH_DIR)find_path.c\
+				$(PATH_DIR)join_path.c\
+
+EXEC_ONE_CMD_SRE	=\
+						$(EXEC_ONE_CMD_DIR)env_to_envp.c\
+						$(EXEC_ONE_CMD_DIR)exec_command.c\
+						$(EXEC_ONE_CMD_DIR)exec_builtin.c\
+						$(EXEC_ONE_CMD_DIR)is_builtin.c\
+
 COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
 					$(COMMANDS_DIR)call_pwd.c\
 					$(COMMANDS_DIR)call_echo.c\
 					$(COMMANDS_DIR)compare_commands.c 
+					
 
 REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)parent_re.c\
@@ -95,11 +111,10 @@ MAIN_SRC = $(MAIN_DIR)main.c\
 			$(MAIN_DIR)main_fork.c\
 			$(MAIN_DIR)main_redirection.c\
 		#    $(MAIN_DIR)compare_input.c\
-
 # PARS_DIR	= 	$(PARS)parse_and_execute.c
 
 
-SRCS	= $(MAIN_SRC) $(MINILIB_SRC)
+SRCS	= $(MAIN_SRC) $(MINILIB_SRC) $(PATH_SRS) $(EXEC_ONE_CMD_SRE)
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 
