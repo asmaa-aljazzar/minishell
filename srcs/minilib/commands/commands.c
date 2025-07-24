@@ -6,12 +6,16 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:12:10 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:33:04 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/23 12:01:07 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
+
+
+
+//?env
 // void call_env(t_minishell *minishell)
 // {
     // printf("call env\n");

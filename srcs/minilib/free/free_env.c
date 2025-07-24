@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_op.c                                          :+:      :+:    :+:   */
+/*   free_env.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 05:24:07 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 05:30:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/23 17:03:13 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/23 17:03:31 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void pipe_op(t_minishell *minishell, int *k, int *i)
+void free_env(t_env *env)
 {
-    minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
-    if (!minishell->tok[*k])
-        ft_exit(minishell, "Memory allocation failed", 1);
-    minishell->tok[*k]->word = ft_strdup("|");
-    minishell->tok[*k]->type = OUTPUT_PIPE;
-    minishell->tok[*k]->qtype = QUOTE_NONE;
-    (*k)++;
-    (*i)++;
+    t_env *current = env;
+    t_env *next;
+
+    while (current)
+    {
+        next = current->next;
+        free(current->name);
+        free(current->value);
+        free(current);
+        current = next;
+    }
 }

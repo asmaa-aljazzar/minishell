@@ -6,34 +6,48 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:52:12 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 16:05:20 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:00:45 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-
-void get_tokens(t_minishell *minishell)
+void get_tokens(t_minishell *ms)
 {
-    size_t len = ft_strlen(minishell->input);
-    minishell->tok = ft_calloc((len + 1), sizeof(t_token *));
-    int i = 0, k = 0;
+    size_t len = ft_strlen(ms->input);
+    int i = 0;
+    int k = 0;
 
-    while (minishell->input[i])
+    ms->tok = ft_calloc(len + 1, sizeof(t_token *));
+    if (!ms->tok)
+        ft_exit(ms, "malloc failed", 1);
+
+    while (ms->input[i])
     {
-        while (minishell->input[i] == ' ')
-            i++;
-        if (!minishell->input[i])
-            break;
-        if (minishell->input[i] == '|')
-            pipe_op(minishell, &k, &i);
-        else if (minishell->input[i] == '<' || minishell->input[i] == '>')
-            redir_op1(minishell, &k, &i);
-        else
+        int glued = 1;  // Default to glued
+
+        /* Skip leading blanks */
+        if (ms->input[i] == ' ')
         {
-            quoted(minishell, &k, &i);
+            glued = 0;  // Next token is NOT glued
+            while (ms->input[i] == ' ')
+                i++;
         }
+        
+        if (!ms->input[i])
+            break;
+
+        // First token is never glued
+        if (k == 0)
+            glued = 0;
+
+        if (ms->input[i] == '|')
+            tokenize_pipe_op(ms, &k, &i);
+        else if (ms->input[i] == '<' || ms->input[i] == '>')
+            tokenize_redir_op1(ms, &k, &i);
+        else
+            tokenize_quoted(ms, &k, &i, glued);
     }
-    minishell->tok[k] = NULL;
-    minishell->tokens_count = k;
+    ms->tok[k] = NULL;
+    ms->tokens_count = k;
 }

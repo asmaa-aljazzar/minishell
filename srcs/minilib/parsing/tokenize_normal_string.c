@@ -1,22 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normal_string.c                                    :+:      :+:    :+:   */
+/*   tokenize_normal_string.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:14:49 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 05:57:51 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:01:03 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-void normal_string(t_minishell *minishell, int *k, int *i)
+void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued)
 {
     char *word;
     int size;
     int start = *i;
-
+    
+    // Move glued assignment AFTER token allocation
+    
     while (minishell->input[*i] && minishell->input[*i] != ' ' 
         && minishell->input[*i] != '\'' && minishell->input[*i] != '"' 
         && minishell->input[*i] != '>' && minishell->input[*i] != '<' 
@@ -30,21 +32,25 @@ void normal_string(t_minishell *minishell, int *k, int *i)
         return;
         
     // Allocate memory for the word
-    word = calloc (1, size + 1);
+    word = calloc(1, size + 1);
     if (!word)
         ft_exit(minishell, "Memory allocation failed", 1);
         
     ft_strlcpy(word, &minishell->input[start], size + 1);
     
-    // Allocate and initialize the token structure
+    // Allocate and initialize the token structure FIRST
     minishell->tok[*k] = calloc(1, sizeof(t_token));
     if (!minishell->tok[*k])
+    {
+        free(word);  // Don't forget to free word on failure
         ft_exit(minishell, "Memory allocation failed", 1);
+    }
         
-    // Set all token fields
+    // NOW set all token fields (including glued)
     minishell->tok[*k]->word = word;
-    minishell->tok[*k]->type = INUPT_WORD;  // Using your enum value
-    minishell->tok[*k]->qtype = QUOTE_NONE; // Not quoted
+    minishell->tok[*k]->type = INUPT_WORD;
+    minishell->tok[*k]->qtype = QUOTE_NONE;
+    minishell->tok[*k]->glued = glued;  // Moved here
     
     (*k)++;
 }

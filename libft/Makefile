@@ -1,5 +1,5 @@
 # Library Name
-NAME    =	libft.a
+NAME    =	libft.a 
 
 # Compiler and Flags
 CC      =	cc

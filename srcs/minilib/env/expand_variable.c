@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:49:07 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/20 18:11:46 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/23 14:28:46 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ char *expand_variable(t_minishell *minishell, char *token)
     char *var_name;
     char *value;
     char *literal;
+    int should_free_value = 0;
 
     if (!result || !token)
         return NULL;
@@ -45,6 +46,7 @@ char *expand_variable(t_minishell *minishell, char *token)
             if (token[i] == '?')
             {
                 value = ft_itoa(minishell->exit_code);
+                should_free_value = 1; 
                 i++;
             }
             else
@@ -54,11 +56,15 @@ char *expand_variable(t_minishell *minishell, char *token)
                     i++;
                 var_name = ft_substr(token, start, i - start);
                 value = get_env_value(minishell->env, var_name);
+                should_free_value = 0;
                 free(var_name);
             }
             temp = result;
             result = ft_strjoin(result, value);
             free(temp);
+            // Free the value if it was allocated by ft_itoa
+            if (should_free_value)
+                free(value);
         }
         else
         {
