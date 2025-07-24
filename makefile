@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/23 17:21:54 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/24 14:00:06 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,14 +65,14 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)expand_tokens.c\
 				$(ENV_DIR)expand_variable.c\
  	
-PARS_SRC	=	$(PARS_DIR)quoted.c\
-				$(PARS_DIR)get_tokens.c\
-				$(PARS_DIR)pipe_op.c\
-				$(PARS_DIR)merge_words.c\
-				$(PARS_DIR)redir_op1.c\
-				$(PARS_DIR)redir_op2.c\
+PARS_SRC	=	$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)count_pipe.c\
-				$(PARS_DIR)normal_string.c\
+				$(PARS_DIR)merge_words.c\
+				$(PARS_DIR)tokenize_quoted.c\
+				$(PARS_DIR)tokenize_pipe_op.c\
+				$(PARS_DIR)tokenize_redir_op1.c\
+				$(PARS_DIR)tokenize_redir_op2.c\
+				$(PARS_DIR)tokenize_normal_string.c\
 
 COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
 					$(COMMANDS_DIR)call_pwd.c\

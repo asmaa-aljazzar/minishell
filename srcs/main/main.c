@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 18:52:27 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 13:54:22 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ void allocate_argv_for_commands(t_minishell *minishell)
 	}
 }
 
-void debug_commands(t_minishell *minishell)
+void debug_Display_t_command(t_minishell *minishell)
 {
 	int cmd_num = 0;
 	t_command *cmd = minishell->cmd;
@@ -119,7 +119,7 @@ int main(int ac, char **av, char **environ)
         merge_words(&minishell);
         allocate_argv_for_commands(&minishell);
         tokens_to_commands(&minishell);
-        debug_commands(&minishell);
+        debug_Display_t_command(&minishell);
         
         // Clean up for next iteration
         check_to_free(&minishell);

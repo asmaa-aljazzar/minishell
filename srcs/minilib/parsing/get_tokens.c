@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:52:12 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 16:57:50 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:00:45 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -42,11 +42,11 @@ void get_tokens(t_minishell *ms)
             glued = 0;
 
         if (ms->input[i] == '|')
-            pipe_op(ms, &k, &i);
+            tokenize_pipe_op(ms, &k, &i);
         else if (ms->input[i] == '<' || ms->input[i] == '>')
-            redir_op1(ms, &k, &i);
+            tokenize_redir_op1(ms, &k, &i);
         else
-            quoted(ms, &k, &i, glued);
+            tokenize_quoted(ms, &k, &i, glued);
     }
     ms->tok[k] = NULL;
     ms->tokens_count = k;

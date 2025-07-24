@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   redir_op2.c                                        :+:      :+:    :+:   */
+/*   tokenize_redir_op2.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:17:47 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 15:59:24 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:00:33 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void redir_op2(t_minishell *minishell, int *k, int *i)
+void tokenize_redir_op2(t_minishell *minishell, int *k, int *i)
 {
     if (minishell->input[*i + 1] == '>')
     {

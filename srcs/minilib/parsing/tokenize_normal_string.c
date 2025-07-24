@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   normal_string.c                                    :+:      :+:    :+:   */
+/*   tokenize_normal_string.c                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:14:49 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 16:54:33 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:01:03 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-void normal_string(t_minishell *minishell, int *k, int *i, int glued)
+void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued)
 {
     char *word;
     int size;

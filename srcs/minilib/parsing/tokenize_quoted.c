@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quoted.c                                           :+:      :+:    :+:   */
+/*   tokenize_quoted.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 16:57:25 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 14:01:37 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-void quoted(t_minishell *minishell, int *k, int *i, int glued)
+void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued)
 {
     int size;
     int start;
@@ -53,6 +53,6 @@ void quoted(t_minishell *minishell, int *k, int *i, int glued)
     }
     else
     {
-        normal_string(minishell, k, i, glued);
+        tokenize_normal_string(minishell, k, i, glued);
     }
 }
