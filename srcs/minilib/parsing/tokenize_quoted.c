@@ -1,18 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   quoted.c                                           :+:      :+:    :+:   */
+/*   tokenize_quoted.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/21 16:17:10 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:21:50 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
 
-void quoted(t_minishell *minishell, int *k, int *i)
+#include "minishell.h"
+void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued)
 {
     int size;
     int start;
@@ -40,10 +40,14 @@ void quoted(t_minishell *minishell, int *k, int *i)
         // Allocate the token structure
         minishell->tok[*k] = calloc(1, sizeof(t_token));
         if (!minishell->tok[*k])
+        {
+            free(word);
             ft_exit(minishell, "Memory allocation failed", 1);
+        }
 
         minishell->tok[*k]->word = word;
         minishell->tok[*k]->type = INUPT_WORD;
+        minishell->tok[*k]->glued = glued;  // Use the passed glued value
         if (quote == '"')
             minishell->tok[*k]->qtype = QUOTE_DOUBLE;
         else
@@ -53,6 +57,6 @@ void quoted(t_minishell *minishell, int *k, int *i)
     }
     else
     {
-        normal_string(minishell, k, i); // Updated to match your likely implementation
+        tokenize_normal_string(minishell, k, i, glued);
     }
 }

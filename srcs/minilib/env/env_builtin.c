@@ -6,13 +6,14 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:49:10 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/21 15:53:36 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:22:21 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
+
 #include "minishell.h"
 
-void builtin_env(t_minishell *minishell)
+void env_builtin(t_minishell *minishell)
 {
     t_env *curr = minishell->env;
     while (curr)

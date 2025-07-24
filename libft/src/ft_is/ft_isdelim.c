@@ -1,25 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_op.c                                          :+:      :+:    :+:   */
+/*   ft_isdelim.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 05:24:07 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 05:30:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/22 15:33:21 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/22 15:39:23 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/libft.h"
 
-void pipe_op(t_minishell *minishell, int *k, int *i)
+int ft_isdelim(char c)
 {
-    minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
-    if (!minishell->tok[*k])
-        ft_exit(minishell, "Memory allocation failed", 1);
-    minishell->tok[*k]->word = ft_strdup("|");
-    minishell->tok[*k]->type = OUTPUT_PIPE;
-    minishell->tok[*k]->qtype = QUOTE_NONE;
-    (*k)++;
-    (*i)++;
+    return (c == ' ' || c == '\t' || c == '|' || c == '<' || c == '>');
 }

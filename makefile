@@ -6,9 +6,10 @@
 #    By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/23 23:42:02 by baah-moh         ###   ########.fr        #
+#    Updated: 2025/07/24 15:25:54 by baah-moh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
+
 
 # Color
 RESET	=	\033[0m
@@ -55,6 +56,7 @@ INIT_SRC	=	$(INIT_DIR)init.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_2d.c\
+				$(FREE_DIR)free_env.c\
 				$(FREE_DIR)free_tokens.c\
 				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
@@ -66,13 +68,21 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)expand_tokens.c\
 				$(ENV_DIR)expand_variable.c\
 
+
 PARS_SRC	=	$(PARS_DIR)quoted.c\
 				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)pipe_op.c\
 				$(PARS_DIR)redir_op1.c\
 				$(PARS_DIR)redir_op2.c\
+
+PARS_SRC	=	$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)count_pipe.c\
-				$(PARS_DIR)normal_string.c\
+				$(PARS_DIR)merge_words.c\
+				$(PARS_DIR)tokenize_quoted.c\
+				$(PARS_DIR)tokenize_pipe_op.c\
+				$(PARS_DIR)tokenize_redir_op1.c\
+				$(PARS_DIR)tokenize_redir_op2.c\
+				$(PARS_DIR)tokenize_normal_string.c\
 
 PATH_SRS	=	$(PATH_DIR)already_path.c\
 				$(PATH_DIR)is_executable.c\
@@ -90,6 +100,7 @@ EXEC_ONE_CMD_SRE	=\
 COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
 					$(COMMANDS_DIR)call_pwd.c\
 					$(COMMANDS_DIR)call_echo.c\
+					$(COMMANDS_DIR)tokens_to_commands.c\
 					$(COMMANDS_DIR)compare_commands.c 
 					
 

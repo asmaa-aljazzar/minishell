@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:42 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/22 17:24:44 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/24 15:27:31 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,15 +27,15 @@
 // }
 
 
-void redirection(t_minishell *shell)
-{
-    t_command *cmd;
+// void redirection(t_minishell *shell)
+// {
+//     t_command *cmd;
 
-    cmd = shell->cmd;
-    while (cmd)
-    {
-        input_redirection(cmd);
-		output_redirection(cmd);
-        cmd = cmd->next; // move to next command
-    }
-}
+//     cmd = shell->cmd;
+//     while (cmd)
+//     {
+//         input_redirection(cmd);
+// 		output_redirection(cmd);
+//         cmd = cmd->next; // move to next command
+//     }
+// }
