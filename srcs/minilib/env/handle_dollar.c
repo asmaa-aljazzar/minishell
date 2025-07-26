@@ -1,33 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_commands.c                                    :+:      :+:    :+:   */
+/*   handle_dollar.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:27:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 11:47:16 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 11:47:29 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_commands(t_minishell *minishell)
-{
-    t_command *current;
-    t_command *next;
-    
-    current = minishell->cmd;
-    while (current)
-    {
-        next = current->next;
-        if (current->argv)
-            free(current->argv);
-        free_file_list(current->input_files);
-        free_file_list(current->output_files);
-        free(current);
-        current = next;
-    }
-    minishell->cmd = NULL;
-}
 
+void handle_dollar(t_minishell *minishell, char *token, size_t *i, char **result)
+{
+    char *value = NULL;
+    int should_free = 0;
+
+    (*i)++;
+    if (token[*i] == '?')
+    {
+        value = ft_itoa(minishell->exit_code);
+        should_free = 1;
+        (*i)++;
+    }
+    else
+        value = extract_var_value(minishell, token, i);
+
+    *result = append_result(*result, value);
+
+    if (should_free)
+        free(value);
+}

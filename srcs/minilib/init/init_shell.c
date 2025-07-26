@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 20:18:06 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 13:39:08 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,14 +48,7 @@ int validate_syntax(t_minishell *ms)
     return 1;
 }
 
-// 1. Display the prompt.
-// 2. Read the input line into a buffer.
-// 3. Add this line to the history.
-// 4. Parsing the input.
-// 5. Split it into tokens.
-//? 6. Move it into cmd array.
-// 7. After Each initialize check for Null.
-// 8. exit if error occured
+
 void init_shell(t_minishell *minishell)
 {
     // Reset tokens from previous iteration

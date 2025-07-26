@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_commands.c                                    :+:      :+:    :+:   */
+/*   extract_var_value.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:27:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 11:53:32 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 11:53:43 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_commands(t_minishell *minishell)
+char *extract_var_value(t_minishell *minishell, char *token, size_t *i)
 {
-    t_command *current;
-    t_command *next;
-    
-    current = minishell->cmd;
-    while (current)
-    {
-        next = current->next;
-        if (current->argv)
-            free(current->argv);
-        free_file_list(current->input_files);
-        free_file_list(current->output_files);
-        free(current);
-        current = next;
-    }
-    minishell->cmd = NULL;
-}
+    size_t start = *i;
+    while (token[*i] && (ft_isalnum(token[*i]) || token[*i] == '_'))
+        (*i)++;
 
+    char *var_name = ft_substr(token, start, *i - start);
+    char *value = get_env_value(minishell->env, var_name);
+    free(var_name);
+    return value;
+}

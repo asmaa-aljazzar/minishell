@@ -1,33 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_commands.c                                    :+:      :+:    :+:   */
+/*   get_tokens.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:27:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/03 00:52:12 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 14:06:21 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_commands(t_minishell *minishell)
+void get_tokens(t_minishell *minishell)
 {
-    t_command *current;
-    t_command *next;
-    
-    current = minishell->cmd;
-    while (current)
-    {
-        next = current->next;
-        if (current->argv)
-            free(current->argv);
-        free_file_list(current->input_files);
-        free_file_list(current->output_files);
-        free(current);
-        current = next;
-    }
-    minishell->cmd = NULL;
+	size_t len = ft_strlen(minishell->input);
+	int i = 0;
+	int k = 0;
+
+	minishell->tok = ft_calloc(len + 1, sizeof(t_token *));
+	if (!minishell->tok)
+		ft_exit(minishell, "malloc failed", 1);
+
+	while (minishell->input[i])
+		process_token(minishell, &k, &i);
+
+	minishell->tok[k] = NULL;
+	minishell->tokens_count = k;
 }
+
 

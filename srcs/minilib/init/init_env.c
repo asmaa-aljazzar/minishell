@@ -6,17 +6,13 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:48:52 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 19:18:08 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 13:57:33 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
 static t_env *create_env_node(t_minishell *minishell, char *env_string);
-
-// Loop over environ arrtibute.
-// make head is new node if no nodes yet.
-// other wise the tail->next will be the new node.
 
 t_env *init_env(t_minishell *minishell, char **environ)
 {

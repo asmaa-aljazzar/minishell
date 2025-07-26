@@ -1,33 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_commands.c                                    :+:      :+:    :+:   */
+/*   init_normal_token.c                                :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:27:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 14:21:38 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 14:28:33 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_commands(t_minishell *minishell)
+void init_normal_token(t_minishell *ms, char *word, int glued, int *k)
 {
-    t_command *current;
-    t_command *next;
-    
-    current = minishell->cmd;
-    while (current)
-    {
-        next = current->next;
-        if (current->argv)
-            free(current->argv);
-        free_file_list(current->input_files);
-        free_file_list(current->output_files);
-        free(current);
-        current = next;
-    }
-    minishell->cmd = NULL;
-}
+	ms->tok[*k] = calloc(1, sizeof(t_token));
+	if (!ms->tok[*k])
+	{
+		free(word);
+		ft_exit(ms, "Memory allocation failed", 1);
+	}
 
+	ms->tok[*k]->word = word;
+	ms->tok[*k]->type = INUPT_WORD;
+	ms->tok[*k]->qtype = QUOTE_NONE;
+	ms->tok[*k]->glued = glued;
+	(*k)++;
+}

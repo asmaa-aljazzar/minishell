@@ -1,33 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_commands.c                                    :+:      :+:    :+:   */
+/*   handle_output_file_redir.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:27:56 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 23:42:58 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:47:38 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_commands(t_minishell *minishell)
+void handle_output_file_redir(t_minishell *minishell, int *k, int *i)
 {
-    t_command *current;
-    t_command *next;
-    
-    current = minishell->cmd;
-    while (current)
-    {
-        next = current->next;
-        if (current->argv)
-            free(current->argv);
-        free_file_list(current->input_files);
-        free_file_list(current->output_files);
-        free(current);
-        current = next;
-    }
-    minishell->cmd = NULL;
+	minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+	if (!minishell->tok[*k])
+		ft_exit(minishell, "Memory allocation failed", 1);
+	minishell->tok[*k]->word = ft_strdup(">");
+	minishell->tok[*k]->type = OUTPUT_FILE;
+	minishell->tok[*k]->qtype = QUOTE_NONE;
+	(*k)++;
+	(*i)++;
 }
-

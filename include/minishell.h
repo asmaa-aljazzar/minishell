@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/03 00:35:30 by aaljazza        ####  ########.fr       */
+/*   Updated: 2025/07/26 23:40:16 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,8 +132,8 @@ void debug_Display_t_command(t_minishell *minishell);
 
 // #### Do the first fork in the program.
 void main_fork(t_minishell *minishell);
-//
-//#### This the loop that make the shill working forever.
+
+//*#### This the loop that make the shill working forever.
 //- Each line after prompt will enter this loop to get process.
 //- tokens -> commands pipeline -> execute
 void main_loop(t_minishell *minishell);
@@ -143,7 +143,7 @@ void main_loop(t_minishell *minishell);
 
 //*#### Loop over tokens array to count how many pipes in it.
 void count_pipe(t_minishell *minishell);
-//
+
 void print_sorted_env(t_minishell *minishell); // Todo
 //*#### Run exit command
 // - Free the shell
@@ -157,92 +157,261 @@ void exit_command(t_minishell *minishell);
 //- Use [ expand_variable ] function.
 //- Update the value of in tokens array.
 void expand_tokens(t_minishell *minishell);
+
 //*#### Expand specific variable in token:
 //- Search on dollar sign to handle it env.
 //- else it will will extract letters.
 char *expand_variable(t_minishell *minishell, char *token);
+
 //*#### Put letters in the in token string unless found a [ $ ]
 char *extract_literal(char *token, size_t *i);
+
+//*#### Handle what come after [ $ ].
+//- If it is ? then exit status, free itoa value.
+//- Else, it will extract variable value.
 void handle_dollar(t_minishell *minishell, char *token, size_t *i, char **result);
+
+//*#### Extract the name & value of the variable
+//*##### The variable can contain:
+//- letters
+//- numbers
+//- ( _ ) special character
 char *extract_var_value(t_minishell *minishell, char *token, size_t *i);
+
+//*#### Replace the old variable in $VAR format with:
+//- NAME=val format
 char *append_result(char *old_result, char *value);
+
+//*#### Get environment value from t_env struct by loop over its name
+//- If not found → expand to empty string
 char *get_env_value(t_env *env, const char *var);
+
+//*#### Join the letteral with extracted value
 void append_and_free(char **result, char *to_add);
+
+//*#### Run [ env ] command.
+// Print all environmen variables.
+// With NAME=val format
 void env_builtin(t_minishell *minishell);
-//
+
+// 
 void export_builtin(t_minishell *minisell);
+
 //
 void unset_builtin(t_minishell *minisell);
 
 //? [[[[[[[[[[[[ Free ]]]]]]]]]]]]]
+
+//*#### Exit the shell after free:
+//- Commands structure.
+//- Tokens array.
+//- Input string.
+//- Env Structure.
+//- Clear the history.
+//- Save exit status.
 void ft_exit(t_minishell *minishell, char *str, int status);
-//
-void free_2d(char **arr);
-//
+
+//*#### Loop ove t_env structure elemnts
+//- free name
+//- free value
+//- free the current node
 void free_env(t_env *env);
-//
+
+//*#### Loop over tokens array.
+//- Free the string inside the token.
+//- Free the token structure itself.
+//- Free the array of pointers.
 void free_tokens(t_token **arr);
-//
+
+//*#### Free spicific token.
+void free_token(t_token *token);
+
+//*#### Free commands structure:
+//- Free argv array, not argv[i] strings.
+//- Free input_files and output_files with [ free_file_list ].
+//- It Does NOT free input_file or output_file — they point to token->word strings!
 void free_commands(t_minishell *minishell);
-//
+
+//*#### Loop over & free the list of files names in commmands struct.
+void free_file_list(char **list);
+
+//*#### Without exit just free:
+//- commands struct.
+//- tokens arary.
+//- input string.
 void check_to_free(t_minishell *minishell);
 
 //? [[[[[[[[[[[[[[ Init ]]]]]]]]]]]]]]]
 
-//#### Initialize some of elements in the antshell structure.
+//*#### Initialize some of elements in the antshell structure.
 //- Initialize all pointers to NULL
 //- Initialize counters to 0
 //- Clear the buffer
 void init(t_minishell *minishell);
 
-//#### Display prompt, take an input, and initialize other structure elements.
-//- It is also count the number of tokens
-//- exit if error occured
-void init_shell(t_minishell *minishell);
+//*#### Parsing happened here in addition of some built in commands.
+// 1. Display the prompt.
+// 2. Read the input line into a buffer.
+// 3. Add this line to the history.
+// 4. Parsing the input.
+// 5. Split it into tokens.
+// 6. Move it into cmd structure.
+// 7. Run export unset commands.
+// 8. After Each initialize check for Null.
+// 9. exit if error occured
+//Todo: SHOULD change export & unset to wort on commands structure.
+void init_shell(t_minishell *minishell); // TODO: Split this function
 
-//#### Converts system-provided environment variables (environ)
-//#### into a modifiable linked list (t_env) owned by minishell
+//*#### Converts system-provided environment variables (environ)
+//*#### Into a modifiable linked list (t_env) owned by minishell
+//- Loop over environ arrtibute.
+//- make head is new node if no nodes yet.
+//- other wise the tail->next will be the new node.
 t_env *init_env(t_minishell *minishell, char **env);
-//
+
+//*#### Initialize commands structure.
 void init_commands(t_minishell *minishell);
 
+//*#### A helper function for init commands.
+//- Initialize a node in commands structure.
+t_command *create_command(t_minishell *minishell);
+
+//*#### initialize tokens for normal string, with glued flag.
+void init_normal_token(t_minishell *ms, char *word, int glued, int *k);
+
 //? [[[[[[[[[[[[ Parsing ]]]]]]]]]]]]]
+
+//*#### A helper function for [process_token]
+//- Set pipe into tokens array.
 void tokenize_pipe_op(t_minishell *minishell, int *k, int *i);
-//
-void tokenize_redir_op1(t_minishell *minishell, int *k, int *i);
-//
-void tokenize_redir_op2(t_minishell *minishell, int *k, int *i);
-//
-void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued);
-//
+
+//*#### Tokenize input redirection symbols.
+//- Detects and delegates to heredoc ('<<') or input file ('<') handlers.
+//- If '>' is found instead, delegates to tokenize_output_redir.
+void tokenize_input_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Handle heredoc token ('<<').
+//- Allocates a new token with word set to '<<'.
+//- Sets type to INPUT_HEREDOC and qtype to QUOTE_NONE.
+//- Increments token index and input index by 2.
+void handle_heredoc_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Handle input file redirection token ('<').
+//- Allocates a new token with word set to '<'.
+//- Sets type to INPUT_FILE and qtype to QUOTE_NONE.
+//- Increments token index and input index by 1.
+void handle_input_file_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Tokenize output redirection operator.
+//- Detects if the redirection is `>>` or `>`.
+//- Calls the appropriate handler to tokenize it.
+void tokenize_output_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Handle `>` redirection.
+//- Allocates a token for OUTPUT_FILE (overwrite mode).
+//- Stores ">" in the word field.
+//- Updates index to skip one '>'.
+void handle_output_file_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Handle `>>` redirection.
+//- Allocates a token for OUTPUT_APPEND (append mode).
+//- Stores ">>" in the word field.
+//- Updates index to skip both '>' characters.
+void handle_output_append_redir(t_minishell *minishell, int *k, int *i);
+
+//*#### Tokenize quoted or normal string.
+//- If current char is quote, reads quoted content and creates token.
+//- Else, delegates to tokenize_normal_string.
+//- Moves index forward past closing quote if found.
+void tokenize_quoted(t_minishell *ms, int *k, int *i, int glued);
+
+//*#### Create a token from quoted string.
+//- Allocates a token and sets its word, quote type, and glue flag.
+//- Frees the word and exits on allocation failure.
+//- Increments token index.
+void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int glued);
+
+//*#### Read content inside a quoted string.
+//- Increments index past the opening quote.
+//- Reads until the matching closing quote.
+//- Allocates and returns the quoted substring.
+//- If unmatched quote is found, prints error and returns NULL.
+char *read_quoted_content(t_minishell *ms, int *i, char quote);
+
+//*#### A helper function for [process_token]
+//- Set Strings That Not space or operation and not quoted into tokens array.
 void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
-//
+
+//*#### A helper function for [ tokenize_normal_string ]
+//- fill the value in a token after allocate
+char *allocate_normal_word(t_minishell *ms, int start, int len);
+
+//*#### Allocate and fill tokens array
+//- Loop over input string.
+//- Use process_tokens function.
+//- Set last token as NULL.
+//- Count number of commands.
 void get_tokens(t_minishell *minishell);
-//
-void merge_words(t_minishell *ms);
+
+//*#### This help to know if the token is glued to the other tokens 
+//*#### Or there is at least one space.
+//- Skip spaces, glued is 0 if space exist.
+//- If input end then return.
+//- Otherwise the tokens is glued.
+//##### Then continue tokenizing & use glued value with:
+//- tokenize_quoted.
+//- tokenize_normal_string.
+void process_token(t_minishell *minishell, int *k, int *i);
+
+//*#### Merge consecutive glued WORD tokens.
+//- Rewrites the tokens array in-place to condense glued WORDs.
+//- For example: "HELLO"'$USER'"test" → one token: "HELLOasmaatest"
+//- Uses two indexes: `i` to read, `k` to write.
+//- Uses helper: `advance_and_merge` to absorb multiple glued tokens.
+void merge_words(t_minishell *minishell);
+
+
+//*#### Advance through glued WORD tokens and merge them into current token.
+//- Loops while the next token is of type WORD, glued, and eligible to merge.
+//- Uses `merge_two_tokens` to append and clean up.
+void advance_and_merge (t_minishell *minishell, t_token **orig, int *i, int k);
+
+//*#### Merge two tokens together.
+//- Joins the `src` token's word to `dst` token's word.
+//- Frees the original word in `dst` and free `src` token.
+//- Used when consecutive glued WORD tokens are found.
+void merge_two_tokens (t_minishell *minishell, t_token *dst, t_token *src);
+
 //*#### Allocate argv for all commands
 void argv_for_commands(t_minishell *minishell);
+
 //*#### Allocate argv for current command (+1 for NULL).
 void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
+
 //*#### Convert the tokens array into commands linked list.
 //- Separate [ files names ] [ type of operation ] [ command and its argv ].
 void tokens_to_commands(t_minishell *minishell);
+
 //*#### A helper function for [ tekens_to_commands ] function.
 //- Close current argv.
 //- Move to next command.
 void if_outputPipe(t_token *token, t_command **cmd, int *argc);
+
 //*#### A helper function for [ tekens_to_commands ] function
 // Check if command [ has_more_redirections ] to add into [ Input ] files.
 // Add last file into [ Input ] file with file type enum.
 void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+
 //*#### A helper function for [ tekens_to_commands ] function
 // Check if command [ has_more_redirections ] to add into [ Output ] files.
 // Add last file into [ Output ] file with file type enum.
 void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+
 //*#### Add the new file name into its list in cmd struct.
 // - Free the old Array.
 // - return the new list.
 char **add_to_list(char **old_list, char *value);
+
 //*#### Check if there is more than one I/O redirections in the command:
 //- return 1 when true .
 //- return 0 otherwise. 

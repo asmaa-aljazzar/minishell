@@ -1,32 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   add_to_list.c                                      :+:      :+:    :+:   */
+/*   read_quoted_content.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 02:49:28 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:35:26 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 23:46:10 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:49:04 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// [ free(old_list) ] Only pointer, not the strings inside
-
-char **add_to_list(char **old_list, char *value)
+char *read_quoted_content(t_minishell *ms, int *i, char quote)
 {
-	int len;
-	len = 0;
-	while (old_list && old_list[len])
-		len++;
-	char **new_list = malloc(sizeof(char *) * (len + 2));
-	if (!new_list)
+	int start = ++(*i);
+	while (ms->input[*i] && ms->input[*i] != quote)
+		(*i)++;
+
+	if (ms->input[*i] != quote)
+	{
+		ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
 		return NULL;
-	for (int i = 0; i < len; i++)
-		new_list[i] = old_list[i];
-	new_list[len] = ft_strdup(value);
-	new_list[len + 1] = NULL;
-	free(old_list); 
-	return new_list;
+	}
+	int size = *i - start;
+	char *word = malloc(size + 1);
+	if (!word)
+		ft_exit(ms, "Memory allocation failed", 1);
+	ft_strlcpy(word, &ms->input[start], size + 1);
+	return word;
 }

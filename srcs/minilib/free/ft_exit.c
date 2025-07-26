@@ -6,18 +6,16 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:42:57 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 17:04:47 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 13:07:20 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
 void ft_exit(t_minishell *minishell, char *str, int status)
 {
-    // Print error message
     if (str && *str)
         ft_putendl_fd(str, STDERR_FILENO);
-    
-    // Free resources
     if (minishell->cmd)
     {
         free_commands(minishell);
@@ -38,7 +36,6 @@ void ft_exit(t_minishell *minishell, char *str, int status)
         free_env(minishell->env);
         minishell->env = NULL;
     }
-    
     rl_clear_history();
     minishell->exit_code = status;
     exit(status);
