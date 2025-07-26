@@ -1,25 +1,32 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_command.c                                     :+:      :+:    :+:   */
+/*   read_quoted_content.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/24 15:30:02 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 02:56:57 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 23:46:10 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:49:04 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void exit_command(t_minishell *minishell)
+char *read_quoted_content(t_minishell *ms, int *i, char quote)
 {
-	if (strcmp(minishell->input, "exit") == 0)
+	int start = ++(*i);
+	while (ms->input[*i] && ms->input[*i] != quote)
+		(*i)++;
+
+	if (ms->input[*i] != quote)
 	{
-		check_to_free(minishell);
-		free_env(minishell->env);
-		rl_clear_history();
-		printf("exit\n");
-		exit(0);
+		ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+		return NULL;
 	}
+	int size = *i - start;
+	char *word = malloc(size + 1);
+	if (!word)
+		ft_exit(ms, "Memory allocation failed", 1);
+	ft_strlcpy(word, &ms->input[start], size + 1);
+	return word;
 }

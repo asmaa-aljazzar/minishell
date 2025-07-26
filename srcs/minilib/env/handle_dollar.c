@@ -1,27 +1,35 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   handle_dollar.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 11:47:16 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 11:47:29 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+
+void handle_dollar(t_minishell *minishell, char *token, size_t *i, char **result)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
+    char *value = NULL;
+    int should_free = 0;
+
+    (*i)++;
+    if (token[*i] == '?')
     {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
+        value = ft_itoa(minishell->exit_code);
+        should_free = 1;
+        (*i)++;
     }
-    minishell->pipe_count = pipes;
+    else
+        value = extract_var_value(minishell, token, i);
+
+    *result = append_result(*result, value);
+
+    if (should_free)
+        free(value);
 }

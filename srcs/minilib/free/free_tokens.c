@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/14 06:00:26 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 06:00:42 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 13:11:31 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,9 +20,9 @@ void free_tokens(t_token **tokens)
         return;
     while (tokens[i])
     {
-        free(tokens[i]->word);  // Free the string inside the token
-        free(tokens[i]);        // Free the token structure itself
+        free(tokens[i]->word);  
+        free(tokens[i]);        
         i++;
     }
-    free(tokens);               // Free the array of pointers
+    free(tokens);
 }

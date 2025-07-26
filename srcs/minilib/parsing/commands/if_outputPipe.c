@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   if_outputPipe.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 02:17:38 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 02:19:58 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+void if_outputPipe(t_token *token, t_command **cmd, int *argc)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
-    {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
-    }
-    minishell->pipe_count = pipes;
+
+	if (token->type == OUTPUT_PIPE)
+	{
+		if (*cmd && (*cmd)->argv)
+			(*cmd)->argv[*argc] = NULL;
+
+	
+		if (*cmd)
+			*cmd = (*cmd)->next;
+		*argc = 0;
+	}
 }

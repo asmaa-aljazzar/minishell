@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   extract_literal.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 03:25:39 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 03:27:43 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+char *extract_literal(char *token, size_t *i)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
-    {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
-    }
-    minishell->pipe_count = pipes;
+    size_t start = *i;
+    while (token[*i] && token[*i] != '$')
+        (*i)++;
+    return ft_substr(token, start, *i - start);
 }

@@ -1,27 +1,23 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   allocate_normal_word.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 14:23:22 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 14:27:09 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+char *allocate_normal_word(t_minishell *ms, int start, int len)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
-    {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
-    }
-    minishell->pipe_count = pipes;
+	char *word = calloc(1, len + 1);
+	if (!word)
+		ft_exit(ms, "Memory allocation failed", 1);
+
+	ft_strlcpy(word, &ms->input[start], len + 1);
+	return word;
 }

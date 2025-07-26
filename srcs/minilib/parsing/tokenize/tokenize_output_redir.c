@@ -1,27 +1,21 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   tokenize_output_redir.c                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/09 07:17:47 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:47:46 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+void tokenize_output_redir(t_minishell *minishell, int *k, int *i)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
-    {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
-    }
-    minishell->pipe_count = pipes;
+	if (minishell->input[*i + 1] == '>')
+		handle_output_append_redir(minishell, k, i);
+	else
+		handle_output_file_redir(minishell, k, i);
 }

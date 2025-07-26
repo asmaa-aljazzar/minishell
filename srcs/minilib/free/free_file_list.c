@@ -1,44 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_2d.c                                           :+:      :+:    :+:   */
+/*   free_file_list.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/09 07:13:32 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/14 06:13:39 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 13:12:11 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 13:35:35 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void free_2d(char **arr)
-// {
-//     int i;
-
-//     if (!arr)
-//         return;
-//     i = 0;
-//     while (arr[i])
-//     {
-//         free(arr[i]);
-//         arr[i] = NULL;
-//         i++;
-//     }
-//     free(arr);
-// }
-void free_2d(char **arr)
+void free_file_list(char **list)
 {
-    int i;
-
-    if (!arr)
+    if (!list)
         return;
-    i = 0;
-    while (arr[i])
-    {
-        free(arr[i]);  // <-- only free if you own these strings separately!
-        arr[i] = NULL;
-        i++;
-    }
-    free(arr);
+    for (int i = 0; list[i]; i++)
+        free(list[i]);
+    free(list);
 }

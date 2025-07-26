@@ -1,27 +1,25 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   count_pipe.c                                       :+:      :+:    :+:   */
+/*   handle_output_file_redir.c                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/11 20:46:27 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 01:53:19 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 23:42:58 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:47:38 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void count_pipe(t_minishell *minishell)
+void handle_output_file_redir(t_minishell *minishell, int *k, int *i)
 {
-    int i = 0;
-    int pipes = 0;
-    char *input = minishell->input;
-    while (input[i])
-    {
-        if (input[i] == '|')
-            pipes += 1;
-        i++;
-    }
-    minishell->pipe_count = pipes;
+	minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
+	if (!minishell->tok[*k])
+		ft_exit(minishell, "Memory allocation failed", 1);
+	minishell->tok[*k]->word = ft_strdup(">");
+	minishell->tok[*k]->type = OUTPUT_FILE;
+	minishell->tok[*k]->qtype = QUOTE_NONE;
+	(*k)++;
+	(*i)++;
 }

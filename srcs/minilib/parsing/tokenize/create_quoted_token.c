@@ -1,25 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipe_op.c                                          :+:      :+:    :+:   */
+/*   create_quoted_token.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/14 05:24:07 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 13:57:52 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/26 23:45:34 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/26 23:49:19 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void tokenize_pipe_op(t_minishell *minishell, int *k, int *i)
+void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int glued)
 {
-    minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
-    if (!minishell->tok[*k])
-        ft_exit(minishell, "Memory allocation failed", 1);
-    minishell->tok[*k]->word = ft_strdup("|");
-    minishell->tok[*k]->type = OUTPUT_PIPE;
-    minishell->tok[*k]->qtype = QUOTE_NONE;
-    (*k)++;
-    (*i)++;
+	ms->tok[*k] = ft_calloc(1, sizeof(t_token));
+	if (!ms->tok[*k])
+	{
+		free(word);
+		ft_exit(ms, "Memory allocation failed", 1);
+	}
+	ms->tok[*k]->word = word;
+	ms->tok[*k]->type = INUPT_WORD;
+	ms->tok[*k]->qtype = (quote == '"') ? QUOTE_DOUBLE : QUOTE_SINGLE;
+	ms->tok[*k]->glued = glued;
+	(*k)++;
 }
