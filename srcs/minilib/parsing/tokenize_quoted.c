@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:15:41 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 14:01:37 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 03:14:04 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,7 +25,10 @@ void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued)
         while (minishell->input[*i] && minishell->input[*i] != quote)
             (*i)++;
         if (minishell->input[*i] != quote)
+        {
             ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+            return ;
+        }
         size = *i - start;
         word = malloc(size + 1);
         if (!word)

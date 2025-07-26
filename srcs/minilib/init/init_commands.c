@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/11 20:22:25 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 14:00:56 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 01:30:46 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,9 @@ void init_commands(t_minishell *minishell)
         new->input_type = INPUT_NONE;
         new->output_type = OUTPUT_NONE;
         new->input_file = NULL;
+        new->input_files = NULL;
         new->output_file = NULL;
+        new->output_files = NULL;
         new->next = NULL;
 
         if (!head)

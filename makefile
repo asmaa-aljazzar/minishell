@@ -6,7 +6,7 @@
 #    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/24 18:26:06 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/24 18:28:01 by aaljazza         ###   ########.fr        #
+#    Updated: 2025/07/26 03:26:05 by aaljazza         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -66,8 +66,17 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)unset_builtin.c\
 				$(ENV_DIR)expand_tokens.c\
 				$(ENV_DIR)expand_variable.c\
- 	
-PARS_SRC	=	$(PARS_DIR)get_tokens.c\
+				$(ENV_DIR)extract_literal.c\
+
+CMD_PARS_SRC = 	$(PARS_DIR)commands/tokens_to_commands.c\
+				$(PARS_DIR)commands/if_outputPipe.c\
+				$(PARS_DIR)commands/if_input_filesHeredoc.c\
+				$(PARS_DIR)commands/if_output_filesAppend.c\
+				$(PARS_DIR)commands/has_more_redirections.c\
+				$(PARS_DIR)commands/add_to_list.c\
+
+PARS_SRC	=	$(CMD_PARS_SRC)\
+				$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)count_pipe.c\
 				$(PARS_DIR)merge_words.c\
 				$(PARS_DIR)tokenize_quoted.c\
@@ -76,11 +85,11 @@ PARS_SRC	=	$(PARS_DIR)get_tokens.c\
 				$(PARS_DIR)tokenize_redir_op2.c\
 				$(PARS_DIR)tokenize_normal_string.c\
 
+
 COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
 					$(COMMANDS_DIR)exit_command.c\
 					$(COMMANDS_DIR)call_pwd.c\
 					$(COMMANDS_DIR)call_echo.c\
-					$(COMMANDS_DIR)tokens_to_commands.c\
 					$(COMMANDS_DIR)compare_commands.c 
 
 REDIR_SRC		=	$(REDIR_DIR)child_re.c\

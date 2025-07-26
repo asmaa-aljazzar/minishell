@@ -106,6 +106,8 @@ typedef struct s_command
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
     char *output_file;
     struct s_command *next; // Next command in pipe sequence
+    char **input_files;
+    char **output_files;
 } t_command;
 
 typedef struct s_minishell
@@ -127,35 +129,45 @@ void debug_Display_t_command(t_minishell *minishell);
 //!
 
 //? [[[[[[[[[[ Main ]]]]]]]]]]]
-// #### Do the first fork in the program
+
+// #### Do the first fork in the program.
 void main_fork(t_minishell *minishell);
 //
-// Each line after prompt will enter this loop
-// to get process
-// tokens -> commands pipeline -> execute
+//#### This the loop that make the shill working forever.
+//- Each line after prompt will enter this loop to get process.
+//- tokens -> commands pipeline -> execute
 void main_loop(t_minishell *minishell);
 //
 
 //? [[[[[[[[[[ Commands ]]]]]]]]]]]
+
+//*#### Loop over tokens array to count how many pipes in it.
 void count_pipe(t_minishell *minishell);
 //
-void print_sorted_env(t_minishell *minishell);
-//
-// Allocate argv for commands
-void argv_for_commands(t_minishell *minishell);
-//
-void allocate_argv(t_minishell *minishell, int *argc, t_command *cmd, int *i);
-//
-void tokens_to_commands(t_minishell *minishell);
-//
+void print_sorted_env(t_minishell *minishell); // Todo
+//*#### Run exit command
+// - Free the shell
+// - Clear the history
+// - Exit the shell
 void exit_command(t_minishell *minishell);
-//
 
 //? [[[[[[[[[[[[[ Env ]]]]]]]]]]]]]
+
+//*#### Expand the tokens if they are not in single quotes.
+//- Use [ expand_variable ] function.
+//- Update the value of in tokens array.
 void expand_tokens(t_minishell *minishell);
-//
+//*#### Expand specific variable in token:
+//- Search on dollar sign to handle it env.
+//- else it will will extract letters.
 char *expand_variable(t_minishell *minishell, char *token);
-//
+//*#### Put letters in the in token string unless found a [ $ ]
+char *extract_literal(char *token, size_t *i);
+void handle_dollar(t_minishell *minishell, char *token, size_t *i, char **result);
+char *extract_var_value(t_minishell *minishell, char *token, size_t *i);
+char *append_result(char *old_result, char *value);
+char *get_env_value(t_env *env, const char *var);
+void append_and_free(char **result, char *to_add);
 void env_builtin(t_minishell *minishell);
 //
 void export_builtin(t_minishell *minisell);
@@ -176,17 +188,20 @@ void free_commands(t_minishell *minishell);
 void check_to_free(t_minishell *minishell);
 
 //? [[[[[[[[[[[[[[ Init ]]]]]]]]]]]]]]]
+
 //#### Initialize some of elements in the antshell structure.
-//- 	integer values
-//- 	tokens array
+//- Initialize all pointers to NULL
+//- Initialize counters to 0
+//- Clear the buffer
 void init(t_minishell *minishell);
-//
+
 //#### Display prompt, take an input, and initialize other structure elements.
 //- It is also count the number of tokens
 //- exit if error occured
 void init_shell(t_minishell *minishell);
-//
-// void init_tokens (t_minishell *minishell);
+
+//#### Converts system-provided environment variables (environ)
+//#### into a modifiable linked list (t_env) owned by minishell
 t_env *init_env(t_minishell *minishell, char **env);
 //
 void init_commands(t_minishell *minishell);
@@ -205,6 +220,33 @@ void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
 void get_tokens(t_minishell *minishell);
 //
 void merge_words(t_minishell *ms);
+//*#### Allocate argv for all commands
+void argv_for_commands(t_minishell *minishell);
+//*#### Allocate argv for current command (+1 for NULL).
+void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
+//*#### Convert the tokens array into commands linked list.
+//- Separate [ files names ] [ type of operation ] [ command and its argv ].
+void tokens_to_commands(t_minishell *minishell);
+//*#### A helper function for [ tekens_to_commands ] function.
+//- Close current argv.
+//- Move to next command.
+void if_outputPipe(t_token *token, t_command **cmd, int *argc);
+//*#### A helper function for [ tekens_to_commands ] function
+// Check if command [ has_more_redirections ] to add into [ Input ] files.
+// Add last file into [ Input ] file with file type enum.
+void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+//*#### A helper function for [ tekens_to_commands ] function
+// Check if command [ has_more_redirections ] to add into [ Output ] files.
+// Add last file into [ Output ] file with file type enum.
+void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+//*#### Add the new file name into its list in cmd struct.
+// - Free the old Array.
+// - return the new list.
+char **add_to_list(char **old_list, char *value);
+//*#### Check if there is more than one I/O redirections in the command:
+//- return 1 when true .
+//- return 0 otherwise. 
+int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
 // #### loop over tokens array to check for redirections
@@ -226,6 +268,4 @@ void merge_words(t_minishell *ms);
 // - Tokens array
 // - Input String
 // #### 2. Exit from the program if the input is [ exit ]
-
-// int validate_commands(t_command *cmds);
 #endif

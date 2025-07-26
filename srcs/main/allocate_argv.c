@@ -6,29 +6,30 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 18:23:56 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 18:24:49 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/26 01:59:14 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// Allocate argv for current cmd (+1 for NULL)
+// check if the token is not a redirection and argv inside one command
+// not between pipes
 
-void allocate_argv(t_minishell *minishell, int *argc, t_command *cmd, int *i)
+void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i)
 {
-	if (ft_strncmp(minishell->tok[*i]->word, "|", 1) == 0)
+	t_token *token = minishell->tok[*i];
+
+	if (token->type == INPUT_PIPE || token->type == OUTPUT_PIPE)
 	{
-		cmd->argv = malloc(sizeof(char *) * (*argc + 1));
-		if (!cmd->argv)
+		(*cmd)->argv = malloc(sizeof(char *) * (*argc + 1));
+		if (!(*cmd)->argv)
 			ft_exit(minishell, "malloc failed", EXIT_FAILURE);
-		argc = 0;
-		cmd = cmd->next;
+		*argc = 0;
+		*cmd = (*cmd)->next;
 	}
-	else if (minishell->tok[*i]->type != INPUT_FILE 
-		&& minishell->tok[*i]->type != INPUT_HEREDOC 
-		&& minishell->tok[*i]->type != OUTPUT_FILE
-		&& minishell->tok[*i]->type != OUTPUT_APPEND)
+	else if (token->type != INPUT_FILE && token->type != INPUT_HEREDOC
+		&& token->type != OUTPUT_FILE && token->type != OUTPUT_APPEND)
 	{
-		argc++;
+		(*argc)++;
 	}
 }

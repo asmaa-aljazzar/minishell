@@ -6,15 +6,18 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:35 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 18:51:35 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/24 20:18:06 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+
 int validate_syntax(t_minishell *ms)
 {
-    int i = 0;
+    int i;
 
+    i= 0;
     while (ms->tok[i])
     {
         // Check for empty pipe
@@ -93,8 +96,6 @@ void init_shell(t_minishell *minishell)
         minishell->input = NULL;
         return;
     }
-
-    // Validate syntax
     if (!validate_syntax(minishell))
     {
         check_to_free(minishell);
