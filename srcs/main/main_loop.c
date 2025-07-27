@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 15:32:00 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 19:32:10 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:01:42 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,8 +22,10 @@
 
 void main_loop(t_minishell *minishell)
 {
+	print_banner ();
 	while (1)
 	{
+		setup_signals();
 		init_shell(minishell);
 		if (!minishell->input || !minishell->tok)
 			continue;
