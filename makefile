@@ -1,15 +1,3 @@
-# **************************************************************************** #
-#                                                                              #
-#                                                         :::      ::::::::    #
-#    makefile                                           :+:      :+:    :+:    #
-#                                                     +:+ +:+         +:+      #
-#    By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+         #
-#                                                 +#+#+#+#+#+   +#+            #
-#    Created: 2025/07/24 18:26:06 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/27 00:01:14 by aaljazza         ###   ########.fr        #
-#                                                                              #
-# **************************************************************************** #
-
 # Color
 RESET	=	\033[0m
 RED		=	\033[31m
@@ -98,6 +86,7 @@ HANDLE_SRC	=	$(HANDLE_DIR)handle_heredoc_redir.c\
 				$(HANDLE_DIR)handle_input_file_redir.c\
 				$(HANDLE_DIR)handle_output_file_redir.c\
 				$(HANDLE_DIR)handle_output_append_redir.c\
+				$(HANDLE_DIR)handle_eof.c\
 
 PARS_SRC	=	$(CMD_PARS_SRC)\
 				$(HANDLE_SRC)\
@@ -129,11 +118,13 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
+				$(MINILIB_DIR)signals.c\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
 
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
+		   $(MAIN_DIR)print_banner.c\
 		   $(MAIN_DIR)main_loop.c\
 		   $(MAIN_DIR)allocate_argv.c\
 		   $(MAIN_DIR)argv_for_commands.c\
