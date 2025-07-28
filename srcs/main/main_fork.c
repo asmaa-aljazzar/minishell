@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main_fork.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:18 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:34:57 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 21:57:45 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,23 +15,39 @@
 // Fork a child process in the main.
 // Redirection in child.
 // Compare the command in commands array to execute them
-// Redirection in child.
-
-void main_fork(t_minishell *minishell)
+void main_fork(t_minishell *shell)
 {
-    (void)minishell;
-    int pid;
-    pid = fork ();
-    if (pid == 0)
+    int status;
+    pid_t pid;
+    
+    pid = fork();
+    
+    if (pid == -1)
     {
-        // child_re(minishell);
-        // compare_commands (minishell);
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        perror("fork");
+        shell->exit_code = EXIT_FAILURE;
+        return;
+    }
+    
+    if (pid == 0) // Child process
+    {
+        main_redirection(shell);
+        compare_commands(shell);
+        // If we get here, execution failed
+        ft_putstr_fd("minishell: ", STDERR_FILENO);
+        perror("execution failed");
+        exit(EXIT_FAILURE);
     }
     else
-    {
-        // parent_re(minishell);
-        int status;
+    { // Parent process
         waitpid(pid, &status, 0);
+        if (WIFEXITED(status))
+            shell->exit_code = WEXITSTATUS(status);
+        // else if (WIFSIGNALED(status)){
+        //     shell->exit_code = 128 + WTERMSIG(status);
+        //     if (WTERMSIG(status) == SIGINT)
+        //         ft_putstr_fd("\n", STDERR_FILENO);
+        // }
     }
 }
-

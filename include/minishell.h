@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/28 18:43:08 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 23:50:25 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -141,6 +141,9 @@ void print_banner(void);
 // #### Do the first fork in the program.
 void main_fork(t_minishell *minishell);
 
+//Todo: write comments
+void main_redirection(t_minishell *shell);
+
 //*#### This the loop that make the shill working forever.
 //- Each line after prompt will enter this loop to get process.
 //- tokens -> commands pipeline -> execute
@@ -164,6 +167,47 @@ void print_sorted_env(t_minishell *minishell); // Todo
 // - Clear the history
 // - Exit the shell
 void exit_command(t_minishell *minishell);
+
+// Todo: add comments
+void pwd_builtin(t_minishell *shell);
+
+// Todo: add comments
+int is_builtin(t_command *cmd);
+
+// Todo: add comments
+void    cd_builtin(t_minishell *shell);
+
+// Todo: add comments
+void    exit_builtin(t_minishell *shell);
+
+// Todo: add comments
+void compare_commands(t_minishell *shell);
+
+
+
+
+//? [[[[[[[[[[[[[[[ EXEC ]]]]]]]]]]]]]]]
+
+// Todo: add comments
+int exec_builtin(t_minishell *shell);
+
+// Todo: add comments
+int exec_command(t_minishell *shell);
+
+// Todo: add comments
+int is_builtin(t_command *cmd);
+
+//? [[[[[[[[[[[[[ Path ]]]]]]]]]]]]]
+
+// Todo: add comments
+// Todo: add comments
+char *already_path(char *cmd);
+// Todo: add comments
+char    *find_path(t_env *env);
+char    *find_cmd_path( char *cmd,char *path_env);
+char    *get_path(t_minishell *shell);
+int is_executable(char *path);
+char *join_path(const char *path, const char *cmd);
 
 //? [[[[[[[[[[[[[ Env ]]]]]]]]]]]]]
 
@@ -452,23 +496,25 @@ int process_all_heredocs(t_minishell *shell);
 
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
-// #### loop over tokens array to check for redirections
-// void redirection(t_minishell *minishell);
-// //
-// void redir_compare1(t_minishell *minishell);
-// void redir_compare2(t_minishell *minishell);
-// void child_re(t_minishell *minishell);
-// void parent_re(t_minishell *minishell);
-// void call_echo(t_minishell *minishell, int op);
-// void call_pwd(t_minishell *minishell);
-// void call_env(t_minishell *minishell);
-//
-//
-// void compare_commands (t_minishell *minishell);
-//
-// #### 1. free all allocated memore
-// - Commands array
-// - Tokens array
-// - Input String
-// #### 2. Exit from the program if the input is [ exit ]
+//Todo: add comments
+int handell_redirection_output(t_minishell *shell);
+
+//Todo: add comments
+void output_redirection_append(t_command *cmd);
+
+//Todo: add comments
+void output_redirection_trunc(t_command *cmd);
+
+//Todo: add comments
+void handle_output_redirection(t_command *cmd);
+
+//Todo: add comments
+void input_redirection(t_command *cmd);
+
+//Todo: add comments
+int handell_redirection_input_herdoc(t_minishell *shell);
+
+//Todo: add comments
+int handell_redirection(t_minishell *shell);
+
 #endif
