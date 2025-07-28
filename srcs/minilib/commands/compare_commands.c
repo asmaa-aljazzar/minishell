@@ -3,32 +3,34 @@
 /*                                                        :::      ::::::::   */
 /*   compare_commands.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:20:47 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:33:13 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 23:32:18 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-// void compare_commands (t_minishell *minishell)
-// {
-        // if (!strcmp(minishell->cmd[0], "env"))
-        //     call_env(minishell);
-        // if (!strcmp(minishell->cmd[0], "echo"))
-        // {
-        //     if (!strcmp(minishell->cmd[1], "-n"))
-        //         call_echo(minishell, 1);
-        //     else
-        //         call_echo(minishell, 0);
-        // }
-        // else if (!strcmp(minishell->cmd[0], "pwd"))
-        //     call_pwd(minishell);
-        // else
-        // {
-        //     execvp(minishell->cmd[0], minishell->cmd);
-        //     perror("execvp");
-        //     exit(1);
-        // }
-// }
+
+void compare_commands(t_minishell *shell)
+{
+        int     redir_status;
+
+        redir_status = handell_redirection(shell);
+        if (redir_status > 0) 
+                exit(EXIT_SUCCESS);  // Pure redirection handled
+        else if (redir_status < 0) 
+                exit(EXIT_FAILURE);  // Redirection error
+        // Handle normal commands...
+        if (is_builtin(shell->cmd))
+        {
+                exec_builtin(shell);
+                exit(shell->exit_code);
+        }
+        else
+        {
+                exec_command(shell);
+                exit(EXIT_FAILURE);
+        }
+}
