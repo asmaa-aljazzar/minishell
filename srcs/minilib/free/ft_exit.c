@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:42:57 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:07:20 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 18:44:35 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,11 @@ void ft_exit(t_minishell *minishell, char *str, int status)
     {
         free_env(minishell->env);
         minishell->env = NULL;
+    }
+    if (minishell->envp)
+    {
+        free_2d(minishell->envp);
+        minishell->envp = NULL;
     }
     rl_clear_history();
     minishell->exit_code = status;

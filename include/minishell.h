@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/27 16:56:01 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 18:43:08 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -123,13 +123,15 @@ typedef struct s_minishell
     t_token **tok;
     char buff[1024];
     t_env *env;
+    char **envp; // ["NAME=VAl"][...][...]
     int exit_code;
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
-
+//? [[[[[[[[[[[[[[[[[[[ Debug ]]]]]]]]]]]]]]]]]]]
 //! Debug functions
 void debug_Display_t_command(t_minishell *minishell);
+void debug_check_cmd_heredoc(t_command *cmd);
 //!
 
 //? [[[[[[[[[[ Main ]]]]]]]]]]]
@@ -252,6 +254,9 @@ void free_file_list(char **list);
 //- tokens arary.
 //- input string.
 void check_to_free(t_minishell *minishell);
+
+//*#### Free an 2D array.
+void free_2d(char **arr);
 
 //? [[[[[[[[[[[[[[ Init ]]]]]]]]]]]]]]]
 
@@ -434,6 +439,17 @@ char **add_to_list(char **old_list, char *value);
 //- return 1 when true .
 //- return 0 otherwise. 
 int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
+
+//?[[[[[[[[[[[[[ HEREDOC ]]]]]]]]]]]]
+char *expand_heredoc_variables(t_minishell *shell, char *content);
+char *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
+int create_heredoc_pipe(char *content);
+int should_expand_heredoc(t_minishell *shell, char *delimiter);
+int setup_heredoc_input(t_command *cmd);
+int process_all_heredocs(t_minishell *shell);
+
+
+
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
 // #### loop over tokens array to check for redirections

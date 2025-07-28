@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/26 02:21:14 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 02:34:41 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/27 17:57:58 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,6 @@
 
 void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i)
 {
-
     if (token->type == INPUT_FILE || token->type == INPUT_HEREDOC)
     {
         if (minishell->tok[(*i) + 1])
@@ -25,7 +24,7 @@ void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **c
             else
             {
                 (*cmd)->input_type = token->type;
-                (*cmd)->input_file = file;
+                (*cmd)->input_file = ft_strdup(file);
             }
         }
     }

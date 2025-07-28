@@ -56,7 +56,8 @@ FT_STR_DIR	=	$(SRC_DIR)ft_str/ft_split.c\
 				$(SRC_DIR)ft_str/ft_strnstr.c\
 				$(SRC_DIR)ft_str/ft_strrchr.c\
 				$(SRC_DIR)ft_str/ft_strtrim.c\
-				$(SRC_DIR)ft_str/ft_substr.c
+				$(SRC_DIR)ft_str/ft_substr.c\
+				$(SRC_DIR)ft_str/ft_strdup_double.c\
 
 FT_TO_DIR	=	$(SRC_DIR)ft_to/ft_atoi.c\
 				$(SRC_DIR)ft_to/ft_itoa.c\

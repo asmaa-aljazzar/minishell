@@ -1,39 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   signals.c                                          :+:      :+:    :+:   */
+/*   free_2d.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/27 16:31:19 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/27 18:21:41 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/28 18:41:38 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/28 18:41:55 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// signals.c
-
 #include "minishell.h"
 
-int g_signal_received = SIG_NONE;
-
-void handle_sigint(int sig)
+void free_2d(char **arr)
 {
-    (void)sig;
-    g_signal_received = SIG_INT;
-    write(1, "\n", 1);
-    rl_on_new_line();
-    rl_replace_line("", 0);
-    rl_redisplay();
-}
+    int i;
 
-void handle_sigquit(int sig)
-{
-    (void)sig;
-    g_signal_received = SIG_QUIT;
-}
-
-void setup_signals(void)
-{
-    signal(SIGINT, handle_sigint);
-    signal(SIGQUIT, handle_sigquit);
+    if (!arr)
+        return;
+    i = 0;
+    while (arr[i])
+    {
+        free(arr[i]);  // <-- only free if you own these strings separately!
+        arr[i] = NULL;
+        i++;
+    }
+    free(arr);
 }

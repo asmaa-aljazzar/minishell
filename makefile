@@ -27,6 +27,7 @@ FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
 ENV_DIR					=	$(MINILIB_DIR)env/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
+HEREDOC_DIR				= 	$(MINILIB_DIR)heredoc/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
 TOKENIZE_PARS_DIR 		=	$(PARS_DIR)tokenize/
@@ -46,6 +47,7 @@ INIT_SRC	=	$(INIT_DIR)init.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_env.c\
+				$(FREE_DIR)free_2d.c\
 				$(FREE_DIR)free_tokens.c\
 				$(FREE_DIR)free_token.c\
 				$(FREE_DIR)free_commands.c\
@@ -112,15 +114,19 @@ REDIR_SRC		=	$(REDIR_DIR)child_re.c\
 					$(REDIR_DIR)redir_compare1.c\
 					$(REDIR_DIR)redir_compare2.c\
 
+HEREDOC_SRC		=	$(HEREDOC_DIR)heredoc.c\
+
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(ENV_SRC)\
 				$(INIT_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
+				$(HEREDOC_SRC)\
 				$(MINILIB_DIR)signals.c\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
+			$(DEBUG_DIR)debug_check_cmd_heredoc.c\
 
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
