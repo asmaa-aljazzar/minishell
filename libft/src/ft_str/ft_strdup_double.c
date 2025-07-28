@@ -1,26 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exit_command.c                                     :+:      :+:    :+:   */
+/*   ft_strdup_double.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/24 15:30:02 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/28 18:43:57 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/28 18:35:08 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/28 18:35:31 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/libft.h"
 
-void exit_command(t_minishell *minishell)
+char **ft_strdup_double(char **src)
 {
-	if (strcmp(minishell->input, "exit") == 0)
-	{
-		check_to_free(minishell);
-		free_env(minishell->env);
-		free_2d(minishell->envp);
-		rl_clear_history();
-		printf("exit\n");
-		exit(0);
-	}
+    int i = 0;
+    char **copy;
+
+    while (src[i])
+        i++;
+    copy = malloc(sizeof(char *) * (i + 1));
+    if (!copy)
+        return NULL;
+    i = 0;
+    while (src[i])
+    {
+        copy[i] = ft_strdup(src[i]);
+        i++;
+    }
+    copy[i] = NULL;
+    return copy;
 }

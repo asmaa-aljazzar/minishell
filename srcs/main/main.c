@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/27 17:01:37 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 18:39:24 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,8 +21,9 @@ int main(int ac, char **av, char **environ)
 	(void)ac;
 	(void)av;
 	t_minishell minishell;
-
 	init(&minishell);
+	
+	minishell.envp = ft_strdup_double (environ);
 	minishell.env = init_env(&minishell, environ);
 	main_loop(&minishell);
 	rl_clear_history();

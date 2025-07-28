@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/24 15:32:00 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/27 17:01:42 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/28 14:11:15 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@
 
 void main_loop(t_minishell *minishell)
 {
-	print_banner ();
+	print_banner();
 	while (1)
 	{
 		setup_signals();
@@ -35,6 +35,11 @@ void main_loop(t_minishell *minishell)
 		merge_words(minishell);
 		argv_for_commands(minishell);
 		tokens_to_commands(minishell);
+		if (!process_all_heredocs(minishell))
+		{
+			check_to_free(minishell);
+			continue;
+		}
 		debug_Display_t_command(minishell);
 		check_to_free(minishell);
 	}
