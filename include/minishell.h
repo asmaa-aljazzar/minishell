@@ -19,6 +19,7 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 #include <fcntl.h>
+#include <sys/stat.h>   // For stat function and struct stat
 
 //! Could delete 
 //.h + debug folder
@@ -121,9 +122,11 @@ typedef struct s_minishell
     t_token **tok;
     char buff[1024];
     t_env *env;
+    char **envp;
     int exit_code;
 } t_minishell;
 
+//extern struct stat info; // Structure to hold info about the file
 //* ----------- [ Functions ] -----------
 
 //? [[[[[[[[[[ Main ]]]]]]]]]]]
@@ -131,22 +134,32 @@ typedef struct s_minishell
 void main_fork(t_minishell *minishell);
 void main_redirection(t_minishell *shell);
 
+
 //? [[[[[[[[[[ Commands ]]]]]]]]]]]
+void compare_commands (t_minishell *minishell);
+void tokens_to_commands(t_minishell *minishell);
+
 
 //? [[[[[[[[[[[[[ Env ]]]]]]]]]]]]]
+void expand_tokens(t_minishell *minishell);
+char *expand_variable(t_minishell *minishell, char *token);
+void env_builtin(t_minishell *minishell);
+void print_sorted_env(t_minishell *minishell);
+
 
 //? [[[[[[[[[[[[ Free ]]]]]]]]]]]]]
-void ft_exit(t_minishell *minishell, char *str, int status);
-//
-void free_2d(char **arr);
-//
-void free_env(t_env *env);
-//
-void free_tokens(t_token **arr);
-//
-void free_commands(t_minishell *minishell);
-//
+// #### 1. free all allocated memore
+// - Commands array
+// - Tokens array
+// - Input String
+// #### 2. Exit from the program if the input is [ exit ]
 void check_to_free(t_minishell *minishell);
+void ft_exit(t_minishell *minishell, char *str, int status);
+void free_2d(char **arr);
+void free_env(t_env *env);
+void free_tokens(t_token **arr);
+void free_commands(t_minishell *minishell);
+
 
 //? [[[[[[[[[[[[[[ Init ]]]]]]]]]]]]]]]
 //#### Initialize some of elements in the antshell structure.
@@ -158,40 +171,50 @@ void init(t_minishell *minishell);
 //- It is also count the number of tokens
 //- exit if error occured
 void init_shell(t_minishell *minishell);
+void init_commands(t_minishell *minishell);
+// void init_tokens (t_minishell *minishell);
+t_env *init_env(t_minishell *minishell, char **env);
+
 
 //? [[[[[[[[[[[[] Parsing ]]]]]]]]]]]]]
 void tokenize_pipe_op(t_minishell *minishell, int *k, int *i);
-//
-//* #### while loop iterates over the linked list of commands in shell->cmd ###
-//- processing input/output redirections for each command in the pipeline.
+void count_pipe(t_minishell *minishell);
+void get_tokens(t_minishell *minishell);
+void tokens_to_commands(t_minishell *minishell);
+void merge_words(t_minishell *ms);
+void tokenize_redir_op1(t_minishell *minishell, int *k, int *i);
+void tokenize_redir_op2(t_minishell *minishell, int *k, int *i);
+void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued);
+void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
+
+
+//? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
+//* #### // This function checks if the current command requires input or output redirection and applies the redirection before command execution.###
+// It loops over all commands in the shell (currently used for one command only).
 //- stdout -> with the file descriptor of the output file.
 //- stdin -> with the file descriptor of the input file.
 //void redirection(t_minishell *minishell);
-void input_redirection(t_command *cmd);
-void output_redirection(t_command *cmd);
+void    input_redirection(t_command *cmd);
+void    handle_output_redirection(t_command *cmd);
+void    output_redirection_trunc(t_command *cmd);
+void    output_redirection_append(t_command *cmd);
+int     handell_redirection(t_minishell *shell);
+//int is_file_and_exec(char *file);
+//int handle_empty_cmd(t_minishell *shell);
 
-void tokenize_redir_op1(t_minishell *minishell, int *k, int *i);
-//
-void tokenize_redir_op2(t_minishell *minishell, int *k, int *i);
-//
-void tokenize_quoted(t_minishell *minishell, int *k, int *i, int glued);
-//
-void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
 
-//? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
-// #### loop over tokens array to check for redirections
-// void redirection(t_minishell *minishell);
-
-// //
+//? [[[[[[[[[[ Execution one command ]]]]]]]]]]]]
 //* ### execution one command 
 //- Single command executed
 //- check its builtin 
 //- External command with path resolution
 int exec_command(t_minishell *shell);
-//int is_builtin(char *cmd);
-//int exec_builtin(t_minishell *shell);
+int is_builtin(t_command *cmd);
+int exec_builtin(t_minishell *shell);
 char **env_to_envp(t_env *env);
 
+
+//? [[[[[[[[[[ Path ]]]]]]]]]]]]
 //* get path for command 
 //- check if input is already path  and excutable
 //- if not token path after : 
@@ -204,34 +227,17 @@ char    *find_path(t_env *env);
 char    *find_cmd_path(char *cmd, char *path_env);
 char *join_path(const char *path, const char *cmd);
 
-// void redir_compare1(t_minishell *minishell);
-// void redir_compare2(t_minishell *minishell);
-// void child_re(t_minishell *minishell);
-// void parent_re(t_minishell *minishell);
-// void call_echo(t_minishell *minishell, int op);
-// void call_pwd(t_minishell *minishell);
-// void call_env(t_minishell *minishell);
-//
-//
-// void compare_commands (t_minishell *minishell);
-//
-// #### 1. free all allocated memore
-// - Commands array
-// - Tokens array
-// - Input String
-// #### 2. Exit from the program if the input is [ exit ]
-void init_commands(t_minishell *minishell);
-void count_pipe(t_minishell *minishell);
-void get_tokens(t_minishell *minishell);
-// void init_tokens (t_minishell *minishell);
-t_env *init_env(t_minishell *minishell, char **env);
-void expand_tokens(t_minishell *minishell);
-char *expand_variable(t_minishell *minishell, char *token);
-void env_builtin(t_minishell *minishell);
-void export_builtin(t_minishell *minisell);
-void unset_builtin(t_minishell *minisell);
-void print_sorted_env(t_minishell *minishell);
-void tokens_to_commands(t_minishell *minishell);
-void merge_words(t_minishell *ms);
-int validate_commands(t_command *cmds);
+
+//? [[[[[[[[[[ Builtin ]]]]]]]]]]]]
+void    pwd_builtin(t_minishell *minishell);
+void    cd_builtin(t_minishell *shell);
+void    echo_builtin(t_minishell *shell, int option);
+void    exit_builtin(t_minishell *shell);
+void    historu_builtin(t_minishell *shell);
+void    export_builtin(t_minishell *minisell);
+void    unset_builtin(t_minishell *minisell);
+
+
+//int validate_commands(t_command *cmds);
+void free_one_cmd(t_minishell *shell);
 #endif

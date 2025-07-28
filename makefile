@@ -6,7 +6,7 @@
 #    By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/02 22:14:48 by aaljazza          #+#    #+#              #
-#    Updated: 2025/07/24 15:25:54 by baah-moh         ###   ########.fr        #
+#    Updated: 2025/07/26 21:23:56 by baah-moh         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -40,8 +40,8 @@ ENV_DIR					=	$(MINILIB_DIR)env/
 PATH_DIR				=	$(MINILIB_DIR)path/
 EXEC_ONE_CMD_DIR		=	$(MINILIB_DIR)execution_one_cmd/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
-EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
+BUILTIN_DIR				=	$(MINILIB_DIR)builtin/
 
 # Source Files
 
@@ -61,10 +61,8 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_commands.c\
 				$(FREE_DIR)check_to_free.c\
 
-ENV_SRC		=	$(ENV_DIR)export_builtin.c\
-				$(ENV_DIR)env_builtin.c\
+ENV_SRC		=	$(ENV_DIR)env_builtin.c\
 				$(ENV_DIR)print_sorted_env.c\
-				$(ENV_DIR)unset_builtin.c\
 				$(ENV_DIR)expand_tokens.c\
 				$(ENV_DIR)expand_variable.c\
 
@@ -87,29 +85,31 @@ PARS_SRC	=	$(PARS_DIR)get_tokens.c\
 PATH_SRS	=	$(PATH_DIR)already_path.c\
 				$(PATH_DIR)is_executable.c\
 				$(PATH_DIR)get_path.c\
-				$(PATH_DIR)find_cmd_path.c \
+				$(PATH_DIR)find_cmd_path.c\
 				$(PATH_DIR)find_path.c\
 				$(PATH_DIR)join_path.c\
 
-EXEC_ONE_CMD_SRE	=\
-						$(EXEC_ONE_CMD_DIR)env_to_envp.c\
+EXEC_ONE_CMD_SRE	=	$(EXEC_ONE_CMD_DIR)env_to_envp.c\
 						$(EXEC_ONE_CMD_DIR)exec_command.c\
 						$(EXEC_ONE_CMD_DIR)exec_builtin.c\
 						$(EXEC_ONE_CMD_DIR)is_builtin.c\
 
-COMMANDS_SRC	=	$(COMMANDS_DIR)commands.c\
-					$(COMMANDS_DIR)call_pwd.c\
-					$(COMMANDS_DIR)call_echo.c\
-					$(COMMANDS_DIR)tokens_to_commands.c\
-					$(COMMANDS_DIR)compare_commands.c 
-					
+COMMANDS_SRC	=	$(COMMANDS_DIR)tokens_to_commands.c\
+					$(COMMANDS_DIR)compare_commands.c\
 
-REDIR_SRC		=	$(REDIR_DIR)child_re.c\
-					$(REDIR_DIR)parent_re.c\
+REDIR_SRC		=	$(REDIR_DIR)handle_empty_cmd.c\
 					$(REDIR_DIR)input_redirection.c\
 					$(REDIR_DIR)output_redirection.c\
-					$(REDIR_DIR)redir_compare1.c\
-					$(REDIR_DIR)redir_compare2.c\
+					$(REDIR_DIR)is_file_and_exec.c\
+					$(REDIR_DIR)handell_redirection.c \
+
+BUILTIN_SRC		=	$(BUILTIN_DIR)history_builtin.c\
+					$(BUILTIN_DIR)pwd_builtin.c\
+					$(BUILTIN_DIR)exit_builtin.c\
+					$(BUILTIN_DIR)echo_builtin.c\
+					$(BUILTIN_DIR)unset_builtin.c\
+					$(BUILTIN_DIR)export_builtin.c\
+					$(BUILTIN_DIR)cd_builtin.c\
 
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(ENV_SRC)\
@@ -117,15 +117,16 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
+				$(EXEC_ONE_CMD_SRE)\
+				$(PATH_SRS)\
+				$(BUILTIN_SRC)\
 
-MAIN_SRC = $(MAIN_DIR)main.c\
+MAIN_SRC =	$(MAIN_DIR)main.c\
 			$(MAIN_DIR)main_fork.c\
-			$(MAIN_DIR)main_redirection.c\
-		#    $(MAIN_DIR)compare_input.c\
-# PARS_DIR	= 	$(PARS)parse_and_execute.c
+			$(MAIN_DIR)main_redirection.c
 
 
-SRCS	= $(MAIN_SRC) $(MINILIB_SRC) $(PATH_SRS) $(EXEC_ONE_CMD_SRE)
+SRCS	= $(MAIN_SRC) $(MINILIB_SRC)
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 

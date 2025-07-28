@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_exit.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/03 00:42:57 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/23 17:04:47 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/27 02:10:03 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,11 @@ void ft_exit(t_minishell *minishell, char *str, int status)
     {
         free_env(minishell->env);
         minishell->env = NULL;
+    }
+    if (minishell->envp)
+    {
+        free_2d(minishell->envp);
+        minishell->envp = NULL;
     }
     
     rl_clear_history();

@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:49:10 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 15:22:21 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/26 17:23:49 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@
 void env_builtin(t_minishell *minishell)
 {
     t_env *curr = minishell->env;
+    printf("call env\n");
     while (curr)
     {
         if (curr->value)

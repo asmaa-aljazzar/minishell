@@ -6,11 +6,31 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/16 14:48:52 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 14:34:13 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/28 16:34:25 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
+
+char **ft_strdup_double(char **src)
+{
+    int i = 0;
+    char **copy;
+
+    while (src[i])
+        i++;
+    copy = malloc(sizeof(char *) * (i + 1));
+    if (!copy)
+        return NULL;
+    i = 0;
+    while (src[i])
+    {
+        copy[i] = ft_strdup(src[i]);
+        i++;
+    }
+    copy[i] = NULL;
+    return copy;
+}
 
 // System environment (environ)  -->  Your t_env linked list
 //           (readonly)          -->  (owned by your shell)
@@ -25,6 +45,11 @@ t_env *init_env(t_minishell *minishell, char **environ)
 
     i = 0;
     head = NULL;
+    minishell->envp = ft_strdup_double(environ);
+    {
+        if(!minishell->envp)
+            return (NULL);
+    }
     while (environ[i])
     {
         equalOpPosition = ft_strchr(environ[i], '=');

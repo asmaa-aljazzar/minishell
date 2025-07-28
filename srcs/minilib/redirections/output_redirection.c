@@ -6,33 +6,63 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/21 18:38:56 by baah-moh          #+#    #+#             */
-/*   Updated: 2025/07/22 16:56:25 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/26 22:42:02 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void output_redirection(t_command *cmd)
+void output_redirection_append(t_command *cmd)
 {
-    if (cmd->output_type == OUTPUT_FILE)
-    {
-        int fd = open(cmd->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        int     fd;
+
+        if (cmd->output_type != OUTPUT_APPEND)
+        return;
+
+        fd = open(cmd->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
         if (fd < 0)
         {
-            perror(cmd->output_file);
-            exit(ERR_COMMAND_NOT_FOUND);
+                ft_putstr_fd("minishell: ", STDERR_FILENO);
+                perror(cmd->output_file);
+                exit(EXIT_FAILURE);
         }
-        dup2(fd, STDOUT_FILENO);// redirects the standard output (stdout) to the file.
-        close(fd);
-    }
-    else if (cmd->output_type == OUTPUT_APPEND)
-    {
-        int fd = open(cmd->output_file, O_WRONLY | O_CREAT | O_APPEND, 0644);
-        if (fd < 0) {
-            perror(cmd->output_file);
-            exit(ERR_COMMAND_NOT_FOUND);
+        if (dup2(fd, STDOUT_FILENO) < 0)
+        {
+                ft_putstr_fd("minishell: ", STDERR_FILENO);
+                perror("dup2");
+                close(fd);
+                exit(EXIT_FAILURE);
         }
-        dup2(fd, STDOUT_FILENO);
         close(fd);
-    }
+}
+
+void output_redirection_trunc(t_command *cmd)
+{
+        int fd;
+
+        if (cmd->output_type != OUTPUT_FILE)
+        return;
+
+        fd = open(cmd->output_file, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+        if (fd < 0)
+        {
+                ft_putstr_fd("minishell: ", STDERR_FILENO);
+                perror(cmd->output_file);
+                exit(EXIT_FAILURE);
+        }
+        if (dup2(fd, STDOUT_FILENO) < 0)
+        {
+                ft_putstr_fd("minishell: ", STDERR_FILENO);
+                perror("dup2");
+                close(fd);
+                exit(EXIT_FAILURE);
+        }
+        close(fd);
+}
+void handle_output_redirection(t_command *cmd)
+{
+        if (cmd->output_type == OUTPUT_FILE) 
+                output_redirection_trunc(cmd);
+        else if (cmd->output_type == OUTPUT_APPEND)
+                output_redirection_append(cmd);
 }

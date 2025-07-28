@@ -6,14 +6,51 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:24:08 by baah-moh          #+#    #+#             */
-/*   Updated: 2025/07/23 23:27:40 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/27 01:32:30 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-// #include "minishell.h"
+#include "minishell.h"
 
-// int exec_builtin(t_minishell *shell)
-// {
-//     (void)shell;
-//     return (1);
-// }
+int exec_builtin(t_minishell *shell)
+{
+        // if (is_builtin(shell->cmd) == 1)
+        // {
+        //     return (1);
+        // }
+        // if (is_builtin(shell->cmd) == 2)
+        // {
+        //     return (1);
+        // }
+        // if (is_builtin(shell->cmd) == 3)
+        // {
+        //     return (1);
+        // }
+        // if (is_builtin(shell->cmd) == 4)
+        // {
+        //     return (1);
+        // }
+        // if (is_builtin(shell->cmd) == 5)
+        // {
+        //     return (1);
+        // }
+        // if (is_builtin(shell->cmd) == 5)
+        // {
+        //     return (1);
+        // }
+        if ((is_builtin(shell->cmd)) == 6)
+        {
+            env_builtin(shell);
+            return(1);
+        }
+        if (is_builtin(shell->cmd) == 7)
+        {
+            pwd_builtin(shell);
+            return(1);
+        }
+        // if (is_builtin(shell->cmd) == 8)
+        // {
+        //     return(1);
+        // }
+    return (0);
+}

@@ -6,7 +6,7 @@
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:22 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/24 15:26:27 by baah-moh         ###   ########.fr       */
+/*   Updated: 2025/07/28 16:24:35 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,9 @@ void debug_Display_t_command(t_minishell *minishell)
 		cmd = cmd->next;
 		cmd_num++;
 	}
+	
 }
+
 
 //? Steps:
 //* 1. Initialize some of elements in the structure.
@@ -108,6 +110,7 @@ int main(int ac, char **av, char **environ)
         if (strcmp(minishell.input, "exit") == 0)
         {
             check_to_free(&minishell);
+			free_2d(minishell.envp);
             free_env(minishell.env);
             rl_clear_history();
             printf("exit\n");

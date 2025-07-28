@@ -1,28 +1,18 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_env.c                                         :+:      :+:    :+:   */
+/*   exit_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/23 17:03:13 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/28 16:21:28 by baah-moh         ###   ########.fr       */
+/*   Created: 2025/07/26 18:09:00 by baah-moh          #+#    #+#             */
+/*   Updated: 2025/07/26 18:14:31 by baah-moh         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-void free_env(t_env *env)
+void    exit_builtin(t_minishell *shell)
 {
-    t_env *current = env;
-    t_env *next;
-
-    while (current)
-    {
-        next = current->next;
-        free(current->name);
-        free(current->value);
-        free(current);
-        current = next;
-    }
+    (void)shell;
 }
