@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/28 23:50:25 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/29 12:41:37 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -162,11 +162,15 @@ void setup_signals(void);
 void count_pipe(t_minishell *minishell);
 
 void print_sorted_env(t_minishell *minishell); // Todo
-//*#### Run exit command
-// - Free the shell
-// - Clear the history
-// - Exit the shell
-void exit_command(t_minishell *minishell);
+
+//*#### exit_command
+//- Handles the `exit` built-in logic.
+//- Only valid if "exit" is the first token.
+//- If no args: exits with 0.
+//- If one numeric arg: exits with (arg % 256).
+//- If one non-numeric arg: exits with 0.
+//- If more than one arg: prints error, does not exit.
+void exit_builtin(t_minishell *minishell);
 
 // Todo: add comments
 void pwd_builtin(t_minishell *shell);
@@ -176,9 +180,6 @@ int is_builtin(t_command *cmd);
 
 // Todo: add comments
 void    cd_builtin(t_minishell *shell);
-
-// Todo: add comments
-void    exit_builtin(t_minishell *shell);
 
 // Todo: add comments
 void compare_commands(t_minishell *shell);
@@ -484,15 +485,13 @@ char **add_to_list(char **old_list, char *value);
 //- return 0 otherwise. 
 int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
 
-//?[[[[[[[[[[[[[ HEREDOC ]]]]]]]]]]]]
+//?[[[[[[[[[[[[[ Heredoc ]]]]]]]]]]]]
 char *expand_heredoc_variables(t_minishell *shell, char *content);
 char *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
 int create_heredoc_pipe(char *content);
 int should_expand_heredoc(t_minishell *shell, char *delimiter);
 int setup_heredoc_input(t_command *cmd);
 int process_all_heredocs(t_minishell *shell);
-
-
 
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]

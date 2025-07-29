@@ -1,15 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   add_to_list.c                                      :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 02:49:28 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/26 13:35:26 by aaljazza         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
 #include "minishell.h"
 
 // [ free(old_list) ] Only pointer, not the strings inside
@@ -23,8 +11,13 @@ char **add_to_list(char **old_list, char *value)
 	char **new_list = malloc(sizeof(char *) * (len + 2));
 	if (!new_list)
 		return NULL;
-	for (int i = 0; i < len; i++)
+	int i;
+	i = 0;
+	while (i < len)
+	{
 		new_list[i] = old_list[i];
+		i++;
+	}
 	new_list[len] = ft_strdup(value);
 	new_list[len + 1] = NULL;
 	free(old_list); 
