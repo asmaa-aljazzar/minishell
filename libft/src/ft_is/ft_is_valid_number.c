@@ -1,27 +1,33 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   free_file_list.c                                   :+:      :+:    :+:   */
+/*   ft_is_valid_number.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/07/26 13:12:11 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/29 12:55:52 by aaljazza         ###   ########.fr       */
+/*   Created: 2025/07/29 12:06:56 by aaljazza          #+#    #+#             */
+/*   Updated: 2025/07/29 12:09:42 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "minishell.h"
+#include "../../includes/libft.h"
 
-void free_file_list(char **list)
+int ft_is_valid_number(char *str)
 {
-    if (!list)
-        return;
     int i;
-    i = 0;
-    while (list[i])
+
+    i = 0;    
+    while (str[i] == ' ' || str[i] == '\t')
+        i++;
+    if (str[i] == '+' || str[i] == '-')
+        i++;
+    if (!str[i])
+        return (0);
+    while (str[i])
     {
-        free(list[i]);
+        if (str[i] < '0' || str[i] > '9')
+            return (0);
         i++;
     }
-    free(list);
+    return (1);
 }

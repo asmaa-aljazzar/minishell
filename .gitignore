@@ -3,4 +3,3 @@
 */*.o
 libft.a
 minishell
-heredoc.c

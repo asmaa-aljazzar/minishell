@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pwd_biultin.c                                      :+:      :+:    :+:   */
+/*   pwd_builtin.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:10:45 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/28 22:00:01 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/29 10:46:16 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,7 +18,7 @@ void pwd_builtin(t_minishell *shell)
 	t_command *cmd;
 
 	cmd = shell->cmd;
-	printf("call pwd\n");
+	// printf("call pwd\n");
 	if (getcwd(shell->buff, sizeof(shell->buff)) != NULL) 
 	{
 		if (cmd->output_type == OUTPUT_NONE)
