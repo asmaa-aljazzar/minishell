@@ -176,6 +176,9 @@ void exit_builtin(t_minishell *minishell);
 void pwd_builtin(t_minishell *shell);
 
 // Todo: add comments
+void echo_builtin(t_minishell *shell);
+
+// Todo: add comments
 int is_builtin(t_command *cmd);
 
 // Todo: add comments
@@ -258,6 +261,8 @@ void export_builtin(t_minishell *minisell);
 
 //
 void unset_builtin(t_minishell *minisell);
+//
+void update_env_value(t_env *env, const char *name, const char *new_value);
 
 //? [[[[[[[[[[[[ Free ]]]]]]]]]]]]]
 

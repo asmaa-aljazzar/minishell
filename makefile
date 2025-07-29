@@ -68,6 +68,9 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)get_env_value.c\
 				$(ENV_DIR)append_and_free.c\
 				$(ENV_DIR)append_result.c\
+				$(ENV_DIR)update_env_value.c\
+				
+				
 
 EXEC_ONE_CMD_SRC =	$(EXEC_ONE_CMD_DIR)exec_builtin.c\
 					$(EXEC_ONE_CMD_DIR)exec_command.c\
@@ -114,7 +117,9 @@ PARS_SRC	=	$(CMD_PARS_SRC)\
 COMMANDS_SRC	=	$(COMMANDS_DIR)cd_builtin.c\
 					$(COMMANDS_DIR)exit_builtin.c\
 					$(COMMANDS_DIR)pwd_builtin.c\
-					$(COMMANDS_DIR)compare_commands.c 
+					$(COMMANDS_DIR)compare_commands.c\
+					$(COMMANDS_DIR)echo_builtin.c\
+					
 
 REDIR_SRC		=	$(REDIR_DIR)handell_redirection.c\
 					$(REDIR_DIR)input_redirection.c\
