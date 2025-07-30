@@ -112,11 +112,11 @@ PARS_SRC	=	$(CMD_PARS_SRC)\
 				$(PARS_DIR)read_quoted_content.c\
 				$(PARS_DIR)allocate_normal_word.c\
 
-COMMANDS_SRC	=	$(COMMANDS_DIR)cd_builtin.c\
+COMMANDS_SRC	=	$(COMMANDS_DIR)echo_builtin.c\
 					$(COMMANDS_DIR)exit_builtin.c\
 					$(COMMANDS_DIR)pwd_builtin.c\
 					$(COMMANDS_DIR)compare_commands.c\
-					$(COMMANDS_DIR)echo_builtin.c\
+					$(COMMANDS_DIR)cd_builtin.c\
 					
 
 REDIR_SRC		=	$(REDIR_DIR)handell_redirection.c\

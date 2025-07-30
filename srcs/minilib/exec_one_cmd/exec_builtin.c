@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   exec_buitin.c                                      :+:      :+:    :+:   */
+/*   exec_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:24:08 by baah-moh          #+#    #+#             */
-/*   Updated: 2025/07/28 22:38:34 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:20:54 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ int exec_builtin(t_minishell *shell)
         // }
         if (is_builtin(shell->cmd) == 5)
         {
-            cd_builtin(shell);
+            // cd_builtin(shell);
             return (1);
         }
         // if (is_builtin(shell->cmd) == 5)

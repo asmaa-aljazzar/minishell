@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   call_echo.c                                        :+:      :+:    :+:   */
+/*   echo_builtin.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/09 07:09:34 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/11 21:32:42 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:15:43 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,7 +39,7 @@ void echo_builtin(t_minishell *shell)
 
 	cmd = shell->cmd;
     n = 1;
-	printf("call echo\n");
+	// printf("call echo\n");
      check_n(shell, &i, &n);
 
 	while(cmd->argv[i])
