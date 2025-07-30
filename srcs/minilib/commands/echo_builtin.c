@@ -12,30 +12,45 @@
 
 #include "minishell.h"
 
-// void call_echo(t_minishell *minishell, int op)
-// {
-    // int fd;
-    // int i;
-	
-    // fd = minishell->fd_out;
-    // if (fd == -1)
-	// fd = 1;
-    // i = 1;
-    // if (op)
-    // 	i++;
-    // while (minishell->cmd[i])
-    // {
-	//     if (write(fd, minishell->cmd[i], ft_strlen(minishell->cmd[i])) == -1)
-	//     {
-	//     	printf("error\n");
-	// 	perror("ECHO error\n");
-	// 	exit(1);
-	//     }
-	//     i++;
-	//     if (!minishell->cmd[i])
-	//     	break;
-	//     write(fd, " ", 1);
-    // }
-    // if (!op)
-    //     write(fd, "\n", 1);
-// }
+void check_n(t_minishell *shell,int *i, int *n)
+{
+    t_command *cmd;
+    int j;
+
+    cmd = shell->cmd;
+    *i = 1;
+    while(cmd->argv[*i] && ft_strncmp(cmd->argv[*i], "-n", 2) == 0)
+    {
+        j = 2;
+        while (cmd->argv[*i][j] == 'n')
+            j++;
+        if(cmd->argv[*i][j] != '\0')
+            break;
+        *n = 0;
+        (*i)++;
+    }
+
+}
+void echo_builtin(t_minishell *shell)
+{
+	t_command *cmd;
+	int i;
+    int n;
+
+	cmd = shell->cmd;
+    n = 1;
+	printf("call echo\n");
+     check_n(shell, &i, &n);
+
+	while(cmd->argv[i])
+    {
+            write(STDOUT_FILENO, cmd->argv[i], ft_strlen(cmd->argv[i]));
+                if(cmd->argv[i + 1])
+                    write(STDOUT_FILENO, " ", 1);
+            i++;
+    }
+    if (n)
+		write(STDOUT_FILENO, "\n", 1);
+    
+    shell->exit_code = 0;
+}

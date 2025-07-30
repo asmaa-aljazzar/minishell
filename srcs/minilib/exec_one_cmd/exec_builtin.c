@@ -14,10 +14,11 @@
 
 int exec_builtin(t_minishell *shell)
 {
-        // if (is_builtin(shell->cmd) == 1)
-        // {
-        //     return (1);
-        // }
+        if (is_builtin(shell->cmd) == 1)
+        {
+            echo_builtin(shell);
+            return (1);
+        }
         // if (is_builtin(shell->cmd) == 2)
         // {
         //     return (1);
@@ -30,10 +31,11 @@ int exec_builtin(t_minishell *shell)
         // {
         //     return (1);
         // }
-        // if (is_builtin(shell->cmd) == 5)
-        // {
-        //     return (1);
-        // }
+        if (is_builtin(shell->cmd) == 5)
+        {
+            cd_builtin(shell);
+            return (1);
+        }
         // if (is_builtin(shell->cmd) == 5)
         // {
         //     return (1);

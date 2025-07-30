@@ -16,14 +16,16 @@
 void pwd_builtin(t_minishell *shell)
 {
 	t_command *cmd;
+	char *cwd;
 
 	cmd = shell->cmd;
-	// printf("call pwd\n");
-	if (getcwd(shell->buff, sizeof(shell->buff)) != NULL) 
+	cwd = getcwd(NULL, 0);
+	 printf("call pwd\n");
+	if (cwd) 
 	{
-		if (cmd->output_type == OUTPUT_NONE)
-			cmd->output_type = STDOUT_FILENO;
-		write(STDOUT_FILENO, shell->buff, ft_strlen(shell->buff));
+		// if (cmd->output_type == OUTPUT_NONE)
+		// 	cmd->output_type = STDOUT_FILENO;
+		write(STDOUT_FILENO, cwd, ft_strlen(cwd));
 		write(STDOUT_FILENO, "\n", 1);
 	}
 	else
@@ -31,4 +33,5 @@ void pwd_builtin(t_minishell *shell)
                 perror("getcwd() error");
 				shell->exit_code = 1;
     }
+	free(cwd);
 }
