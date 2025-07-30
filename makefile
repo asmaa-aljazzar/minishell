@@ -109,8 +109,6 @@ PARS_SRC	=	$(CMD_PARS_SRC)\
 				$(PARS_DIR)read_quoted_content.c\
 				$(PARS_DIR)allocate_normal_word.c\
 
-
-
 COMMANDS_SRC	=	$(COMMANDS_DIR)cd_builtin.c\
 					$(COMMANDS_DIR)exit_builtin.c\
 					$(COMMANDS_DIR)pwd_builtin.c\
@@ -127,7 +125,11 @@ PATH_SRC		=	$(PATH_DIR)already_path.c\
 					$(PATH_DIR)is_executable.c\
 					$(PATH_DIR)get_path.c\
 
-HEREDOC_SRC		=	$(HEREDOC_DIR)heredoc.c\
+HEREDOC_SRC		=	$(HEREDOC_DIR)process_all_heredocs.c\
+					$(HEREDOC_DIR)process_discarded_heredocs.c\
+					$(HEREDOC_DIR)process_final_heredoc.c\
+					$(HEREDOC_DIR)heredoc.c\
+
 
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(ENV_SRC)\
