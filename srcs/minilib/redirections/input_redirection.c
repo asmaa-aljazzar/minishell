@@ -19,14 +19,12 @@ void input_redirection(t_command *cmd)
             if (fd < 0)
             {
                 perror(cmd->input_file);
-                //free everything
                 exit(ERR_COMMAND_NOT_FOUND);
             } 
             if((dup2(fd, STDIN_FILENO) < 0)) 
             {
                     perror("dup2");
                     close(fd);
-                    //free everything
                     exit(EXIT_FAILURE);
             }
             //redirects standard input (stdin) to come from the file.

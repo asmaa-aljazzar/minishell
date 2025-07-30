@@ -19,18 +19,18 @@ int is_builtin(t_command *cmd)
 		return (0);
 
     i = 0;
-        if (ft_strncmp(cmd->argv[i], "echo", 5) == 0)
-            return(1);
+        // if (ft_strncmp(cmd->argv[i], "echo", 5) == 0)
+        //     return(1);
         // else if(ft_strncmp(cmd->argv[i], "export", 7) == 0)
         //     return(2);
         // else if(ft_strncmp(cmd->argv[i], "exit", 5) == 0)
         //     return(3);
         // else if(ft_strncmp(cmd->argv[i], "unset", 6) == 0)
         //     return(4);
+        // else if(ft_strncmp(cmd->argv[i], "cd", 3) == 0)
+        //     return(5);
         if(ft_strncmp(cmd->argv[i], "env", 4) == 0)
             return (6);
-        else if(ft_strncmp(cmd->argv[i], "cd", 3) == 0)
-            return(5);
         else if(ft_strncmp(cmd->argv[i], "pwd", 4) == 0)
             return(7);
         // else if(ft_strncmp(cmd->argv[i], "history", 8) == 0)

@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/23 13:24:08 by baah-moh          #+#    #+#             */
-/*   Updated: 2025/07/30 10:20:54 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/30 10:42:48 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,10 @@
 
 int exec_builtin(t_minishell *shell)
 {
-        if (is_builtin(shell->cmd) == 1)
-        {
-            echo_builtin(shell);
-            return (1);
-        }
+        // if (is_builtin(shell->cmd) == 1)
+        // {
+        //     return (1);
+        // }
         // if (is_builtin(shell->cmd) == 2)
         // {
         //     return (1);
@@ -36,6 +35,10 @@ int exec_builtin(t_minishell *shell)
             // cd_builtin(shell);
             return (1);
         }
+        // if (is_builtin(shell->cmd) == 5)
+        // {
+        //     return (1);
+        // }
         // if (is_builtin(shell->cmd) == 5)
         // {
         //     return (1);

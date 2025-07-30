@@ -29,14 +29,4 @@ void check_to_free(t_minishell *minishell)
         free(minishell->input);
         minishell->input = NULL;
     }
-    if (minishell->envp)
-    {
-        free_2d(minishell->envp);
-        minishell->envp = NULL;
-    }
-    if (minishell->env)
-    {
-        free_env(minishell->env);
-        minishell->env = NULL;
-    }
 }
