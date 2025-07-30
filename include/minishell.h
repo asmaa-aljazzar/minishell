@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/29 12:41:37 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/07/29 14:52:28 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -486,12 +486,21 @@ char **add_to_list(char **old_list, char *value);
 int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
 
 //?[[[[[[[[[[[[[ Heredoc ]]]]]]]]]]]]
+
+//* #### This will process [ Form commands struct ]:
+//- Discarded heredocs.
+//- Final heredoc.
+int process_all_heredocs(t_minishell *shell);
+
+int process_discarded_heredocs(t_minishell *shell, t_command *cmd);
+
+int process_final_heredoc(t_minishell *shell, t_command *cmd);
+
 char *expand_heredoc_variables(t_minishell *shell, char *content);
 char *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
 int create_heredoc_pipe(char *content);
 int should_expand_heredoc(t_minishell *shell, char *delimiter);
 int setup_heredoc_input(t_command *cmd);
-int process_all_heredocs(t_minishell *shell);
 
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
