@@ -3,3 +3,4 @@
 */*.o
 libft.a
 minishell
+*.out
