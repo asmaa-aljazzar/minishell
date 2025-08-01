@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   signals.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: aaljazza <aaljazza@student.42.fr>          +#+  +:+       +#+        */
+/*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/27 16:31:19 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/27 18:21:41 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/08/01 18:45:22 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ void handle_sigint(int sig)
 void handle_sigquit(int sig)
 {
     (void)sig;
-    g_signal_received = SIG_QUIT;
+    // g_signal_received = SIG_QUIT;
 }
 
 void setup_signals(void)

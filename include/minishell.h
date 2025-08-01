@@ -6,7 +6,7 @@
 /*   By: aaljazza <aaljzza@student.42.fr>           +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/02 22:14:59 by aaljazza          #+#    #+#             */
-/*   Updated: 2025/07/29 14:52:28 by aaljazza         ###   ########.fr       */
+/*   Updated: 2025/08/01 19:42:04 by aaljazza         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -242,7 +242,8 @@ char *extract_var_value(t_minishell *minishell, char *token, size_t *i);
 char *append_result(char *old_result, char *value);
 
 //*#### Get environment value from t_env struct by loop over its name
-//- If not found → expand to empty string
+// - Loop ove t_env and search value by name. 
+// - If not found → expand to empty string.
 char *get_env_value(t_env *env, const char *var);
 
 //*#### Join the letteral with extracted value
@@ -376,15 +377,15 @@ void handle_input_file_redir(t_minishell *minishell, int *k, int *i);
 void tokenize_output_redir(t_minishell *minishell, int *k, int *i);
 
 //*#### Handle `>` redirection.
-//- Allocates a token for OUTPUT_FILE (overwrite mode).
-//- Stores ">" in the word field.
-//- Updates index to skip one '>'.
+//- Allocates a token for `OUTPUT_FILE` (overwrite mode).
+//- Stores `>` in the word field.
+//- Updates index to skip one `>`.
 void handle_output_file_redir(t_minishell *minishell, int *k, int *i);
 
 //*#### Handle `>>` redirection.
-//- Allocates a token for OUTPUT_APPEND (append mode).
-//- Stores ">>" in the word field.
-//- Updates index to skip both '>' characters.
+//- Allocates a token for `OUTPUT_APPEND` (append mode).
+//- Stores `>>` in the word field.
+//- Updates index to skip both `>` characters.
 void handle_output_append_redir(t_minishell *minishell, int *k, int *i);
 
 //*#### Tokenize quoted or normal string.
@@ -416,8 +417,8 @@ char *allocate_normal_word(t_minishell *ms, int start, int len);
 
 //*#### Allocate and fill tokens array
 //- Loop over input string.
-//- Use process_tokens function.
-//- Set last token as NULL.
+//- Use `process_tokens` function.
+//- Set last token as `NULL`.
 //- Count number of commands.
 void get_tokens(t_minishell *minishell);
 
@@ -487,19 +488,135 @@ int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t
 
 //?[[[[[[[[[[[[[ Heredoc ]]]]]]]]]]]]
 
-//* #### This will process [ Form commands struct ]:
+//*#### This will process [ Form commands struct ]:
 //- Discarded heredocs.
 //- Final heredoc.
 int process_all_heredocs(t_minishell *shell);
 
-int process_discarded_heredocs(t_minishell *shell, t_command *cmd);
+//*#### Processes heredocs that not the final input
+// - Loop over all input files in the command
+// - For each heredoc, determines if has var expand or not
+// - Reads the heredoc content, free it immediately (not used)
+// - If reading fails, set `exit_code` to `1` and returns `0` (error)
+// - Return `1` on successful process all heredocs (even if discarded)
+int process_discarded_heredocs(t_minishell *minishell, t_command *cmd);
+
+
+
+//*#### Check if the delimiter should expand variables
+// - Loop over the tokens array tokens to find matched delimiter
+// - Return `1` if delimiter is not single quote
+// - Return `0` if found and it is single quote (no expansion)
+// - Defaults to `1` (expand) if delimiter is not found in tokens
+int should_expand_heredoc(t_minishell *shell, char *delimiter);
 
 int process_final_heredoc(t_minishell *shell, t_command *cmd);
 
-char *expand_heredoc_variables(t_minishell *shell, char *content);
+//*#### Read content from [ stdin ] until delimiter
+// - Uses `read_until_delimiter` to collect heredoc input
+// - If `should_expand` is true, expand input
+// - Free the original content if expanded, return the processed string
+// - Returns NULL when fail to read, otherwise returns heredoc content
 char *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
+
+//*#### Reads from stdin until delimiter
+// - Initialize heredoc content as an empty string.
+// - Uses `readline("> ")` will prompt to user.
+// - Each line processed by `process_heredoc_readline`, 
+//   append it or stop reading
+// - Loop break if delimiter found (`should_break`) 
+//   or on read failure
+// - Returns content or NULL on failure
+char *read_until_delimiter(char *delimiter);
+
+//*#### Processes a single line read from heredoc input
+// - Resets `g_signal_received` to SIG_NONE and clear `should_break`.
+// - If (`SIG_INT`) is detected, free line and content, return NULL
+// - If line is NULL (EOF), print a warning and sets `should_break = 1`
+// - If the line matche delimiter, free the line and sets `should_break = 1`
+// - Otherwise, appends line to content
+// - Always free the input line before return
+char *process_heredoc_readline(char *content, char *line, char *delimiter, int *should_break);
+
+//*#### Expands an env var found in heredoc content
+// - current index on `$`, `i++` to start reading the variable name.
+// - get variable name from content using `extract_var_name`.
+// - get value from the t_env using `get_env_value`.
+// - If variable value is NULL, appends empty string;
+//   otherwise, appends variable value.
+// - Free the extracted variable name.
+// - Returns the updated result string.
+char *expand_env_var(t_minishell *shell, char *content, char *result, int *i);
+
+//*#### Expand var in heredoc content
+// - Returns empty string if input is NULL
+// - Loop over each character in the content
+// - On `$`, checks if it's (`$?`) or a valid env var
+//     - `$?` → replaced last exit code.
+//     - `$VAR` or `$_` → replaced using env var.
+//     - Otherwise `$` is literal.
+// - Appends to `result`, character by character or expanded
+// - Returns the fully expanded result string
+char *expand_heredoc_variables(t_minishell *shell, char *content);
+
+//*#### Expands the `$?` special variable.
+// - Converts `shell->exit_code` to string using `ft_itoa`
+// - Appends the result to the string
+// - Free the temporary string after use
+// - increase `i` by 2 to skip  `$?`
+// - Returns the updated result string
+char *expand_exit_code(t_minishell *shell, char *result, int *i);
+
+//*#### Appends single char to the result string
+// - Converts the character to a null-terminated string
+// - Uses `append_to_result` to concatenate the
+//   char with the exist string
+// - Return the newly allocated concatenated string
+char *append_single_char(char *result, char c);
+
+//*#### Concatenate 2 strings togather
+// - Uses `ft_strjoin`.
+// - Free `temp` buffer.
+// - Return concatenated string.
+char *append_to_result(char *result, char *to_append);
+
+//*#### Extract the var name from the string next to $.
+// - Loop over the `characters`, `numbers` or `_`.
+// - Returns the string.
+char *extract_var_name(char *str, int *index);
+
+//*#### Display warning when heredoc ends due to EOF
+//*#### before the expected delimiter
+// - Informs the user that the heredoc was not properly closed
+// - Outputs the expected `delimiter` that was not found
+// - Writes the message to standard error (file descriptor 2)
+void print_eof_warning(char *delimiter);
+
+//*#### check if the line content is delimiter
+// - `ft_strncmp` for compare character.
+// - Must be exact the same length with the delimiter.
+int is_delimiter_line(char *line, char *delimiter);
+
+//*#### Appends line + newline to heredoc content
+// - Concatenates `line` to the existing `content`
+// - Then adds a newline character (`\n`) to the result
+// - Free the old `content` after each concatenation
+// - Returns the new constructed string
+char *append_line_to_content(char *content, char *line);
+
+//*#### create_heredoc_pipe
+//- Creates a pipe and writes the given heredoc content into its write end.
+//- If content is non-empty, it writes the full string to the pipe.
+//- Closes the write end after writing.
+//- On success: returns the read end of the pipe.
+//- On failure (pipe or write error): closes both ends and returns -1.
 int create_heredoc_pipe(char *content);
-int should_expand_heredoc(t_minishell *shell, char *delimiter);
+
+//*#### Checks if the command expects heredoc input and if heredoc content exists.
+//- Creates a pipe containing the heredoc content using `create_heredoc_pipe`.
+//- Redirects standard input `stdin` to the pipe’s read end using dup2.
+//- Close original pipe descriptor after duplicate.
+//- Returns `1` on successful setup, `0` otherwise.
 int setup_heredoc_input(t_command *cmd);
 
 

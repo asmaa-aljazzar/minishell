@@ -129,8 +129,21 @@ PATH_SRC		=	$(PATH_DIR)already_path.c\
 HEREDOC_SRC		=	$(HEREDOC_DIR)process_all_heredocs.c\
 					$(HEREDOC_DIR)process_discarded_heredocs.c\
 					$(HEREDOC_DIR)process_final_heredoc.c\
-					$(HEREDOC_DIR)heredoc.c\
-
+					$(HEREDOC_DIR)should_expand_heredoc.c\
+					$(HEREDOC_DIR)read_heredoc_content.c\
+					$(HEREDOC_DIR)read_until_delimiter.c\
+					$(HEREDOC_DIR)process_heredoc_readline.c\
+					$(HEREDOC_DIR)expand_heredoc_variable.c\
+					$(HEREDOC_DIR)expand_env_var.c\
+					$(HEREDOC_DIR)extract_var_name.c\
+					$(HEREDOC_DIR)expand_exit_code.c\
+					$(HEREDOC_DIR)append_single_char.c\
+					$(HEREDOC_DIR)append_to_result.c\
+					$(HEREDOC_DIR)print_eof_warning.c\
+					$(HEREDOC_DIR)is_delimiter_line.c\
+					$(HEREDOC_DIR)append_line_to_content.c\
+					$(HEREDOC_DIR)create_heredoc_pipe.c\
+					$(HEREDOC_DIR)setup_heredoc_input.c\
 
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(ENV_SRC)\
@@ -138,8 +151,8 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
-				$(MINILIB_DIR)signals.c\
 				$(HEREDOC_SRC)\
+				$(MINILIB_DIR)signals.c\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
 			$(DEBUG_DIR)debug_check_cmd_heredoc.c\
