@@ -62,30 +62,5 @@ void init_shell(t_minishell *minishell)
         check_to_free(minishell);
         return;
     }
-    if (minishell->tok[0] && minishell->tok[1] == NULL)
-    {
-        if (ft_strncmp(minishell->tok[0]->word, "env", ft_strlen("env") + 1) == 0)
-        {
-            env_builtin(minishell);
-            check_to_free(minishell);
-            return;
-        }
-    }
-    if (minishell->tok[0])
-    {
-        if (ft_strncmp(minishell->tok[0]->word, "export", ft_strlen("export") + 1) == 0)
-        {
-            export_builtin(minishell);
-            check_to_free(minishell);
-            return;
-        }
-        else if (ft_strncmp(minishell->tok[0]->word, "unset", ft_strlen("unset") + 1) == 0)
-        {
-            unset_builtin(minishell);
-            check_to_free(minishell);
-            return;
-        }
-    }
     count_pipe(minishell);
-    minishell->exit_code = 0;
 }

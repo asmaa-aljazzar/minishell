@@ -27,7 +27,9 @@ FREE_DIR				=	$(MINILIB_DIR)free/
 PARS_DIR				=	$(MINILIB_DIR)parsing/
 ENV_DIR					=	$(MINILIB_DIR)env/
 COMMANDS_DIR			=	$(MINILIB_DIR)commands/
+EXPANSSION_DIR			=	$(MINILIB_DIR)expanssion/
 HEREDOC_DIR				= 	$(MINILIB_DIR)heredoc/
+PIPE_DIR				= 	$(MINILIB_DIR)pipe/
 EXTERNAL_COMM_DIR		=	$(COMMANDS_DIR)external/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
 PATH_DIR				=	$(MINILIB_DIR)path/
@@ -68,6 +70,7 @@ ENV_SRC		=	$(ENV_DIR)export_builtin.c\
 				$(ENV_DIR)get_env_value.c\
 				$(ENV_DIR)append_and_free.c\
 				$(ENV_DIR)append_result.c\
+				$(ENV_DIR)update_env_var.c\
 
 EXEC_ONE_CMD_SRC =	$(EXEC_ONE_CMD_DIR)exec_builtin.c\
 					$(EXEC_ONE_CMD_DIR)exec_command.c\
@@ -109,11 +112,15 @@ PARS_SRC	=	$(CMD_PARS_SRC)\
 				$(PARS_DIR)read_quoted_content.c\
 				$(PARS_DIR)allocate_normal_word.c\
 
+EXPANSSION_SRC	=	$(EXPANSSION_DIR)word_splitting.c\
+        			$(EXPANSSION_DIR)expand_and_split_token.c\
+
 COMMANDS_SRC	=	$(COMMANDS_DIR)echo_builtin.c\
 					$(COMMANDS_DIR)exit_builtin.c\
 					$(COMMANDS_DIR)pwd_builtin.c\
 					$(COMMANDS_DIR)compare_commands.c\
 					$(COMMANDS_DIR)cd_builtin.c\
+					$(COMMANDS_DIR)execute_external.c\
 
 REDIR_SRC		=	$(REDIR_DIR)handell_redirection.c\
 					$(REDIR_DIR)input_redirection.c\
@@ -145,13 +152,17 @@ HEREDOC_SRC		=	$(HEREDOC_DIR)process_all_heredocs.c\
 					$(HEREDOC_DIR)create_heredoc_pipe.c\
 					$(HEREDOC_DIR)setup_heredoc_input.c\
 
+PIPE_SRC		=	$(PIPE_DIR)pipe.c
+
 MINILIB_SRC	= 	$(PARS_SRC)\
 				$(ENV_SRC)\
+				$(EXPANSSION_SRC)\
 				$(INIT_SRC)\
 				$(FREE_SRC)\
 				$(REDIR_SRC)\
 				$(COMMANDS_SRC)\
 				$(HEREDOC_SRC)\
+				$(PIPE_SRC)\
 				$(MINILIB_DIR)signals.c\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\

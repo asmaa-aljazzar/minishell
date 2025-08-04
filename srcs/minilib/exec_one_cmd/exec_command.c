@@ -1,37 +1,32 @@
-
 #include "minishell.h"
-
 
 int exec_command(t_minishell *shell)
 {
-    char *cmd_path;
     int redir_status;
 
-    // // Handle pure redirections first
-    redir_status = handell_redirection(shell);
+    if (!shell || !shell->cmd)
+    {
+        shell->exit_code = 127;
+        return -1;
+    }
+
+    // Handle redirections first
+    redir_status = handle_redirection(shell);
     if (redir_status != 0)
     {
         if (redir_status > 0)
-            return 0;  // Success case
-        return -1; // Error case
+            return 0; // Redirection-only command succeeded
+        return -1;    // Redirection error
     }
-    cmd_path = get_path(shell);
-    if (!cmd_path)
-        return -1;
+
+    // Check environment (required for execve)
     if (!shell->envp)
     {
-        free(cmd_path);
+        shell->exit_code = 1;
         return -1;
     }
-    // printf("Executing: %s\n", cmd_path);
-    int i;
-    i = 0;
-    while (shell->cmd->argv[i])
-     i++;
-    // printf("argv[%d]: %s\n", i, shell->cmd->argv[i]);
 
-    execve(cmd_path, shell->cmd->argv,shell->envp);
-    perror("execve");
-    free(cmd_path);
-    return -1;
+    // Delegate to the external command execution
+    execute_external_command(shell);
+    return -1; // Should not return if execve succeeds
 }

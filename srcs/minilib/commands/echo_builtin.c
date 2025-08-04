@@ -1,45 +1,54 @@
-
+// echo_builtin.c
 #include "minishell.h"
 
-void check_n(t_minishell *shell,int *i, int *n)
+// Helper function to check if string is a valid -n flag
+// Valid: -n, -nn, -nnn, etc.
+// Invalid: -nm, -n123, etc.
+static int is_valid_n_flag(char *str)
 {
-    t_command *cmd;
-    int j;
-
-    cmd = shell->cmd;
-    *i = 1;
-    while(cmd->argv[*i] && ft_strncmp(cmd->argv[*i], "-n", 2) == 0)
+    int i = 0;
+    
+    if (str[i++] != '-')
+        return (0);
+    
+    if (str[i] != 'n')
+        return (0);
+    
+    // Check if all remaining characters are 'n'
+    while (str[i])
     {
-        j = 2;
-        while (cmd->argv[*i][j] == 'n')
-            j++;
-        if(cmd->argv[*i][j] != '\0')
-            break;
-        *n = 0;
-        (*i)++;
+        if (str[i] != 'n')
+            return (0);
+        i++;
     }
-
+    
+    return (1);
 }
+
 void echo_builtin(t_minishell *shell)
 {
-	t_command *cmd;
-	int i;
-    int n;
-
-	cmd = shell->cmd;
-    n = 1;
-	// printf("call echo\n");
-     check_n(shell, &i, &n);
-
-	while(cmd->argv[i])
+    t_command *cmd = shell->cmd;
+    int i = 1;
+    int newline = 1;
+    
+    // Process all -n flags
+    while (cmd->argv[i] && is_valid_n_flag(cmd->argv[i]))
     {
-            write(STDOUT_FILENO, cmd->argv[i], ft_strlen(cmd->argv[i]));
-                if(cmd->argv[i + 1])
-                    write(STDOUT_FILENO, " ", 1);
-            i++;
+        newline = 0;
+        i++;
     }
-    if (n)
-		write(STDOUT_FILENO, "\n", 1);
+    
+    // Print arguments
+    while (cmd->argv[i])
+    {
+        ft_putstr_fd(cmd->argv[i], STDOUT_FILENO);
+        if (cmd->argv[i + 1])
+            ft_putstr_fd(" ", STDOUT_FILENO);
+        i++;
+    }
+    
+    if (newline)
+        ft_putstr_fd("\n", STDOUT_FILENO);
     
     shell->exit_code = 0;
 }

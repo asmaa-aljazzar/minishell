@@ -8,5 +8,8 @@ void init(t_minishell *minishell)
     minishell->cmd = NULL;
     minishell->tokens_count = 0;
     minishell->pipe_count = 0;
+    minishell->exit_code = 0;
+    minishell->skip_execution = 0;
     ft_memset(minishell->buff, 0, sizeof(minishell->buff));
 }
+

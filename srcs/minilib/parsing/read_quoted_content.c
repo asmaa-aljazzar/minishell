@@ -9,7 +9,7 @@ char *read_quoted_content(t_minishell *ms, int *i, char quote)
 
 	if (ms->input[*i] != quote)
 	{
-		ft_putendl_fd("Syntax error: unmatched quote", STDERR_FILENO);
+		ft_putstr_fd("Syntax error: unmatched quote", STDERR_FILENO);
 		return NULL;
 	}
 	int size = *i - start;
