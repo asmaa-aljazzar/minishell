@@ -24,11 +24,20 @@ void debug_Display_t_command(t_minishell *minishell)
 		else
 			printf("(null)\n");
 
-		printf("Input Type: %d\n", cmd->input_type);
-		printf("Input File: %s\n", cmd->input_file ? cmd->input_file : "(null)");
-		printf("Output Type: %d\n", cmd->output_type);
-		printf("Output File: %s\n", cmd->output_file ? cmd->output_file : "(null)");
-		// Print input files list
+printf("Input Type: %d\n", cmd->input_type);
+
+if (cmd->input_file)
+    printf("Input File: %s\n", cmd->input_file);
+else
+    printf("Input File: (null)\n");
+
+printf("Output Type: %d\n", cmd->output_type);
+
+if (cmd->output_file)
+    printf("Output File: %s\n", cmd->output_file);
+else
+    printf("Output File: (null)\n");
+// Print input files list
 		printf("Input Files: ");
 		if (cmd->input_files)
 		{
@@ -59,7 +68,10 @@ void debug_Display_t_command(t_minishell *minishell)
 			printf("(null)\n");
 		;
 
-		printf("Next Command: %s\n\n", cmd->next ? "exists" : "NULL");
+if (cmd->next)
+    printf("Next Command: exists\n\n");
+else
+    printf("Next Command: NULL\n\n");
 
 		cmd = cmd->next;
 		cmd_num++;

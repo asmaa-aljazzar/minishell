@@ -8,14 +8,21 @@ void cd_builtin(t_minishell *shell)
     char *oldpwd;
     char *expanded_path = NULL;
     char *display_path;  // For error messages
-    
+
+    // Too many arguments
+    if (cmd->argv[1] && cmd->argv[2])
+    {
+        ft_putstr_fd("minishell: cd: too many arguments\n", STDERR_FILENO);
+        shell->exit_code = 1;
+        return;
+    }
+
     // Save current directory
     oldpwd = getcwd(NULL, 0);
-    
+
     // Determine target path
-    if (!cmd->argv[1])
+    if (!cmd->argv[1] || (ft_strncmp(cmd->argv[1], "--", 3) == 0))
     {
-        // cd with no arguments goes to HOME
         path = get_env_value(shell->env, "HOME");
         display_path = "HOME";
         if (!path)
@@ -28,7 +35,6 @@ void cd_builtin(t_minishell *shell)
     }
     else if (cmd->argv[1][0] == '~')
     {
-        // Handle tilde expansion
         char *home = get_env_value(shell->env, "HOME");
         if (!home)
         {
@@ -37,8 +43,7 @@ void cd_builtin(t_minishell *shell)
             free(oldpwd);
             return;
         }
-        
-        // If just "~", go to HOME
+
         if (cmd->argv[1][1] == '\0')
         {
             path = home;
@@ -46,7 +51,6 @@ void cd_builtin(t_minishell *shell)
         }
         else if (cmd->argv[1][1] == '/')
         {
-            // Handle ~/path
             expanded_path = ft_strjoin(home, cmd->argv[1] + 1);
             if (!expanded_path)
             {
@@ -56,11 +60,10 @@ void cd_builtin(t_minishell *shell)
                 return;
             }
             path = expanded_path;
-            display_path = expanded_path;  // Show expanded path in errors
+            display_path = expanded_path;
         }
         else
         {
-            // Invalid tilde usage like ~user (not supported)
             path = cmd->argv[1];
             display_path = cmd->argv[1];
         }
@@ -84,8 +87,8 @@ void cd_builtin(t_minishell *shell)
         path = cmd->argv[1];
         display_path = cmd->argv[1];
     }
-    
-    // Change directory
+
+    // Try changing directory
     if (chdir(path) == -1)
     {
         ft_putstr_fd("minishell: cd: ", STDERR_FILENO);
@@ -108,21 +111,30 @@ void cd_builtin(t_minishell *shell)
             free(expanded_path);
         return;
     }
-    
-    // Update PWD and OLDPWD
+
+    // Update OLDPWD
     update_env_var(shell, "OLDPWD", oldpwd);
     free(oldpwd);
-    
+
+    // Determine new PWD
     char *cwd = getcwd(NULL, 0);
     if (cwd)
     {
         update_env_var(shell, "PWD", cwd);
         free(cwd);
     }
-    
+    else
+    {
+        // If getcwd fails (e.g., directory was removed),
+        // use absolute path if provided, else unset PWD
+        if (path && path[0] == '/')
+            update_env_var(shell, "PWD", path);
+        else
+            update_env_var(shell, "PWD", NULL);
+    }
+
     shell->exit_code = 0;
-    
-    // Clean up
+
     if (expanded_path)
         free(expanded_path);
 }

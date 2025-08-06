@@ -11,7 +11,10 @@ void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int gl
 	}
 	ms->tok[*k]->word = word;
 	ms->tok[*k]->type = INPUT_WORD;
-	ms->tok[*k]->qtype = (quote == '"') ? QUOTE_DOUBLE : QUOTE_SINGLE;
+	if (quote == '"')
+		ms->tok[*k]->qtype = QUOTE_DOUBLE;
+	else
+		ms->tok[*k]->qtype = QUOTE_SINGLE;
 	ms->tok[*k]->glued = glued;
 	(*k)++;
 }
