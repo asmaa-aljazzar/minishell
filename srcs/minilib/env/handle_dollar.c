@@ -8,6 +8,7 @@ void handle_dollar(t_minishell *minishell, char *token, size_t *i, char **result
     int should_free = 0;
 
     (*i)++;
+
     if (token[*i] == '?')
     {
         value = ft_itoa(minishell->exit_code);

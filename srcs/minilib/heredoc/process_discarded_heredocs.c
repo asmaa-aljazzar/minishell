@@ -15,7 +15,13 @@ int process_discarded_heredocs(t_minishell *minishell, t_command *cmd)
         content = read_heredoc_content(minishell, cmd->input_files[i], should_expand);
         if (!content)
         {
-            minishell->exit_code = 1;
+            if (g_signal_received == SIGINT)
+            {
+                g_signal_received = 0; // Reset signal
+                minishell->exit_code = 130; // 128 + SIGINT(2)
+            }
+            else
+                minishell->exit_code = 1;
             return (0);
         }
         free(content);

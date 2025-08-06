@@ -1,14 +1,16 @@
-
-#ifndef ANTSHELL_H
-#define ANTSHELL_H
+#ifndef MINISHELL_H
+#define MINISHELL_H
 
 //* ----------- [ Includes ] -----------
+#include <signal.h>
 #include "../libft/includes/libft.h"
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <signal.h>
+#include <errno.h>
 #include <fcntl.h>
+#include <sys/stat.h>
+
 
 
 //* ----------- [ Macros ] -----------
@@ -17,7 +19,7 @@
 #define SIG_INT 130   // Ctrl+C (128 + 2)
 #define SIG_QUIT 131  // Ctrl+\ (128 + 3)
 // extern char **environ;
-
+extern int g_signal_received;
 //* ----------- [ enums ] -----------
 // Todo: use this every error appear
 typedef enum e_error_code 
@@ -59,7 +61,7 @@ typedef enum e_type
     INPUT_NONE,
     INPUT_FILE,
     INPUT_PIPE,
-    INUPT_WORD,
+    INPUT_WORD,
     INPUT_END, //? May delete
     INPUT_HEREDOC,
     OUTPUT_NONE,
@@ -98,6 +100,7 @@ typedef struct s_command
     char *input_file;
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
     char *output_file;
+    int heredoc_fd; // NEW
     struct s_command *next; // Next command in pipe sequence
     char **input_files;
     char **output_files;
@@ -114,6 +117,7 @@ typedef struct s_minishell
     t_env *env;
     char **envp; // ["NAME=VAl"][...][...]
     int exit_code;
+    int skip_execution;
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
@@ -121,6 +125,8 @@ typedef struct s_minishell
 //! Debug functions
 void debug_Display_t_command(t_minishell *minishell);
 void debug_check_cmd_heredoc(t_command *cmd);
+void debug_print_env(t_minishell *shell);
+
 //!
 
 //? [[[[[[[[[[ Main ]]]]]]]]]]]
@@ -143,8 +149,9 @@ void main_loop(t_minishell *minishell);
 //*#### Call signal handlers
 void handle_sigquit(int sig);
 void handle_sigint(int sig);
-void setup_signals(void);
-
+void setup_signals_parent(void);
+void setup_signals_child(void);
+void setup_signals_heredoc(void);
 //? [[[[[[[[[[ Commands ]]]]]]]]]]]
 
 //*#### Loop over tokens array to count how many pipes in it.
@@ -173,6 +180,8 @@ void    cd_builtin(t_minishell *shell);
 // Todo: add comments
 void compare_commands(t_minishell *shell);
 
+void export_builtin(t_minishell *shell);
+void unset_builtin(t_minishell *shell);
 
 
 
@@ -248,6 +257,42 @@ void export_builtin(t_minishell *minisell);
 
 //
 void unset_builtin(t_minishell *minisell);
+
+//? [[[[[[[[[[[[[ Env - Word Splitting ]]]]]]]]]]]]]
+
+//*#### Split expanded variable content on whitespace
+//- Splits string on spaces, tabs, newlines
+//- Returns array of strings, NULL-terminated
+//- Returns NULL if input is empty or NULL
+char **split_on_whitespace(char *str);
+
+//*#### Check if character is whitespace
+//- Returns 1 for space, tab, newline
+//- Returns 0 otherwise
+int is_whitespace(char c);
+
+//*#### Count words in a string separated by whitespace
+//- Used to determine array size for splitting
+int count_words_in_string(char *str);
+
+//*#### Expand and split a single token
+//- Handles both expansion and word splitting
+//- Creates multiple tokens if expansion contains spaces
+void expand_and_split_token(t_minishell *ms, t_token *token, 
+                           t_token **new_tokens, int *new_count);
+
+//*#### Free array of strings
+//- Frees each string and the array itself
+void free_split_array(char **array);
+
+//*#### Estimate maximum tokens after expansion
+//- Conservative estimate for memory allocation
+int count_max_tokens_after_expansion(t_minishell *ms);
+
+//*#### Handle empty variable expansion cases
+//- Returns appropriate string for empty expansions
+//- Returns NULL if not an empty case
+char *handle_empty_expansion(char *token);
 
 //? [[[[[[[[[[[[ Free ]]]]]]]]]]]]]
 
@@ -397,7 +442,9 @@ void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int gl
 char *read_quoted_content(t_minishell *ms, int *i, char quote);
 
 //*#### A helper function for [process_token]
-//- Set Strings That Not space or operation and not quoted into tokens array.
+//@brief Hold Set Strings That Not space or operation and not quoted into tokens array.
+//@param minishell
+//@return nothing
 void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
 
 //*#### A helper function for [ tokenize_normal_string ]
@@ -610,25 +657,102 @@ int setup_heredoc_input(t_command *cmd);
 
 
 //? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
-//Todo: add comments
-int handell_redirection_output(t_minishell *shell);
+//? [[[[[[[[[[ Redirection ]]]]]]]]]]]]
 
-//Todo: add comments
-void output_redirection_append(t_command *cmd);
+//*#### Validate all redirections before execution
+//- Checks if all input files exist and are readable
+//- Checks if all output files can be created/written
+//- Returns 1 on success, 0 on failure
+int handle_redirection(t_minishell *shell);
 
-//Todo: add comments
-void output_redirection_trunc(t_command *cmd);
-
-//Todo: add comments
-void handle_output_redirection(t_command *cmd);
-
-//Todo: add comments
+//*#### Handle input file redirection
+//- Opens input file and redirects stdin
+//- Exits with error if file cannot be opened
 void input_redirection(t_command *cmd);
 
-//Todo: add comments
-int handell_redirection_input_herdoc(t_minishell *shell);
+//*#### Handle output file redirection
+//- Opens output file with appropriate flags (truncate/append)
+//- Redirects stdout to the file
+//- Exits with error if file cannot be opened
+void handle_output_redirection(t_command *cmd);
 
-//Todo: add comments
-int handell_redirection(t_minishell *shell);
+// Remove the duplicate/misspelled prototypes:
+// int handell_redirection_output(t_minishell *shell);
+// void output_redirection_append(t_command *cmd);
+// void output_redirection_trunc(t_command *cmd);
+// int handell_redirection_input_herdoc(t_minishell *shell);
+// int handell_redirection(t_minishell *shell);
 
-#endif
+//? [[[[[[[[[ Pipe ]]]]]]]]]
+
+//*#### Main pipeline execution function
+//- Determines if single command or pipeline
+//- Delegates to main_fork for single commands
+//- Delegates to execute_piped_commands for pipelines
+void execute_pipeline(t_minishell *shell);
+
+//*#### Execute multiple commands connected by pipes
+//- Creates pipes for inter-process communication
+//- Forks child processes for each command
+//- Sets up proper pipe connections
+//- Waits for all children to complete
+void execute_piped_commands(t_minishell *shell, int cmd_count);
+
+//*#### Close all pipe file descriptors
+//- Loops through all pipes and closes both read and write ends
+//- Used by parent after forking all children
+void close_all_pipes(int pipes[][2], int pipe_count);
+
+//*#### Setup pipe connections for child process
+//- Redirects stdin from previous pipe (if not first command)
+//- Redirects stdout to next pipe (if not last command)
+//- Closes all pipe file descriptors in child
+void setup_child_pipes(int pipes[][2], int cmd_index, int cmd_count);
+
+//*#### Wait for all child processes and set exit code
+//- Waits for each child process to complete
+//- Sets shell exit code to last command's exit status
+void wait_for_children(t_minishell *shell, pid_t *pids, int cmd_count);
+
+//*#### Check if command has no arguments
+//- Returns 1 if command is empty or has no argv
+//- Returns 0 otherwise
+int is_empty_command(t_command *cmd);
+
+// //*#### Validate pipeline syntax
+// //- Checks for consecutive pipes
+// //- Checks for pipe at end of input
+// //- Sets appropriate error messages and exit codes
+// //- Returns 0 on error, 1 on success
+// int validate_pipeline(t_minishell *minishell);
+
+//*#### Check for empty commands in pipeline
+//- Detects empty commands between pipes
+//- Sets syntax error and exit code
+void handle_empty_commands(t_minishell *shell);
+
+//? [[[[[[[[[ Command Execution ]]]]]]]]]
+
+//*#### Execute external commands
+//- Finds command in PATH or uses absolute path
+//- Executes with execve
+//- Handles command not found and permission errors
+void execute_external_command(t_minishell *shell);
+
+
+//? [[[[[[[[[ Builtin Commands ]]]]]]]]]
+
+//*#### Echo builtin implementation
+//- Handles -n flag for no newline
+//- Prints all arguments with spaces
+void echo_builtin(t_minishell *shell);
+
+//*#### Update environment variable
+//- Updates existing variable or creates new one
+//- Used by cd_builtin for PWD/OLDPWD
+void update_env_var(t_minishell *shell, char *name, char *value);
+
+void update_envp_array(t_minishell *shell, char *name, char *value);
+
+
+# endif

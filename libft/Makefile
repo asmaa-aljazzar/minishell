@@ -54,6 +54,7 @@ FT_STR_DIR	=	$(SRC_DIR)ft_str/ft_split.c\
 				$(SRC_DIR)ft_str/ft_strlen.c\
 				$(SRC_DIR)ft_str/ft_strmapi.c\
 				$(SRC_DIR)ft_str/ft_strncmp.c\
+				$(SRC_DIR)ft_str/ft_strcmp.c\
 				$(SRC_DIR)ft_str/ft_strnstr.c\
 				$(SRC_DIR)ft_str/ft_strrchr.c\
 				$(SRC_DIR)ft_str/ft_strtrim.c\

@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-extern int g_signal_received;
 
 char *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand)
 {

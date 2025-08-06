@@ -13,7 +13,13 @@ int process_final_heredoc(t_minishell *shell, t_command *cmd)
 
     if (!content)
     {
-        shell->exit_code = 1;
+        if (g_signal_received == SIGINT)
+        {
+            g_signal_received = 0; // Reset signal
+            shell->exit_code = 130; // 128 + SIGINT(2)
+        }
+        else
+            shell->exit_code = 1;
         return (0);
     }
 

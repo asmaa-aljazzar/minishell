@@ -1,36 +1,32 @@
-
 #include "minishell.h"
-
-// Initialize the shell & tokenize the input.
-// Run exit command if found.
-// Initialize commands pipeline.
-// Expand env variables.
-// Merge words that not separated by spaces.
-// Set argv array for commands nodes.
-// Complete convert tokens array into commands linkedlist
-
+// main_loop.c - Updated section
 void main_loop(t_minishell *minishell)
 {
-	print_banner();
-	while (1)
-	{
-		setup_signals();
-		init_shell(minishell);
-		if (!minishell->input || !minishell->tok)
-			continue;
-		exit_builtin(minishell);
-		init_commands(minishell);
-		expand_tokens(minishell);
-		merge_words(minishell);
-		argv_for_commands(minishell);
-		tokens_to_commands(minishell);
-		if (!process_all_heredocs(minishell))
-		{
-			check_to_free(minishell);
-			continue;
-		}
-		main_fork (minishell);
-		// debug_Display_t_command(minishell);
-		check_to_free(minishell);
-	}
+    setup_signals_parent();
+    print_banner();
+    while (1)
+    {
+        setup_signals_parent();
+        init_shell(minishell);
+        if (!minishell->input || !minishell->tok)
+            continue;
+        // exit_builtin(minishell);
+        init_commands(minishell);
+        expand_tokens(minishell);
+        merge_words(minishell);
+        argv_for_commands(minishell);
+        tokens_to_commands(minishell);
+        // if (!validate_pipeline(minishell))  // Add validation
+        // {
+        //     check_to_free(minishell);
+        //     continue;
+        // }
+        if (!process_all_heredocs(minishell))
+        {
+            check_to_free(minishell);
+            continue;
+        }
+        execute_pipeline(minishell); // Replace main_fork with execute_pipeline
+        check_to_free(minishell);
+    }
 }
