@@ -5,7 +5,10 @@ void debug_check_cmd_heredoc(t_command *cmd)
 {
     printf("=== DEBUG: Checking command ===\n");
     printf("input_type: %d\n", cmd->input_type);
-    printf("input_file: %s\n", cmd->input_file ? cmd->input_file : "(null)");
+    if (cmd->input_file)
+        printf("input_file: %s\n", cmd->input_file);
+    else
+        printf("input_file: (null)\n");
 
     if (cmd->input_files)
     {

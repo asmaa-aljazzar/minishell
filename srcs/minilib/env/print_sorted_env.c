@@ -1,5 +1,5 @@
-
 #include "minishell.h"
+
 void print_sorted_env(t_minishell *minishell)
 {
     t_env *current;
@@ -37,10 +37,12 @@ void print_sorted_env(t_minishell *minishell)
         i++;
     }
 
-    // Simple bubble sort by name
-    for (i = 0; i < count - 1; i++)
+    // Bubble sort using while
+    i = 0;
+    while (i < count - 1)
     {
-        for (j = 0; j < count - 1 - i; j++)
+        j = 0;
+        while (j < count - 1 - i)
         {
             if (ft_strcmp(sorted_names[j], sorted_names[j + 1]) > 0)
             {
@@ -48,13 +50,15 @@ void print_sorted_env(t_minishell *minishell)
                 sorted_names[j] = sorted_names[j + 1];
                 sorted_names[j + 1] = temp;
             }
+            j++;
         }
+        i++;
     }
 
-    // Print in export format
-    for (i = 0; i < count; i++)
+    // Print sorted environment
+    i = 0;
+    while (i < count)
     {
-        // Find the env node with this name
         current = minishell->env;
         while (current)
         {
@@ -75,6 +79,7 @@ void print_sorted_env(t_minishell *minishell)
             }
             current = current->next;
         }
+        i++;
     }
 
     free(sorted_names);

@@ -4,7 +4,7 @@ void debug_print_env(t_minishell *shell)
 {
     t_env *current;
     int count = 0;
-    
+
     if (!shell || !shell->env)
     {
         printf("=== DEBUG ENV LIST ===\n");
@@ -12,16 +12,24 @@ void debug_print_env(t_minishell *shell)
         printf("=== END DEBUG ===\n");
         return;
     }
-    
+
     current = shell->env;
-    
+
     printf("=== DEBUG ENV LIST ===\n");
     while (current)
     {
-        printf("[%d] Name: '%s', Value: '%s'\n", 
-               count,
-               current->name ? current->name : "NULL",
-               current->value ? current->value : "NULL");
+        printf("[%d] Name: '", count);
+        if (current->name)
+            printf("%s", current->name);
+        else
+            printf("NULL");
+        printf("', Value: '");
+        if (current->value)
+            printf("%s", current->value);
+        else
+            printf("NULL");
+        printf("'\n");
+
         current = current->next;
         count++;
     }

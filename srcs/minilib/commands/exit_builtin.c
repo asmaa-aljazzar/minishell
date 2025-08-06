@@ -1,60 +1,86 @@
 #include "minishell.h"
 
-static int validate_and_count_exit_args(t_minishell *minishell);
-static void exit_case1(t_minishell *minishell);
+static int validate_exit_arg(char *arg);
+static void handle_exit(t_minishell *minishell, int exit_code);
 
 void exit_builtin(t_minishell *minishell)
 {
-	int arg_count;
-	int exit_code;
-	arg_count = validate_and_count_exit_args(minishell);
-	if (arg_count == -1)
-		return ;
-	if (arg_count == 0)
-		exit_case1(minishell);
-	else if (arg_count == 1)
-	{
-		if (ft_is_valid_number(minishell->tok[1]->word))
-			exit_code = ft_atoi(minishell->tok[1]->word) % 256;
-		else
-			exit_code = 0;
-		check_to_free(minishell);
-		free_env(minishell->env);
-		free_2d(minishell->envp);
-		rl_clear_history();
-		exit(exit_code);
-	}
-	else
-		printf("minishell: exit: too many arguments\n");
+    int arg_count = 0;
+    int exit_code = 0;
+
+    // Count arguments
+    while (minishell->tok[arg_count])
+        arg_count++;
+    arg_count--; // Subtract 1 to exclude "exit" token
+
+    printf("exit\n");
+
+    // Case handling
+    if (arg_count == 0)
+    {
+        // No arguments
+        handle_exit(minishell, 0);
+    }
+    else if (arg_count == 1)
+    {
+        // One argument
+        if (validate_exit_arg(minishell->tok[1]->word))
+        {
+            // Valid numeric argument
+            exit_code = ft_atoi(minishell->tok[1]->word) % 256;
+            handle_exit(minishell, exit_code);
+        }
+        else
+        {
+            // Invalid numeric argument
+            fprintf(stderr, "minishell: exit: %s: numeric argument required\n", 
+                    minishell->tok[1]->word);
+            handle_exit(minishell, 2);
+        }
+    }
+    else
+    {
+        // Multiple arguments
+        if (validate_exit_arg(minishell->tok[1]->word))
+        {
+            // First argument is numeric, but too many arguments
+            fprintf(stderr, "minishell: exit: too many arguments\n");
+            minishell->exit_code = 1;
+        }
+        else
+        {
+            // First argument is not numeric
+            fprintf(stderr, "minishell: exit: %s: numeric argument required\n", 
+                    minishell->tok[1]->word);
+            handle_exit(minishell, 2);
+        }
+    }
 }
 
-//*#### exit_case1
-//- Handles the case where no argument is passed to "exit".
-//- Frees resources and exits with code 0.
-static void exit_case1(t_minishell *minishell)
+static int validate_exit_arg(char *arg)
 {
-	check_to_free(minishell);
-	free_env(minishell->env);
-	free_2d(minishell->envp);
-	rl_clear_history();
-	exit(0);
+    int i = 0;
+    
+    // Handle optional sign
+    if (arg[i] == '+' || arg[i] == '-')
+        i++;
+    
+    // Check if remaining characters are digits
+    while (arg[i])
+    {
+        if (!ft_isdigit(arg[i]))
+            return (0);
+        i++;
+    }
+    
+    return (1);
 }
 
-//*#### validate_and_count_exit_args
-//- Validates whether the first token is "exit".
-//- If not, returns -1 to indicate invalid command context.
-//- If valid, counts the number of arguments following "exit".
-//- Prints "exit" to stdout to mimic Bash behavior.
-//- Returns the number of arguments after the "exit" command.
-static int validate_and_count_exit_args(t_minishell *minishell)
+static void handle_exit(t_minishell *minishell, int exit_code)
 {
-	int count;
-
-	count = 0;
-	if (!minishell->tok || !minishell->tok[0] || strcmp(minishell->tok[0]->word, "exit") != 0)
-		return (-1);
-	while (minishell->tok[count + 1])
-		count++;
-	printf("exit\n");
-	return (count);
+    check_to_free(minishell);
+    free_env(minishell->env);
+    free_2d(minishell->envp);
+    rl_clear_history();
+    exit(exit_code);
 }

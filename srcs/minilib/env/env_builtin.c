@@ -1,9 +1,10 @@
 #include "minishell.h"
+
 void env_builtin(t_minishell *minishell)
 {
     t_command *cmd = minishell->cmd;
 
-    // case: no arguments → print environment
+    // Case: no arguments → print environment
     if (cmd->argv[1] == NULL)
     {
         t_env *curr = minishell->env;
@@ -17,15 +18,29 @@ void env_builtin(t_minishell *minishell)
         return;
     }
 
-    // Setup temporary command to resolve path of cmd->argv[1]
-    t_command temp_cmd = {0};
-    temp_cmd.argv = &cmd->argv[1]; // skip "env"
-    t_command *original_cmd = minishell->cmd;
-    minishell->cmd = &temp_cmd;
+    char *path = NULL;
+    int is_direct_path = (ft_strchr(cmd->argv[1], '/') != NULL);
 
-    char *path = get_path(minishell);
+    if (!is_direct_path)
+    {
+        // Only search PATH if no slash is included in argv[1]
+        t_command temp_cmd = {0};
+        temp_cmd.argv = &cmd->argv[1];
 
-    minishell->cmd = original_cmd;
+        t_command *original_cmd = minishell->cmd;
+        minishell->cmd = &temp_cmd;
+        path = get_path(minishell);
+        minishell->cmd = original_cmd;
+
+        if (!path)
+        {
+            ft_putstr_fd("minishell: env: ", STDERR_FILENO);
+            ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
+            ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
+            minishell->exit_code = 127;
+            return;
+        }
+    }
 
     pid_t pid = fork();
     if (pid == -1)
@@ -41,10 +56,10 @@ void env_builtin(t_minishell *minishell)
         setup_signals_child();
 
         // child: try to exec
-        if (path)
-            execve(path, &cmd->argv[1], minishell->envp);
-        else
+        if (is_direct_path)
             execve(cmd->argv[1], &cmd->argv[1], minishell->envp);
+        else
+            execve(path, &cmd->argv[1], minishell->envp);
 
         // If execve fails
         ft_putstr_fd("minishell: env: ", STDERR_FILENO);
@@ -63,7 +78,11 @@ void env_builtin(t_minishell *minishell)
             ft_putstr_fd("\n", STDERR_FILENO);
         }
 
-        exit((errno == EACCES || errno == EISDIR) ? 126 : 127);
+        // Exit code: 126 = permission/dir error, 127 = not found
+        if (errno == EACCES || errno == EISDIR)
+            exit(126);
+        else
+            exit(127);
     }
 
     // parent: wait
