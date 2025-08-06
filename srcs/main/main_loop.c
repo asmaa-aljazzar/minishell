@@ -12,10 +12,12 @@ void main_loop(t_minishell *minishell)
             continue;
         // exit_builtin(minishell);
         init_commands(minishell);
+        // debug_tokens(minishell);//!
         expand_tokens(minishell);
         merge_words(minishell);
         argv_for_commands(minishell);
         tokens_to_commands(minishell);
+        // debug_commands(minishell);//!
         // if (!validate_pipeline(minishell))  // Add validation
         // {
         //     check_to_free(minishell);

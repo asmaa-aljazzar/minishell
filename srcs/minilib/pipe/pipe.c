@@ -4,6 +4,7 @@
 
 void execute_pipeline(t_minishell *shell)
 {
+
     t_command *cmd = shell->cmd;
     int cmd_count = 0;
     

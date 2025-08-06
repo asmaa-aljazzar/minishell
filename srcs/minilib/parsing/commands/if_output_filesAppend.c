@@ -1,6 +1,5 @@
 
 #include "minishell.h"
-
 void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i)
 {
     if (token->type == OUTPUT_FILE || token->type == OUTPUT_APPEND)
@@ -8,13 +7,15 @@ void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **c
         if (minishell->tok[(*i) + 1])
         {
             char *file = minishell->tok[++(*i)]->word;
-            if (has_more_redirections(minishell->tok, *i + 1, OUTPUT_FILE, OUTPUT_APPEND))
-                (*cmd)->output_files = add_to_list((*cmd)->output_files, file);
-            else
-            {
-                (*cmd)->output_type = token->type;
-                (*cmd)->output_file = ft_strdup(file); // FIX: Duplicate this too
-            }
+            
+            // ALWAYS add to output_files array
+            (*cmd)->output_files = add_to_list((*cmd)->output_files, file);
+            
+            // ALSO set output_type and output_file (for the last/current redirection)
+            (*cmd)->output_type = token->type;
+            if ((*cmd)->output_file)
+                free((*cmd)->output_file);  // Free previous if exists
+            (*cmd)->output_file = ft_strdup(file);
         }
     }
 }

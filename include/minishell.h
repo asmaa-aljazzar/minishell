@@ -126,7 +126,8 @@ typedef struct s_minishell
 void debug_Display_t_command(t_minishell *minishell);
 void debug_check_cmd_heredoc(t_command *cmd);
 void debug_print_env(t_minishell *shell);
-
+void debug_tokens(t_minishell *minishell);
+void debug_commands(t_minishell *minishell);
 //!
 
 //? [[[[[[[[[[ Main ]]]]]]]]]]]

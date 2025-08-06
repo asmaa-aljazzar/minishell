@@ -167,6 +167,8 @@ MINILIB_SRC	= 	$(PARS_SRC)\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_Display_t_command.c\
 			$(DEBUG_DIR)debug_check_cmd_heredoc.c\
+			$(DEBUG_DIR)debug_tokens.c\
+			$(DEBUG_DIR)debug_commands.c\
 
 MAIN_SRC = $(MAIN_DIR)main.c\
 		   $(MAIN_DIR)main_fork.c\
