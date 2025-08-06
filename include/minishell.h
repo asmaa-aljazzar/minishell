@@ -19,7 +19,7 @@
 #define SIG_INT 130   // Ctrl+C (128 + 2)
 #define SIG_QUIT 131  // Ctrl+\ (128 + 3)
 // extern char **environ;
-extern int g_signal_received;
+extern volatile sig_atomic_t g_signal_received;
 //* ----------- [ enums ] -----------
 // Todo: use this every error appear
 typedef enum e_error_code 
