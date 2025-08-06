@@ -2,6 +2,7 @@
 
 static int validate_exit_arg(char *arg);
 static void handle_exit(t_minishell *minishell, int exit_code);
+
 void exit_builtin(t_minishell *minishell)
 {
     int arg_count = 0;
@@ -16,7 +17,8 @@ void exit_builtin(t_minishell *minishell)
         arg_count--; // Subtract 1 to exclude "exit" itself (argv[0])
     }
 
-    printf("exit\n");
+    // Print to stderr so it doesn't get redirected
+    fprintf(stderr, "exit\n");
 
     // Case handling
     if (arg_count == 0)
@@ -49,7 +51,6 @@ void exit_builtin(t_minishell *minishell)
             // First argument is numeric, but too many arguments
             fprintf(stderr, "minishell: exit: too many arguments\n");
             minishell->exit_code = 1;
-            // Don't call handle_exit - just return (stay in shell)
             return;
         }
         else
@@ -61,6 +62,7 @@ void exit_builtin(t_minishell *minishell)
         }
     }
 }
+
 static int validate_exit_arg(char *arg)
 {
     int i = 0;
