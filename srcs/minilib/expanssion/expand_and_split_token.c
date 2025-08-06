@@ -56,7 +56,7 @@ void expand_and_split_token(t_minishell *ms, t_token *token,
                         ft_exit(ms, "Memory allocation failed", 1);
                     
                     new_token->word = ft_strdup(split_words[j]);
-                    new_token->type = INUPT_WORD;
+                    new_token->type = INPUT_WORD;
                     new_token->qtype = QUOTE_NONE;
                     new_token->glued = 0; // Split tokens are not glued
                     

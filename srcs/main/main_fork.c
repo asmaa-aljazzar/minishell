@@ -58,6 +58,7 @@ void main_fork(t_minishell *shell)
     
     if (pid == 0) // Child process
     {
+        setup_signals_child ();
         // Setup redirections
         main_redirection(shell);
         

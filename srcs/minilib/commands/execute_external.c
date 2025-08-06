@@ -10,7 +10,6 @@ void execute_external_command(t_minishell *shell)
     char *cmd_path;
     struct stat st;
 
-    // Reject empty command: "", ''
     if (!cmd || !cmd->argv || !cmd->argv[0] || cmd->argv[0][0] == '\0')
     {
         ft_putstr_fd("minishell: ''", STDERR_FILENO);
@@ -19,11 +18,24 @@ void execute_external_command(t_minishell *shell)
         exit(127);
     }
 
-    // If command contains '/', treat it as path
+    if (ft_strcmp(cmd->argv[0], ".") == 0)
+    {
+        ft_putstr_fd("minishell: .: filename argument required\n", STDERR_FILENO);
+        ft_putstr_fd(".: usage: . filename [arguments]\n", STDERR_FILENO);
+        shell->exit_code = 2;
+        exit(2);
+    }
+    else if (ft_strcmp(cmd->argv[0], "..") == 0)
+    {
+        ft_putstr_fd("minishell: ..: command not found\n", STDERR_FILENO);
+        shell->exit_code = 127;
+        exit(127);
+    }
+
     if (ft_strchr(cmd->argv[0], '/'))
         cmd_path = cmd->argv[0];
     else
-        cmd_path = get_path(shell); // Search in PATH
+        cmd_path = get_path(shell);
 
     if (!cmd_path)
     {
@@ -31,28 +43,37 @@ void execute_external_command(t_minishell *shell)
         ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
         ft_putstr_fd(": command not found\n", STDERR_FILENO);
         shell->exit_code = 127;
-        exit (127);
+        exit(127);
     }
 
-    // Check if path is a directory
+    // Check for ending slash with non-directory target
+    if (cmd->argv[0][ft_strlen(cmd->argv[0]) - 1] == '/')
+    {
+        if (stat(cmd->argv[0], &st) != 0 || !S_ISDIR(st.st_mode))
+        {
+            ft_putstr_fd("minishell: ", STDERR_FILENO);
+            ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
+            ft_putstr_fd(": Not a directory\n", STDERR_FILENO);
+            shell->exit_code = 126;
+            exit(126);
+        }
+    }
+
     if (stat(cmd_path, &st) == 0 && S_ISDIR(st.st_mode))
     {
         ft_putstr_fd("minishell: ", STDERR_FILENO);
         ft_putstr_fd(cmd->argv[0], STDERR_FILENO);
         ft_putstr_fd(": Is a directory\n", STDERR_FILENO);
         shell->exit_code = 126;
-        exit (126);
-        // return;
+        exit(126);
     }
 
-    // Execute the command
     execve(cmd_path, cmd->argv, shell->envp);
 
-    // If execve fails
     ft_putstr_fd("minishell: ", STDERR_FILENO);
     perror(cmd->argv[0]);
 
     if (errno == EACCES)
-        exit(126); // Permission denied
-    exit(127);     // Command not found or other errors
+        exit(126);
+    exit(127);
 }

@@ -1,10 +1,7 @@
 #include "minishell.h"
 
-extern int g_signal_received;
-
 char *process_heredoc_readline(char *content, char *line, char *delimiter, int *should_break)
 {
-    g_signal_received = SIG_NONE;
     *should_break = 0;
     if (g_signal_received == SIG_INT)
     {

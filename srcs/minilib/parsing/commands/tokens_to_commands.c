@@ -15,7 +15,7 @@ void tokens_to_commands(t_minishell *minishell)
 		if_outputPipe(token, &cmd, &argc);
 		if_input_filesHeredoc(minishell, token, &cmd, &i);
 		if_output_filesAppend(minishell, token, &cmd, &i);
-		if (token->type == INUPT_WORD)
+		if (token->type == INPUT_WORD)
 			cmd->argv[argc++] = token->word;
 		i++;
 	}

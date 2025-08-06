@@ -2,8 +2,8 @@
 void env_builtin(t_minishell *minishell)
 {
     t_command *cmd = minishell->cmd;
-    
-    // If no arguments, print all environment variables
+
+    // case: no arguments → print environment
     if (cmd->argv[1] == NULL)
     {
         t_env *curr = minishell->env;
@@ -16,63 +16,65 @@ void env_builtin(t_minishell *minishell)
         minishell->exit_code = 0;
         return;
     }
-    
-    // Save original command for path resolution
-    t_command *original_cmd = minishell->cmd;
-    
-    // Temporarily modify cmd to point to the command we want to execute
-    // Create a temporary command structure for path resolution
+
+    // Setup temporary command to resolve path of cmd->argv[1]
     t_command temp_cmd = {0};
-    temp_cmd.argv = &cmd->argv[1]; // Skip "env", start from the actual command
+    temp_cmd.argv = &cmd->argv[1]; // skip "env"
+    t_command *original_cmd = minishell->cmd;
     minishell->cmd = &temp_cmd;
-    
-    // Use your existing get_path function
+
     char *path = get_path(minishell);
-    
-    // Restore original command
+
     minishell->cmd = original_cmd;
-    
-    if (!path)
-    {
-        // Command not found
-        ft_putstr_fd("env: ", STDERR_FILENO);
-        ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
-        ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
-        minishell->exit_code = 127;
-        return;
-    }
-    
-    // Fork to execute the command
+
     pid_t pid = fork();
-    
     if (pid == -1)
     {
-        // Fork failed
-        ft_putstr_fd("minishell: fork failed\n", STDERR_FILENO);
+        ft_putstr_fd("minishell: env: fork failed\n", STDERR_FILENO);
         free(path);
         minishell->exit_code = 1;
         return;
     }
-    
+
     if (pid == 0)
     {
-        // Child process
-        // Skip "env" to get just the command and its arguments
-        execve(path, &cmd->argv[1], minishell->envp);
-        // If execve returns, there was an error
-        exit(127);
-    }
-    else
-    {
-        // Parent process
-        int status;
-        waitpid(pid, &status, 0);
-        
-        if (WIFEXITED(status))
-            minishell->exit_code = WEXITSTATUS(status);
+        setup_signals_child();
+
+        // child: try to exec
+        if (path)
+            execve(path, &cmd->argv[1], minishell->envp);
         else
-            minishell->exit_code = 1;
-        
-        free(path);
+            execve(cmd->argv[1], &cmd->argv[1], minishell->envp);
+
+        // If execve fails
+        ft_putstr_fd("minishell: env: ", STDERR_FILENO);
+        ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
+        ft_putstr_fd(": ", STDERR_FILENO);
+
+        if (errno == EISDIR)
+            ft_putstr_fd("Not a directory\n", STDERR_FILENO);
+        else if (errno == ENOENT)
+            ft_putstr_fd("No such file or directory\n", STDERR_FILENO);
+        else if (errno == EACCES)
+            ft_putstr_fd("Permission denied\n", STDERR_FILENO);
+        else
+        {
+            ft_putstr_fd(strerror(errno), STDERR_FILENO);
+            ft_putstr_fd("\n", STDERR_FILENO);
+        }
+
+        exit((errno == EACCES || errno == EISDIR) ? 126 : 127);
     }
+
+    // parent: wait
+    int status;
+    waitpid(pid, &status, 0);
+
+    if (WIFEXITED(status))
+        minishell->exit_code = WEXITSTATUS(status);
+    else
+        minishell->exit_code = 1;
+
+    if (path)
+        free(path);
 }

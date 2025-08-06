@@ -11,7 +11,7 @@ void init_normal_token(t_minishell *ms, char *word, int glued, int *k)
 	}
 
 	ms->tok[*k]->word = word;
-	ms->tok[*k]->type = INUPT_WORD;
+	ms->tok[*k]->type = INPUT_WORD;
 	ms->tok[*k]->qtype = QUOTE_NONE;
 	ms->tok[*k]->glued = glued;
 	(*k)++;

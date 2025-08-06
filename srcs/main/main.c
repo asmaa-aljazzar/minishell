@@ -11,9 +11,17 @@ int main(int ac, char **av, char **environ)
 	(void)av;
 	t_minishell minishell;
 	init(&minishell);
-	
-	minishell.envp = ft_strdup_double (environ);
+
+	minishell.envp = ft_strdup_double(environ);
 	minishell.env = init_env(&minishell, environ);
+	//!
+	char *shlvl_str = getenv("SHLVL");
+	int shlvl = shlvl_str ? ft_atoi(shlvl_str) : 0;
+	shlvl += 1;
+	char *new_shlvl = ft_itoa(shlvl);
+	update_env_var(&minishell, "SHLVL", new_shlvl); 
+	free(new_shlvl);
+	//!
 	main_loop(&minishell);
 	rl_clear_history();
 	return (0);

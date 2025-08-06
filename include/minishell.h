@@ -2,11 +2,11 @@
 #define MINISHELL_H
 
 //* ----------- [ Includes ] -----------
+#include <signal.h>
 #include "../libft/includes/libft.h"
 #include <sys/wait.h>
 #include <readline/readline.h>
 #include <readline/history.h>
-#include <signal.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
@@ -19,7 +19,7 @@
 #define SIG_INT 130   // Ctrl+C (128 + 2)
 #define SIG_QUIT 131  // Ctrl+\ (128 + 3)
 // extern char **environ;
-
+extern int g_signal_received;
 //* ----------- [ enums ] -----------
 // Todo: use this every error appear
 typedef enum e_error_code 
@@ -61,7 +61,7 @@ typedef enum e_type
     INPUT_NONE,
     INPUT_FILE,
     INPUT_PIPE,
-    INUPT_WORD,
+    INPUT_WORD,
     INPUT_END, //? May delete
     INPUT_HEREDOC,
     OUTPUT_NONE,
@@ -100,6 +100,7 @@ typedef struct s_command
     char *input_file;
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
     char *output_file;
+    int heredoc_fd; // NEW
     struct s_command *next; // Next command in pipe sequence
     char **input_files;
     char **output_files;
@@ -148,8 +149,9 @@ void main_loop(t_minishell *minishell);
 //*#### Call signal handlers
 void handle_sigquit(int sig);
 void handle_sigint(int sig);
-void setup_signals(void);
-
+void setup_signals_parent(void);
+void setup_signals_child(void);
+void setup_signals_heredoc(void);
 //? [[[[[[[[[[ Commands ]]]]]]]]]]]
 
 //*#### Loop over tokens array to count how many pipes in it.
@@ -717,12 +719,12 @@ void wait_for_children(t_minishell *shell, pid_t *pids, int cmd_count);
 //- Returns 0 otherwise
 int is_empty_command(t_command *cmd);
 
-//*#### Validate pipeline syntax
-//- Checks for consecutive pipes
-//- Checks for pipe at end of input
-//- Sets appropriate error messages and exit codes
-//- Returns 0 on error, 1 on success
-int validate_pipeline(t_minishell *minishell);
+// //*#### Validate pipeline syntax
+// //- Checks for consecutive pipes
+// //- Checks for pipe at end of input
+// //- Sets appropriate error messages and exit codes
+// //- Returns 0 on error, 1 on success
+// int validate_pipeline(t_minishell *minishell);
 
 //*#### Check for empty commands in pipeline
 //- Detects empty commands between pipes

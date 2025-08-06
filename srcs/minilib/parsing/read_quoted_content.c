@@ -9,13 +9,13 @@ char *read_quoted_content(t_minishell *ms, int *i, char quote)
 
 	if (ms->input[*i] != quote)
 	{
-		ft_putstr_fd("Syntax error: unmatched quote", STDERR_FILENO);
+		ft_putendl_fd("minishell: syntax error: unmatched quote", STDERR_FILENO);
 		return NULL;
 	}
 	int size = *i - start;
 	char *word = malloc(size + 1);
 	if (!word)
-		ft_exit(ms, "Memory allocation failed", 1);
+		ft_exit(ms, "minishell: Memory allocation failed", 1);
 	ft_strlcpy(word, &ms->input[start], size + 1);
 	return word;
 }
