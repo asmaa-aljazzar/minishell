@@ -3,6 +3,7 @@
 static int is_valid_identifier(const char *str);
 static void update_or_add_env(t_minishell *minishell, char *name, char *value);
 static void export_without_value(t_minishell *minishell, char *name);
+static int has_valid_arguments(t_command *cmd);
 
 void export_builtin(t_minishell *minishell)
 {
@@ -21,8 +22,8 @@ void export_builtin(t_minishell *minishell)
 
     minishell->exit_code = 0;
 
-    // No arguments - print all exported variables in sorted format
-    if (!cmd->argv[1])
+    // Check if we have any valid (non-empty) arguments
+    if (!cmd->argv[1] || !has_valid_arguments(cmd))
     {
         print_sorted_env(minishell);
         return;
@@ -32,52 +33,69 @@ void export_builtin(t_minishell *minishell)
     i = 1;
     while (cmd->argv[i])
     {
-        if (cmd->argv[i])
+        // Skip empty arguments (from failed variable expansion)
+        if (!cmd->argv[i] || cmd->argv[i][0] == '\0')
         {
-            equal_position = ft_strchr(cmd->argv[i], '=');
-            if (equal_position)
+            i++;
+            continue;
+        }
+
+        equal_position = ft_strchr(cmd->argv[i], '=');
+        if (equal_position)
+        {
+            // Split name and value
+            *equal_position = '\0';
+            name = cmd->argv[i];
+            value = equal_position + 1;
+            
+            // Validate and update
+            if (is_valid_identifier(name))
             {
-                // Split name and value
-                *equal_position = '\0';
-                name = cmd->argv[i];
-                value = equal_position + 1;
-                
-                // Validate and update
-                if (is_valid_identifier(name))
-                {
-                    update_or_add_env(minishell, name, value);
-                }
-                else
-                {
-                    ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-                    ft_putstr_fd(name, STDERR_FILENO);
-                    ft_putstr_fd("=", STDERR_FILENO);
-                    ft_putstr_fd(value, STDERR_FILENO);
-                    ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-                    minishell->exit_code = 1;
-                }
-                
-                // Restore original string
-                *equal_position = '=';
+                update_or_add_env(minishell, name, value);
             }
             else
             {
-                // Export without value
-                if (is_valid_identifier(cmd->argv[i]))
-                {
-                    export_without_value(minishell, cmd->argv[i]);
-                }
-                else
-                {
-                    ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-                    ft_putstr_fd(cmd->argv[i], STDERR_FILENO);
-                    ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-                    minishell->exit_code = 1;
-                }
+                ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+                ft_putstr_fd(name, STDERR_FILENO);
+                ft_putstr_fd("=", STDERR_FILENO);
+                ft_putstr_fd(value, STDERR_FILENO);
+                ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+                minishell->exit_code = 1;
+            }
+            
+            // Restore original string
+            *equal_position = '=';
+        }
+        else
+        {
+            // Export without value
+            if (is_valid_identifier(cmd->argv[i]))
+            {
+                export_without_value(minishell, cmd->argv[i]);
+            }
+            else
+            {
+                ft_putstr_fd("minishell: export: `", STDERR_FILENO);
+                ft_putstr_fd(cmd->argv[i], STDERR_FILENO);
+                ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
+                minishell->exit_code = 1;
             }
         }
         i++;
     }
+}
+
+static int has_valid_arguments(t_command *cmd)
+{
+    int i = 1;
+    
+    while (cmd->argv[i])
+    {
+        if (cmd->argv[i][0] != '\0')  // Found a non-empty argument
+            return 1;
+        i++;
+    }
+    return 0;  // All arguments are empty
 }
 
 static int is_valid_identifier(const char *str)
@@ -215,4 +233,3 @@ static void export_without_value(t_minishell *minishell, char *name)
     
     // Don't add to envp if no value
 }
-
