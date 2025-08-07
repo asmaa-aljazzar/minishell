@@ -157,7 +157,7 @@ void setup_signals_heredoc(void);
 
 //*#### Loop over tokens array to count how many pipes in it.
 void count_pipe(t_minishell *minishell);
-
+int is_command_empty(t_command *cmd);
 void print_sorted_env(t_minishell *minishell); // Todo
 
 //*#### exit_command
