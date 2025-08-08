@@ -1,7 +1,5 @@
 #include "minishell.h"
 
-//@param ms : to update values
-//@param env : to get values
 void increase_SHLVL_var(t_minishell *ms, t_env *env)
 {
 	char *old; // old value of SHLVL

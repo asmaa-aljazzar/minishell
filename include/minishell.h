@@ -97,7 +97,8 @@ typedef struct s_minishell
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
-//? [ Main ]
+//todo: 1 from main.c
+//? [ Main ] 
 
 //? [ Lexer & Tokenizer ]
 
@@ -110,13 +111,67 @@ typedef struct s_minishell
 //? [ Signals ]
 
 //? [ Expanssion ]
-void increase_SHLVL_var(t_minishell *ms, t_env *env);  // todo: func inside 2
+
+/**
+ * @brief #### Update 'SHLVL' value
+ * @brief - Add `1` positive, 
+ * @brief - Start from `1` if negative
+ * @param ms   Minishell structure
+ * @param env  Env linked list
+ * @return     Nothing
+ */
+void increase_SHLVL_var(t_minishell *ms, t_env *env);  // todo: func inside 4
+/**
+ * @brief #### Create a new env node from a string
+ * @brief - Find '=' separator in string
+ * @brief - Extract name before '='
+ * @brief - Duplicate value after '='
+ * @brief - Allocate and assign node fields
+ * @param ms       Minishell context (for error handling)
+ * @param environ  Env variable string "NAME=VALUE"
+ * @return         Pointer to new env node, or NULL if no '=' found
+ */
+t_env *create_env_node(t_minishell *minishell, char *environ);
+
+/**
+ * @brief #### Append a node to the env linked list
+ * @brief - If list empty, set head to new node
+ * @brief - Else, link new node after tail
+ * @brief - Update tail to new node
+ * @param new_node  Node to append
+ * @param head      Pointer to head of list
+ * @param tail      Pointer to tail of list
+ * @return          None
+ */
+void append_env_node(t_env *new_node, t_env **head, t_env **tail);
 
 //? [ Errors ]
 
 
 //?  [ Init ]
-void init(t_minishell *ms, char **environ); // todo: func inside 1
+
+/**
+ * @brief #### Initialize minishell structure
+ * @brief - Set initial NULL or zero values
+ * @brief - Duplicate env array to envp
+ * @brief - Create env linked list from environ
+ * @brief - Clear buffer
+ * @brief - Increase SHLVL by 1
+ * @param ms       Minishell structure pointer
+ * @param environ  Environment variables array
+ * @return         None
+ */
+void init(t_minishell *ms, char **environ);
+
+/**
+ * @brief #### Create env linked list from environ array
+ * @brief - Create node for each env variable
+ * @brief - Append node to env list
+ * @param minishell  Minishell context
+ * @param environ    Environment variables array
+ * @return           Head of env linked list
+ */
+t_env *init_env(t_minishell *minishell, char **environ);
 
 //? [ Free ]
 
