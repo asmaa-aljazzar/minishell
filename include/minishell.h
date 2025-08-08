@@ -110,12 +110,13 @@ typedef struct s_minishell
 //? [ Signals ]
 
 //? [ Expanssion ]
-void increase_SHLVL_var(t_minishell *ms, t_env *env);  // todo: func inside
+void increase_SHLVL_var(t_minishell *ms, t_env *env);  // todo: func inside 2
 
 //? [ Errors ]
 
 
 //?  [ Init ]
+void init(t_minishell *ms, char **environ); // todo: func inside 1
 
 //? [ Free ]
 
