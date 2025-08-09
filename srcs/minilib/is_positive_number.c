@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-// if the string is all positive numbers return 1 else return 0
 int is_positive_number(const char *s)
 { 
 	if (!s || !*s) // if s is null or s[0] is '\0'.
