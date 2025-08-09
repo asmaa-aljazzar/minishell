@@ -3,6 +3,7 @@
 
 //* ----------- [ Includes ] -----------
 #include <signal.h>
+#include <asm-generic/signal-defs.h> //! may delete // my system don't recognize sa
 #include "../libft/includes/libft.h"
 #include <sys/wait.h>
 #include <readline/readline.h>
@@ -10,8 +11,7 @@
 #include <errno.h>
 #include <fcntl.h>
 #include <sys/stat.h>
-
-
+#include <sys/types.h>
 
 //* ----------- [ Macros ] -----------
 #define PROMPT "\033[33mminishell\033[32m$ \033[0m"
@@ -582,6 +582,14 @@ void print_slowly(const char *line);
  * @return           None
  */
 void	handle_eof(t_minishell *minishell);
+
+//? [ Signals ]
+void setup_signals_parent(void);
+void setup_signals_child(void);
+void setup_signals_readline(void);
+void setup_signals_heredoc(void);
+void setup_signals_execution(void);
+void sigint_handler(int sig);
 
 //? [ Debug ]
 

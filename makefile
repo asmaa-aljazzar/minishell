@@ -102,7 +102,12 @@ LEXER_AND_TOKENIZER_SRC = 	$(LEXER_AND_TOKENIZER_DIR)get_tokens.c\
 
 ERRORS_SRC		=	
 
-SIGNALS_SRC =
+SIGNALS_SRC 	=	$(SIGNALS_DIR)setup_signals_child.c\
+					$(SIGNALS_DIR)setup_signals_parent.c\
+					$(SIGNALS_DIR)setup_signals_execution.c\
+					$(SIGNALS_DIR)setup_signals_heredoc.c\
+					$(SIGNALS_DIR)setup_signals_readline.c\
+					$(SIGNALS_DIR)sigint_handler.c\
 
 DEBUG_SRC = $(DEBUG_DIR)debug_print_envp_array.c\
 			$(DEBUG_DIR)debug_print_env_list.c\

@@ -86,7 +86,7 @@ void init_shell(t_minishell *ms)
         ms->input = NULL;
         return ; // continue prompt loop
     }
-    // debug_print_tokens(ms->tok);//!
+    debug_print_tokens(ms->tok);//!
     // if (!validate_syntax(minishell))
     // {
     //     check_to_free(minishell);

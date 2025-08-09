@@ -5,6 +5,7 @@ int main(int ac, char **av, char **environ)
 	t_minishell ms; // t_minishell struct
 	(void) ac;
 	(void) av;
+	setup_signals_parent();
 	init (&ms, environ);
 	// //! Debug
 	// debug_print_env_list(ms.env);
