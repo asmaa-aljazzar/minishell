@@ -21,14 +21,15 @@ OBJS_DIR				=	objs/
 LIBFT					=	./libft/libft.a
 MAIN_DIR				=	$(SRCS_DIR)main/
 MINILIB_DIR				=	$(SRCS_DIR)minilib/
-INIT_DIR				=	$(SRCS_DIR)init/
-FREE_DIR				=	$(SRCS_DIR)free/
-PARS_DIR				=	$(SRCS_DIR)parsing/
-BUILTINS_DIR			=	$(SRCS_DIR)builtins/
-EXPAND_DIR				=	$(SRCS_DIR)expand/
-LEXER_AND_TOKENIZE_DIR 	=	$(SRCS_DIR)tokenize/
-SIGNALS_DIR				=	$(SRCS_DIR)signals/
-ERRORS_DIR				=	$(SRCS_DIR)erorrs/
+PROG_DIR				=	$(SRCS_DIR)prog/
+INIT_DIR				=	$(PROG_DIR)init/
+FREE_DIR				=	$(PROG_DIR)free/
+PARS_DIR				=	$(PROG_DIR)parsing/
+BUILTINS_DIR			=	$(PROG_DIR)builtins/
+EXPAND_DIR				=	$(PROG_DIR)expand/
+LEXER_AND_TOKENIZE_DIR 	=	$(PROG_DIR)tokenize/
+SIGNALS_DIR				=	$(PROG_DIR)signals/
+ERRORS_DIR				=	$(PROG_DIR)erorrs/
 
 
 
@@ -89,18 +90,20 @@ DEBUG_SRC = $(DEBUG_DIR)debug_print_envp_array.c\
 
 # PARS_DIR	= 	$(PARS)parse_and_execute.c
 
+PROG_SRC	=	$(INIT_SRC)\
+				$(EXPAND_SRC)\
+ 				$(FREE_SRC)\
+ 				$(PARS_SRC)\
+ 				$(BUILTINS_SRC)\
+ 				$(LEXER_AND_TOKENIZE_SRC)\
+ 				$(ERRORS_SRC)\
+				$(SIGNALS_SRC)\
+				$(DEBUG_SRC)\
 
 SRCS	=	$(MAIN_SRC)\
 			$(MINILIB_SRC)\
-			$(INIT_SRC)\
-			$(EXPAND_SRC)\
- 			$(FREE_SRC)\
- 			$(PARS_SRC)\
- 			$(BUILTINS_SRC)\
- 			$(LEXER_AND_TOKENIZE_SRC)\
- 			$(ERRORS_SRC)\
-			$(SIGNALS_SRC)\
-			$(DEBUG_SRC)\
+			$(PROG_SRC)\
+			
 
 OBJS	= $(patsubst $(SRCS_DIR)%.c,$(OBJS_DIR)%.o,$(SRCS))
 
