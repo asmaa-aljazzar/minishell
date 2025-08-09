@@ -47,11 +47,16 @@ HANDLE_DIR		 		=	$(LEXER_AND_TOKENIZE_DIR)handle/
 #	|-third/
 
 MAIN_SRC 	= 	$(MAIN_DIR)main.c\
+			 	$(MAIN_DIR)main_loop.c\
 
 MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
+				$(MINILIB_DIR)print_banner.c\
+				$(MINILIB_DIR)print_slowly.c\
+				$(MINILIB_DIR)handle_eof.c\
 
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
+				$(INIT_DIR)init_shell.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_complex_resources.c\

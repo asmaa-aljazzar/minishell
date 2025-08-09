@@ -97,8 +97,10 @@ typedef struct s_minishell
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
-//todo: 1 from main.c
+
 //? [ Main ] 
+
+void main_loop (t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
 
@@ -267,6 +269,9 @@ void init(t_minishell *ms, char **environ);
  */
 t_env *init_env(t_minishell *minishell, char **environ);
 
+
+void init_shell(t_minishell *minishell);
+
 //? [ Free ]
 
 /**
@@ -347,6 +352,35 @@ void free_env(t_env *env);
  * @return   1 if positive number, 0 otherwise
  */
 int is_positive_number(const char *s); //? Done
+
+/**
+ * @brief #### Print ASCII banner in two parts
+ * @brief - Part 1: Top half of banner
+ * @brief - Part 2: Bottom half of banner
+ * @brief - Use print_slowly for gradual output
+ * @return None
+ */
+void print_banner(void);
+
+/**
+ * @brief #### Print string slowly to stdout
+ * @brief - Write one character at a time
+ * @brief - Delay between each character
+ * @param line  String to print
+ * @return      None
+ */
+void print_slowly(const char *line);
+
+/**
+ * @brief #### Handle EOF (Ctrl+D) in minishell
+ * @brief - If no input, print "exit"
+ * @brief - Free env list and envp array
+ * @brief - Clear readline history
+ * @brief - Exit program
+ * @param minishell  Minishell context
+ * @return           None
+ */
+void	handle_eof(t_minishell *minishell);
 
 //? [ Debug ]
 

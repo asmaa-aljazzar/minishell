@@ -10,7 +10,7 @@ int main(int ac, char **av, char **environ)
 	// debug_print_env_list(ms.env);
 	// debug_print_envp_array (ms.envp);
 	// //!
-	// main_loop (&ms); // go to the main loop // todo
+	main_loop (&ms); // go to the main loop // todo
 	rl_clear_history (); // clear history before exit the shell
 	return (0);
 }
