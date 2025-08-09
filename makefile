@@ -15,7 +15,6 @@ RM 		= 	rm -f
 CFLAGS 	= 	-Wall -Wextra -Werror -g -Iinclude
 
 # Directories
-DEBUG_DIR				=	$(SRCS_DIR)debug/
 SRCS_DIR				=	srcs/
 OBJS_DIR				=	objs/
 LIBFT					=	./libft/libft.a
@@ -27,9 +26,10 @@ FREE_DIR				=	$(PROG_DIR)free/
 PARS_DIR				=	$(PROG_DIR)parsing/
 BUILTINS_DIR			=	$(PROG_DIR)builtins/
 EXPAND_DIR				=	$(PROG_DIR)expand/
-LEXER_AND_TOKENIZE_DIR 	=	$(PROG_DIR)tokenize/
+LEXER_AND_TOKENIZER_DIR =	$(PROG_DIR)lexer_and_tokenizer/
 SIGNALS_DIR				=	$(PROG_DIR)signals/
 ERRORS_DIR				=	$(PROG_DIR)erorrs/
+DEBUG_DIR				=	$(PROG_DIR)debug/
 
 
 
@@ -38,7 +38,7 @@ PIPE_DIR				= 	$(MINILIB_DIR)pipe/
 REDIR_DIR				=	$(MINILIB_DIR)redirections/
 PATH_DIR				=	$(MINILIB_DIR)path/
 EXECUTION_DIR			=	$(MINILIB_DIR)exec_one_cmd/
-HANDLE_DIR		 		=	$(LEXER_AND_TOKENIZE_DIR)handle/
+HANDLE_DIR		 		=	$(LEXER_AND_TOKENIZER_DIR)handle/
 
 # Source Files
 
@@ -53,6 +53,7 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)print_banner.c\
 				$(MINILIB_DIR)print_slowly.c\
 				$(MINILIB_DIR)handle_eof.c\
+				$(MINILIB_DIR)update_glued.c\
 
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
@@ -82,7 +83,22 @@ EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 
 BUILTINS_SRC	=	
 
-LEXER_AND_TOKENIZE_SRC = 	
+LEXER_AND_TOKENIZER_SRC = 	$(LEXER_AND_TOKENIZER_DIR)get_tokens.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)process_token.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)select_tokenizer.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)tokenize_pipe_op.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)tokenize_input_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)handle_heredoc_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)handle_input_file_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)tokenize_output_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)handle_output_append_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)handle_output_file_redir.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)tokenize_quoted.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)read_quoted_content.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)create_quoted_token.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)tokenize_normal_string.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)allocate_normal_word.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)fill_normal_token.c\
 
 ERRORS_SRC		=	
 
@@ -90,6 +106,7 @@ SIGNALS_SRC =
 
 DEBUG_SRC = $(DEBUG_DIR)debug_print_envp_array.c\
 			$(DEBUG_DIR)debug_print_env_list.c\
+			$(DEBUG_DIR)debug_print_tokens.c\
 
 
 
@@ -100,7 +117,7 @@ PROG_SRC	=	$(INIT_SRC)\
  				$(FREE_SRC)\
  				$(PARS_SRC)\
  				$(BUILTINS_SRC)\
- 				$(LEXER_AND_TOKENIZE_SRC)\
+ 				$(LEXER_AND_TOKENIZER_SRC)\
  				$(ERRORS_SRC)\
 				$(SIGNALS_SRC)\
 				$(DEBUG_SRC)\

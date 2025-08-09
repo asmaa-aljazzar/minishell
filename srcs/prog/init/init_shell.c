@@ -60,35 +60,33 @@ int validate_syntax(t_minishell *ms)
     return 1;
 }
 
-void init_shell(t_minishell *minishell)
+void init_shell(t_minishell *ms)
 {
-    minishell->tok = NULL; // tokens array
-    minishell->tokens_count = 0; // number of tokens
-    minishell->pipe_count = 0; // number of pipe
-    minishell->input = readline(PROMPT); // input line
-    handle_eof(minishell);
-     if (*minishell->input)
-         add_history(minishell->input);
-    if (!*minishell->input)
+    ms->tok = NULL;               // tokens array
+    ms->tokens_count = 0;         // number of tokens
+    ms->pipe_count = 0;           // number of pipe
+    ms->input = readline(PROMPT); // input line
+    handle_eof(ms);
+    if (*ms->input)
+        add_history(ms->input);
+    if (!*ms->input) // if enter
     {
-        free(minishell->input);
-        minishell->input = NULL;
+        free(ms->input);
+        ms->input = NULL;
         return;
     }
     // if (g_signal_received == SIGINT) //? with signal
     //     minishell->exit_code = 130;
     // else if (g_signal_received == SIGQUIT) //? with signal
     //     minishell->exit_code = 131;
-
     // g_signal_received = SIG_NONE; // reset for next prompt //? with signal
-    get_tokens(minishell);
-    // if (!minishell->tok)
-    // {
-    //     ft_putendl_fd("minishell: Error: Failed to tokenize input", STDERR_FILENO);
-    //     free(minishell->input);
-    //     minishell->input = NULL;
-    //     return;
-    // }
+    if (!get_tokens(ms)) // syntax error.
+    {
+        free(ms->input);
+        ms->input = NULL;
+        return ; // continue prompt loop
+    }
+    // debug_print_tokens(ms->tok);//!
     // if (!validate_syntax(minishell))
     // {
     //     check_to_free(minishell);

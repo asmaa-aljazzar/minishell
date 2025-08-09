@@ -30,7 +30,6 @@ typedef enum e_quote
     QUOTE_NONE, // not qouted
     QUOTE_SINGLE, // 'some'
     QUOTE_DOUBLE, // "some"
-    QUOTE_MIXED // not"some"'some'
 } t_quote;
 
 typedef enum e_type
@@ -60,6 +59,7 @@ typedef struct s_token
     char *word;    /* already without the surrounding quotes   */
     t_type type;   /* WORD | PIPE | REDIR_*                    */
     t_quote qtype; /* how it 'was' quoted  */
+    int expanded;
     // int is_environ
     int glued;     /* 1 → directly attached to previous char 0 → at least one white-space before it   */
 } t_token;
@@ -94,6 +94,9 @@ typedef struct s_minishell
     char **envp; // ["NAME=VAl"][...][...]
     int exit_code;
     int skip_execution; // if no need to execute [error, not mandatory]
+    int in_single_quote;
+    int in_double_quote;
+    int last_token_end;
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
@@ -103,6 +106,203 @@ typedef struct s_minishell
 void main_loop (t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
+
+/**
+ * @brief #### Tokenize input string into tokens array
+ * @brief - Allocate token array based on input length
+ * @brief - Track single and double quote states
+ * @brief - Use tokenizer selector for each character
+ * @brief - Return 0 on syntax error, 1 on success
+ * @param ms  Minishell context
+ * @return    1 if tokenization succeeded, 0 on failure
+ */
+int get_tokens(t_minishell *minishell);
+
+int process_token(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Select and invoke tokenizer based on current char and quote state
+ * @brief - Tokenize pipe '|' outside quotes
+ * @brief - Tokenize input redirection '<' outside quotes
+ * @brief - Tokenize output redirection '>' outside quotes
+ * @brief - Tokenize quoted strings
+ * @brief - Tokenize normal strings otherwise
+ * @param ms     Minishell context
+ * @param k      Pointer to token index
+ * @param i      Pointer to input index
+ * @param glued  Glue status flag
+ * @return       1 on success, 0 on failure
+ */
+int select_tokenizer(t_minishell *ms, int *k, int *i, int glued); // todo func inside
+
+/**
+ * @brief #### Tokenize pipe '|' operator
+ * @brief - Allocate token for pipe character
+ * @brief - Set token word to "|"
+ * @brief - Set token type to PIPE and quote type to none
+ * @brief - Increment token and input indices
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void tokenize_pipe_op(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Tokenize input redirection operator
+ * @brief - Detect single '<' or double '<<' for heredoc
+ * @brief - Call appropriate handler for each case
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void tokenize_input_redir(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Handle heredoc input redirection '<<'
+ * @brief - Allocate token for '<<'
+ * @brief - Set token type to INPUT_HEREDOC and quote type to none
+ * @brief - Increment token index and advance input index by 2
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void handle_heredoc_redir(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Handle single input redirection '<'
+ * @brief - Allocate token for '<'
+ * @brief - Set token type to INPUT_FILE and quote type to none
+ * @brief - Increment token index and advance input index by 1
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void handle_input_file_redir(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Tokenize input redirection operator
+ * @brief - Detect single '>' or double '>>' for heredoc
+ * @brief - Call appropriate handler for each case
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void tokenize_output_redir(t_minishell *minishell, int *k, int *i); 
+
+/**
+ * @brief #### Handle output append redirection '>>'
+ * @brief - Allocate token for '>>'
+ * @brief - Set token type to OUTPUT_APPEND and quote type to none
+ * @brief - Increment token index and advance input index by 2
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void handle_output_append_redir(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Handle single output redirection '>'
+ * @brief - Allocate token for '>'
+ * @brief - Set token type to OUTPUT_FILE and quote type to none
+ * @brief - Increment token index and advance input index by 1
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index
+ * @return           None
+ */
+void handle_output_file_redir(t_minishell *minishell, int *k, int *i);
+
+/**
+ * @brief #### Tokenize a quoted string
+ * @brief - Save quote character
+ * @brief - Read content inside quotes
+ * @brief - Return 0 if unmatched quote (error)
+ * @brief - Create quoted token with content and glue status
+ * @brief - Advance input index past closing quote
+ * @param ms     Minishell context
+ * @param k      Pointer to token index
+ * @param i      Pointer to input index
+ * @param glued  Glue status flag
+ * @return       1 on success, 0 on error
+ */
+int tokenize_quoted(t_minishell *ms, int *k, int *i, int glued); // todo func inside
+
+/**
+ * @brief #### Extract content inside matching quotes
+ * @brief - Advance past opening quote
+ * @brief - Search for closing quote, error if unmatched
+ * @brief - Allocate and copy content between quotes
+ * @param ms     Minishell context
+ * @param i      Pointer to input index (updated)
+ * @param quote  Quote character to match
+ * @return       Allocated string inside quotes or NULL on error
+ */
+char *read_quoted_content(t_minishell *ms, int *i, char quote);
+
+/**
+ * @brief #### Create token from quoted word
+ * @brief - Allocate token structure
+ * @brief - Assign word and set token type to INPUT_WORD
+ * @brief - Set quote type based on quote character
+ * @brief - Set glued flag
+ * @brief - Increment token index
+ * @param ms     Minishell context
+ * @param k      Pointer to token index
+ * @param word   Quoted string content
+ * @param quote  Quote character ('"' or '\'')
+ * @param glued  Glue status flag
+ * @return       None
+ */
+void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int glued);
+
+/**
+ * @brief #### Tokenize a normal (unquoted) string segment
+ * @brief - Scan until delimiter or special char
+ * @brief - Return if no characters scanned
+ * @brief - Allocate substring for normal word
+ * @brief - Create token with allocated word and glue status
+ * @param minishell  Minishell context
+ * @param k          Pointer to token index
+ * @param i          Pointer to input index (updated)
+ * @param glued      Glue status flag
+ * @return           None
+ */
+void tokenize_normal_string(t_minishell *minishell, int *k, int *i, int glued);
+
+/**
+ * @brief #### Allocate and copy normal word substring
+ * @brief - Allocate memory for substring of given length
+ * @brief - Copy substring from input starting at index
+ * @param ms     Minishell context
+ * @param start  Start index in input string
+ * @param len    Length of substring
+ * @return       Newly allocated substring
+ */
+char *allocate_normal_word(t_minishell *ms, int start, int len);
+
+/**
+ * @brief #### Create token for normal (unquoted) word
+ * @brief - Allocate token structure
+ * @brief - Assign word, set type to INPUT_WORD
+ * @brief - Set quote type to none and initialize expanded flag
+ * @brief - Set glue status
+ * @brief - Increment token index
+ * @param ms     Minishell context
+ * @param word   Word string to assign
+ * @param glued  Glue status flag
+ * @param k      Pointer to token index
+ * @return       None
+ */
+void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
+
+
+
 
 //? [ Parser ]
 
@@ -270,7 +470,7 @@ void init(t_minishell *ms, char **environ);
 t_env *init_env(t_minishell *minishell, char **environ);
 
 
-void init_shell(t_minishell *minishell);
+void init_shell(t_minishell *minishell); // todo func inside
 
 //? [ Free ]
 
@@ -342,6 +542,7 @@ void free_tokens(t_token **tokens);
 void free_env(t_env *env);
 
 //? [ Minilib ]
+int update_glued(t_minishell *ms, int *i, int token_index);
 
 /**
  * @brief #### Check if string is a positive number
@@ -389,5 +590,8 @@ void debug_print_envp_array(char **envp);
 
 //#### Print the environment variables linked list
 void debug_print_env_list(t_env *env);
+
+// Print the tokens array
+void debug_print_tokens(t_token **tokens);
 
 # endif
