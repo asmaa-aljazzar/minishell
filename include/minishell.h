@@ -443,6 +443,9 @@ void update_env_var(t_minishell *shell, char *name, char *value);
 
 //? [ Errors ]
 
+int validate_syntax(t_minishell *ms);
+int check_pipe_syntax(t_minishell *ms, int i);
+int check_redirection_syntax(t_minishell *ms, int *i);
 
 //?  [ Init ]
 

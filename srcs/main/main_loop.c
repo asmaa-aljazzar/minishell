@@ -5,11 +5,10 @@ void main_loop(t_minishell *ms)
     print_banner();
     while (1) 
     {
-        setup_signals_readline(); // if signall recieved in parent
+        setup_signals_readline(); // if signall recieved in setup each readline
         init_shell(ms); // initialize after and before readline // todo
-        // if (!minishell->input || !minishell->tok)
-            // continue; // if no input and tokens then its enter
-        // exit_builtin(minishell); // exit command // todo
+         if (!ms->input || !ms->tok)
+            continue; // if no input and tokens then its enter
         // init_commands(minishell); // initialize commands list // todo
         // expand_tokens(minishell);// expand tokens into its value // todo
         // merge_words(minishell);// merge with/without spaces need to // todo
@@ -32,3 +31,42 @@ void main_loop(t_minishell *ms)
         // check_to_free(minishell); 
     }
 }
+// void main_loop(t_minishell *ms)
+// {   
+
+//         tokenize(ms);    // ms->tok gets filled
+//         if (!ms->tok)    // empty line after tokenizing
+//         {
+//             cleanup_iteration(ms);
+//             continue;
+//         }
+
+//         init_commands(ms);       // parse tokens into commands
+//         expand_tokens(ms);
+//         merge_words(ms);
+//         argv_for_commands(ms);
+//         tokens_to_commands(ms);
+
+//         if (!validate_pipeline(ms))
+//         {
+//             cleanup_iteration(ms);
+//             continue;
+//         }
+
+//         if (is_single_builtin_parent(ms)) // e.g. "exit", "cd", "export", "unset"
+//         {
+//             run_builtin_in_parent(ms);
+//             cleanup_iteration(ms);
+//             continue;
+//         }
+
+//         if (!process_all_heredocs(ms))
+//         {
+//             cleanup_iteration(ms);
+//             continue;
+//         }
+
+//         execute_pipeline(ms);
+//         cleanup_iteration(ms);
+//     }
+// }

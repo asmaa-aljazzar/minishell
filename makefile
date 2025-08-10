@@ -28,7 +28,7 @@ BUILTINS_DIR			=	$(PROG_DIR)builtins/
 EXPAND_DIR				=	$(PROG_DIR)expand/
 LEXER_AND_TOKENIZER_DIR =	$(PROG_DIR)lexer_and_tokenizer/
 SIGNALS_DIR				=	$(PROG_DIR)signals/
-ERRORS_DIR				=	$(PROG_DIR)erorrs/
+ERRORS_DIR 				= 	$(PROG_DIR)errors/
 DEBUG_DIR				=	$(PROG_DIR)debug/
 
 
@@ -100,7 +100,9 @@ LEXER_AND_TOKENIZER_SRC = 	$(LEXER_AND_TOKENIZER_DIR)get_tokens.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)allocate_normal_word.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)fill_normal_token.c\
 
-ERRORS_SRC		=	
+ERRORS_SRC		=	$(ERRORS_DIR)validate_syntax.c\
+					$(ERRORS_DIR)check_redirection_syntax.c\
+					$(ERRORS_DIR)check_pipe_syntax.c\
 
 SIGNALS_SRC 	=	$(SIGNALS_DIR)setup_signals_child.c\
 					$(SIGNALS_DIR)setup_signals_parent.c\
