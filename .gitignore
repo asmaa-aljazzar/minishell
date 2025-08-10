@@ -5,3 +5,7 @@ libft.a
 minishell
 oldmini.h
 *.out
+include/minishell_old.h
+srcs_old
+srcs_old/*
+makefile_old
