@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int process_token(t_minishell *ms, int *k, int *i)
 {
     int glued = update_glued(ms, i, *k);

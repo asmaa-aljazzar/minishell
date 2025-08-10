@@ -63,6 +63,8 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)split_on_whitespace.c\
 				$(MINILIB_DIR)extract_word.c\
 				$(MINILIB_DIR)copy_token_to_argvs.c\
+				$(MINILIB_DIR)add_to_list.c\
+				$(MINILIB_DIR)has_more_redirections.c\
 
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
@@ -85,6 +87,10 @@ PARS_SRC	=	$(PARS_DIR)allocate_commands.c\
 				$(PARS_DIR)allocate_argv.c\
 				$(PARS_DIR)argv_for_commands.c\
 				$(PARS_DIR)fill_argvs.c\
+				$(PARS_DIR)if_input_filesHeredoc.c\
+				$(PARS_DIR)if_output_filesAppend.c\
+				$(PARS_DIR)if_outputPipe.c\
+				$(PARS_DIR)tokens_to_commands.c\
 
 EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 				$(EXPAND_DIR)create_env_node.c\
@@ -146,6 +152,7 @@ SIGNALS_SRC 	=	$(SIGNALS_DIR)setup_signals_child.c\
 DEBUG_SRC = $(DEBUG_DIR)debug_print_envp_array.c\
 			$(DEBUG_DIR)debug_print_env_list.c\
 			$(DEBUG_DIR)debug_print_tokens.c\
+			$(DEBUG_DIR)debug_command.c\
 
 
 
