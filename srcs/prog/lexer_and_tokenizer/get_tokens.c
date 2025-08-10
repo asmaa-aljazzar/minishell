@@ -15,7 +15,6 @@ int get_tokens(t_minishell *ms)
         ft_exit(ms, "malloc failed", 1);
     ms->in_single_quote = 0;
     ms->in_double_quote = 0;
-
     while (ms->input[i])
     {
         while (ms->input[i] == ' ')

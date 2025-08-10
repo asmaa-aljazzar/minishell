@@ -7,6 +7,11 @@ void tokenize_pipe_op(t_minishell *ms, int *k, int *i)
     if (!ms->tok[*k])
         ft_exit(ms, "Memory allocation failed", 1);
     ms->tok[*k]->word = ft_strdup("|");
+    if (!ms->tok[*k]->word)
+    {
+        free(ms->tok[*k]);
+        ft_exit(ms, "Memory allocation failed", 1);
+    }
     ms->tok[*k]->type = PIPE;
     ms->tok[*k]->qtype = QUOTE_NONE;
     (*k)++;

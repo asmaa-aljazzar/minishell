@@ -5,7 +5,7 @@ int update_envp_array(t_minishell *shell, char *name, char *value)
     char *new_entry;
 
     if (!name || !value)
-        return;
+        return (0);
     new_entry = build_envp_entry(name, value); // ["NAME=VAL"]
     if (!new_entry)
         return (0);

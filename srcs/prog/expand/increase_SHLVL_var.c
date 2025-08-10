@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void increase_SHLVL_var(t_minishell *ms, t_env *env)
+int	increase_SHLVL_var(t_minishell *ms, t_env *env)
 {
 	char *old; // old value of SHLVL
 	int lvl; // This will be the level of the shell
@@ -13,8 +13,17 @@ void increase_SHLVL_var(t_minishell *ms, t_env *env)
 		lvl = 1; // reset to 1 if it is negative
 	new = ft_itoa(lvl); // set in new var to free after itoa'
 	if (!new)
-		return (NULL);
-	update_env_var(ms, "SHLVL", new); // update env linked list //todo
-	update_envp_array(ms, "SHLVL", new); // update envp array //todo
+		return (0);
+	if (!update_env_var(ms, "SHLVL", new))
+	{
+		free(new);
+		return (0); // update env linked list //todo
+	}
+	if (!update_envp_array(ms, "SHLVL", new))
+	{
+		free (new);
+		return (0); // update envp array //todo
+	}
 	free(new); // free after ft_itoa
+	return (1);
 }
