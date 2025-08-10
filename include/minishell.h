@@ -59,7 +59,7 @@ typedef struct s_token
     char *word;    /* already without the surrounding quotes   */
     t_type type;   /* WORD | PIPE | REDIR_*                    */
     t_quote qtype; /* how it 'was' quoted  */
-    int expanded;
+    int expanded; // 1 if expanded or 0
     // int is_environ
     int glued;     /* 1 → directly attached to previous char 0 → at least one white-space before it   */
 } t_token;
@@ -72,6 +72,7 @@ typedef struct s_token
 typedef struct s_command
 {
     char **argv;       // ["cat"]
+    int  **argv_expanded;//todo
     t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
     char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
@@ -305,6 +306,7 @@ void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
 
 
 //? [ Parser ]
+void allocate_commands(t_minishell *ms);
 
 //? [ Execution ]
 
@@ -448,6 +450,8 @@ int check_pipe_syntax(t_minishell *ms, int i);
 int check_redirection_syntax(t_minishell *ms, int *i);
 
 //?  [ Init ]
+
+t_command *init_command(t_minishell *ms);
 
 /**
  * @brief #### Initialize minishell structure

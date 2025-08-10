@@ -59,6 +59,7 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
 				$(INIT_DIR)init_shell.c\
+				$(INIT_DIR)init_command.c\
 
 FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_complex_resources.c\
@@ -69,7 +70,7 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_tokens.c\
 				$(FREE_DIR)free_env.c\
 
-PARS_SRC	=	
+PARS_SRC	=	$(PARS_DIR)allocate_commands.c\
 
 EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 				$(EXPAND_DIR)create_env_node.c\
