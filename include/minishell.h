@@ -352,7 +352,7 @@ void handle_first_split_token(t_token *token, const char *word, int did_expand,
  * @param env  Env linked list
  * @return     Nothing
  */
-void increase_SHLVL_var(t_minishell *ms, t_env *env);
+int	increase_SHLVL_var(t_minishell *ms, t_env *env);
 
 /**
  * @brief #### Create a new env node from a string
@@ -412,7 +412,8 @@ int update_existing_env_var(t_minishell *shell, char *name, char *value);
  * @param value  Variable value
  * @return       None
  */
-void create_new_env_var(t_minishell *shell, char *name, char *value);
+int create_new_env_var(t_minishell *shell, char *name, char *value);
+
 
 /**
  * @brief #### Update envp array with a variable
@@ -424,7 +425,8 @@ void create_new_env_var(t_minishell *shell, char *name, char *value);
  * @param value  Variable value
  * @return       None
  */
-void update_envp_array(t_minishell *shell, char *name, char *value);
+int update_envp_array(t_minishell *shell, char *name, char *value);
+
 
 /**
  * @brief #### Append new entry to envp array
@@ -435,9 +437,10 @@ void update_envp_array(t_minishell *shell, char *name, char *value);
  * @brief - Free old array and replace
  * @param shell      Minishell context
  * @param new_entry  "NAME=VALUE" string to append
- * @return           None
+ * @return 0 on failure
+ *  1     success     
  */
-void append_envp(t_minishell *shell, char *new_entry);
+int append_envp(t_minishell *shell, char *new_entry);
 
 /**
  * @brief #### Build "NAME=VALUE" string
@@ -469,7 +472,8 @@ int replace_existing_envp(t_minishell *shell, char *name, char *new_entry);
  * @param value  Variable value
  * @return       None
  */
-void update_env_var(t_minishell *shell, char *name, char *value);
+int update_env_var(t_minishell *shell, char *name, char *value);
+
 
 //? [ Errors ]
 

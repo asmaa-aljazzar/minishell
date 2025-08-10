@@ -6,6 +6,11 @@ t_token *create_new_token(t_minishell *ms, const char *word, int did_expand)
     if (!new_token)
         ft_exit(ms, "Memory allocation failed", 1);
     new_token->word = ft_strdup(word);
+    if(!new_token->word)
+    {
+        free (new_token);
+        ft_exit(ms, "Memory allocation failed", 1);
+    }
     new_token->type = INPUT_WORD;
     new_token->qtype = QUOTE_NONE;
     new_token->glued = 0;

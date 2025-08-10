@@ -13,7 +13,7 @@ char **split_on_whitespace(char *str)
         return NULL;
     word_idx = 0;
     i = 0;
-    while ((word = extract_word(str, &i)) != NULL)
+    while ((word = extract_word(str, &i)) != NULL) // TODO: norm error 
     {
         result[word_idx] = word;
         if (!result[word_idx])

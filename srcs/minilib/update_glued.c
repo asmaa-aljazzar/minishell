@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 int update_glued(t_minishell *ms, int *i, int token_index)
 {
     int glued;

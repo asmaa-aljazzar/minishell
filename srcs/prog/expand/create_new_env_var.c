@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void create_new_env_var(t_minishell *shell, char *name, char *value)
+int create_new_env_var(t_minishell *shell, char *name, char *value)
 {
     t_env *current;
     t_env *new_var;
@@ -9,10 +9,17 @@ void create_new_env_var(t_minishell *shell, char *name, char *value)
     if (!new_var)
     {
         ft_putstr_fd("minishell: malloc failed\n", STDERR_FILENO);
-        return;
+        return (0);
     }
     new_var->name = ft_strdup(name);
+    if (!new_var->name)
+        return (0);
     new_var->value = ft_strdup(value);
+    if (!new_var->value)
+    {
+        free (new_var->name);
+        return (0);
+    }
     new_var->next = NULL;
     // new node created
     if (!shell->env)// if no var 
@@ -24,5 +31,7 @@ void create_new_env_var(t_minishell *shell, char *name, char *value)
             current = current->next;
         current->next = new_var; // the last point to new one 
     }
-    update_envp_array(shell, name, value);
+    if (!update_envp_array(shell, name, value))
+        return (0);
+    return (1);
 }

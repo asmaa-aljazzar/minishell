@@ -12,7 +12,11 @@ t_env *create_env_node(t_minishell *ms, char *environ)
     if (!node)
         ft_exit(ms, "Memory allocation failed", 1);
     node->name = ft_substr(environ, 0, equal - environ); // extract the name from index 0 into index of '='
+    if (!node->name)
+        return (NULL);
     node->value = ft_strdup(equal + 1); // from equal to the end this is the value 'dup it'
+    if (!node->value)
+        return (NULL);
     node->next = NULL;
     return node;
 }

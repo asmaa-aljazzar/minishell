@@ -10,7 +10,7 @@ char **ft_strdup_double(char **src)
         i++;
     copy = malloc(sizeof(char *) * (i + 1));
     if (!copy)
-        return NULL;
+        return (NULL);
     i = 0;
     while (src[i])
     {

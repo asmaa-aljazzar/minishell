@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void append_envp(t_minishell *shell, char *new_entry)
+int append_envp(t_minishell *shell, char *new_entry)
 {
     int count;
     int i;
@@ -13,7 +13,7 @@ void append_envp(t_minishell *shell, char *new_entry)
     if (!new_envp)
     {
         free(new_entry);
-        return;
+        return (0);
     }
     i = 0;
     while (i < count)
@@ -25,4 +25,5 @@ void append_envp(t_minishell *shell, char *new_entry)
     new_envp[count + 1] = NULL;
     free(shell->envp);
     shell->envp = new_envp; // replace after free
+    return (1);
 }
