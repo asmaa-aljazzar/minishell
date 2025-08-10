@@ -32,5 +32,4 @@ void init_shell(t_minishell *ms)
         return;
     }
     count_pipe(ms);
-    // debug_print_tokens(ms->tok);//!
 }

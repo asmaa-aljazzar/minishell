@@ -10,8 +10,9 @@ void main_loop(t_minishell *ms)
          if (!ms->input || !ms->tok)
             continue; // if no input and tokens then its enter
         allocate_commands(ms); // initialize commands list
+        expand_tokens(ms);// expand tokens into its value // todo
+        debug_print_tokens(ms->tok);//!
 
-        //expand_tokens(ms);// expand tokens into its value // todo
         // merge_words(minishell);// merge with/without spaces need to // todo
         // argv_for_commands(minishell);// word into argv array // todo
         // tokens_to_commands(minishell); // tokens to multi commands by '|' // todo
