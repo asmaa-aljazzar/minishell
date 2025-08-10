@@ -72,7 +72,7 @@ typedef struct s_token
 typedef struct s_command
 {
     char **argv;       // ["cat"]
-    int  **argv_expanded;//todo
+    int  *argv_expanded;//todo
     t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
     char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
@@ -312,6 +312,14 @@ void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
 
 //? [ Parser ]
 void allocate_commands(t_minishell *ms);
+void fill_argvs(t_minishell *ms);
+void argv_for_commands(t_minishell *minishell);
+void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
+void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+void if_outputPipe(t_token *token, t_command **cmd, int *argc);
+void tokens_to_commands(t_minishell *minishell);
+void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+
 
 //? [ Execution ]
 
@@ -589,6 +597,10 @@ int count_words_in_string(char *str);
 char *extract_word(char *str, int *index);
 char **split_on_whitespace(char *str);
 int is_whitespace(char c);
+void copy_token_to_argvs(t_minishell *ms, t_command *cmd, t_token *tok, int arg_idx);
+char **add_to_list(char **old_list, char *value);
+int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
+
 
 /**
  * @brief #### Check if string is a positive number
@@ -638,6 +650,8 @@ void setup_signals_execution(void);
 void sigint_handler(int sig);
 
 //? [ Debug ]
+
+void debug_command(const t_command *cmd);
 
 //#### Print the environment variables array
 void debug_print_envp_array(char **envp);

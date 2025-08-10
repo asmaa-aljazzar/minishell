@@ -1,6 +1,5 @@
 #include "minishell.h"
 
-
 int process_token(t_minishell *ms, int *k, int *i)
 {
     int glued = update_glued(ms, i, *k);
@@ -9,6 +8,5 @@ int process_token(t_minishell *ms, int *k, int *i)
 
     if (!select_tokenizer(ms, k, i, glued))
         return 0; // propagate tokenizer failure
-
     return 1;
 }
