@@ -18,8 +18,6 @@ void init_shell(t_minishell *ms)
     }
     if (g_signal_received == SIGINT)
          ms->exit_code = 130;
-     else if (g_signal_received == SIGQUIT) //? with signal
-         ms->exit_code = 131;
      g_signal_received = SIG_NONE; // reset for next prompt //? with signal
     if (!get_tokens(ms)) // syntax error.
     {
@@ -29,10 +27,10 @@ void init_shell(t_minishell *ms)
     }
     if (!validate_syntax(ms))
     {
-        // check_to_free(minishell);
+        check_to_free(ms);
         ms->exit_code = 2;
         return;
     }
-    // count_pipe(minishell);//todo
+    count_pipe(ms);
     debug_print_tokens(ms->tok);//!
 }

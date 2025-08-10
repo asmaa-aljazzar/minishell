@@ -6,10 +6,10 @@ void main_loop(t_minishell *ms)
     while (1) 
     {
         setup_signals_readline(); // if signall recieved in setup each readline
-        init_shell(ms); // initialize after and before readline // todo
+        init_shell(ms); // initialize after and before readline 
          if (!ms->input || !ms->tok)
             continue; // if no input and tokens then its enter
-        // init_commands(minishell); // initialize commands list // todo
+        //init_commands(minishell); // initialize commands list // todo
         // expand_tokens(minishell);// expand tokens into its value // todo
         // merge_words(minishell);// merge with/without spaces need to // todo
         // argv_for_commands(minishell);// word into argv array // todo

@@ -544,8 +544,13 @@ void free_tokens(t_token **tokens);
  */
 void free_env(t_env *env);
 
+void check_to_free(t_minishell *minishell);
+
+void free_token(t_token *token);
+
 //? [ Minilib ]
 int update_glued(t_minishell *ms, int *i, int token_index);
+void count_pipe(t_minishell *minishell);
 
 /**
  * @brief #### Check if string is a positive number

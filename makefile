@@ -54,6 +54,7 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)print_slowly.c\
 				$(MINILIB_DIR)handle_eof.c\
 				$(MINILIB_DIR)update_glued.c\
+				$(MINILIB_DIR)count_pipe.c\
 
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
@@ -63,6 +64,7 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)free_complex_resources.c\
 				$(FREE_DIR)free_simple_resources.c\
 				$(FREE_DIR)free_commands.c\
+				$(FREE_DIR)check_to_free.c\
 				$(FREE_DIR)free_2d.c\
 				$(FREE_DIR)free_tokens.c\
 				$(FREE_DIR)free_env.c\
