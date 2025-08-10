@@ -9,6 +9,5 @@ int process_token(t_minishell *ms, int *k, int *i)
 
     if (!select_tokenizer(ms, k, i, glued))
         return 0; // propagate tokenizer failure
-
     return 1;
 }

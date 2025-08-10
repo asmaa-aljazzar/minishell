@@ -72,7 +72,7 @@ typedef struct s_token
 typedef struct s_command
 {
     char **argv;       // ["cat"]
-    int  **argv_expanded;//todo
+    int  *argv_expanded;//todo
     t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
     char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
@@ -312,6 +312,9 @@ void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
 
 //? [ Parser ]
 void allocate_commands(t_minishell *ms);
+void fill_argvs(t_minishell *ms);
+void argv_for_commands(t_minishell *minishell);
+void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
 
 //? [ Execution ]
 
@@ -585,6 +588,7 @@ int count_words_in_string(char *str);
 char *extract_word(char *str, int *index);
 char **split_on_whitespace(char *str);
 int is_whitespace(char c);
+void copy_token_to_argvs(t_minishell *ms, t_command *cmd, t_token *tok, int arg_idx);
 
 /**
  * @brief #### Check if string is a positive number
