@@ -11,7 +11,14 @@ void init(t_minishell *ms, char **environ)
     ms->exit_code = 0; // exit code for each command
     ms->skip_execution = 0; // if we don't need to execute [error or no need to handle]
     ms->envp = ft_strdup_double(environ); // Initialize the envp array
+    if (!ms->envp)
+        exit (1);
 	ms->env = init_env(ms, environ); // Initialize the env linked list
+    if (!ms->env)
+    {
+        free(ms->envp);
+        exit (1);
+    }
 	ms->in_single_quote = 0; // Initialize token position if single.
 	ms->in_double_quote = 0; // Initialize token position if double.
     ft_memset(ms->buff, 0, sizeof(ms->buff));// set 0 values to the buffer

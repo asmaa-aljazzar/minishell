@@ -396,7 +396,8 @@ void create_new_env_var(t_minishell *shell, char *name, char *value);
  * @param value  Variable value
  * @return       None
  */
-void update_envp_array(t_minishell *shell, char *name, char *value);
+int update_envp_array(t_minishell *shell, char *name, char *value);
+
 
 /**
  * @brief #### Append new entry to envp array
@@ -407,9 +408,10 @@ void update_envp_array(t_minishell *shell, char *name, char *value);
  * @brief - Free old array and replace
  * @param shell      Minishell context
  * @param new_entry  "NAME=VALUE" string to append
- * @return           None
+ * @return 0 on failure
+ *  1     success     
  */
-void append_envp(t_minishell *shell, char *new_entry);
+int append_envp(t_minishell *shell, char *new_entry);
 
 /**
  * @brief #### Build "NAME=VALUE" string

@@ -15,7 +15,7 @@ void main_loop(t_minishell *ms)
         // merge_words(minishell);// merge with/without spaces need to // todo
         // argv_for_commands(minishell);// word into argv array // todo
         // tokens_to_commands(minishell); // tokens to multi commands by '|' // todo
-        // debug_commands(minishell);// todo //!
+        // debug_commands(ms);// todo //!
         // if (!validate_pipeline(minishell))  // Add validation // todo
         // {
         //     check_to_free(minishell); // todo
