@@ -94,7 +94,7 @@ typedef struct s_minishell
     t_env *env; // env vars linded list
     char **envp; // ["NAME=VAl"][...][...]
     int exit_code;
-    int skip_execution; // if no need to execute [error, not mandatory]
+    int skip_execution; // if no need to execute [error, not mandatory].
     int in_single_quote;
     int in_double_quote;
     int last_token_end;
@@ -107,6 +107,11 @@ typedef struct s_minishell
 void main_loop (t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
+
+void merge_words(t_minishell *minishell);
+void advance_and_merge(t_minishell *minishell, t_token **orig, int *i, int k);
+void merge_two_tokens(t_minishell *minishell, t_token *dst, t_token *src);
+t_token *create_new_token(t_minishell *ms, const char *word, int did_expand);
 
 /**
  * @brief #### Tokenize input string into tokens array
@@ -315,8 +320,23 @@ void allocate_commands(t_minishell *ms);
 //? [ Signals ]
 
 //? [ Expanssion ]
+char *expand_variable(t_minishell *ms, char *token);
+char *extract_literal(char *token, size_t *i);
+void handle_dollar(t_minishell *ms, char *token, size_t *i, char **result);
+char *extract_var_value(t_minishell *ms, char *token, size_t *i);
+char *handle_empty_expansion(char *token);
+void expand_tokens(t_minishell *ms);
+void expand_and_split_token(t_minishell *ms, t_token *token,
+                            t_token **new_tokens, int *new_count);
+void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
+                                  t_token **new_tokens, int *new_count, int did_expand);
+void handle_single_quoted_token(t_token *token, t_token **new_tokens, int *new_count);
+void handle_double_quoted_token(t_token *token, char *expanded,
+                                       t_token **new_tokens, int *new_count, int did_expand);
+void handle_first_split_token(t_token *token, const char *word, int did_expand,
+                                     t_token **new_tokens, int *new_count);
 
-/**
+                            /**
  * @brief #### Update 'SHLVL' value
  * @brief - Add `1` positive, 
  * @brief - Start from `1` if negative
@@ -454,6 +474,7 @@ int check_redirection_syntax(t_minishell *ms, int *i);
 //?  [ Init ]
 
 t_command *init_command(t_minishell *ms);
+char **init_split_array(char *str, int *word_count);
 
 /**
  * @brief #### Initialize minishell structure
@@ -482,6 +503,8 @@ t_env *init_env(t_minishell *minishell, char **environ);
 void init_shell(t_minishell *minishell); // todo func inside
 
 //? [ Free ]
+
+void free_split_array(char **array);
 
 /**
  * @brief #### Exit minishell with cleanup
@@ -557,6 +580,13 @@ void free_token(t_token *token);
 //? [ Minilib ]
 int update_glued(t_minishell *ms, int *i, int token_index);
 void count_pipe(t_minishell *minishell);
+int count_max_tokens_after_expansion(t_minishell *ms);
+char *append_result(char *old_result, char *value);
+void append_and_free(char **result, char *to_add);
+int count_words_in_string(char *str);
+char *extract_word(char *str, int *index);
+char **split_on_whitespace(char *str);
+int is_whitespace(char c);
 
 /**
  * @brief #### Check if string is a positive number
