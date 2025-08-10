@@ -76,6 +76,7 @@ FREE_SRC	=	$(FREE_DIR)ft_exit.c\
 				$(FREE_DIR)check_to_free.c\
 				$(FREE_DIR)free_2d.c\
 				$(FREE_DIR)free_tokens.c\
+				$(FREE_DIR)free_token.c\
 				$(FREE_DIR)free_env.c\
 				$(FREE_DIR)free_split_array.c\
 
@@ -123,6 +124,9 @@ LEXER_AND_TOKENIZER_SRC = 	$(LEXER_AND_TOKENIZER_DIR)get_tokens.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)allocate_normal_word.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)fill_normal_token.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)create_new_token.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)merge_words.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)merge_two_tokens.c\
+						 	$(LEXER_AND_TOKENIZER_DIR)advance_and_merge.c\
 
 ERRORS_SRC		=	$(ERRORS_DIR)validate_syntax.c\
 					$(ERRORS_DIR)check_redirection_syntax.c\

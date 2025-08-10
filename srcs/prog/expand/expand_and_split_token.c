@@ -17,7 +17,7 @@ void expand_and_split_token(t_minishell *ms, t_token *token,
 
     if (token->qtype == QUOTE_DOUBLE)
     {
-        handle_double_quoted_token(ms, token, expanded, new_tokens, new_count, did_expand);
+        handle_double_quoted_token(token, expanded, new_tokens, new_count, did_expand);
     }
     else
     {

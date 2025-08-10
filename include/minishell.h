@@ -94,7 +94,7 @@ typedef struct s_minishell
     t_env *env; // env vars linded list
     char **envp; // ["NAME=VAl"][...][...]
     int exit_code;
-    int skip_execution; // if no need to execute [error, not mandatory]
+    int skip_execution; // if no need to execute [error, not mandatory].
     int in_single_quote;
     int in_double_quote;
     int last_token_end;
@@ -107,7 +107,12 @@ typedef struct s_minishell
 void main_loop (t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
+
+void merge_words(t_minishell *minishell);
+void advance_and_merge(t_minishell *minishell, t_token **orig, int *i, int k);
+void merge_two_tokens(t_minishell *minishell, t_token *dst, t_token *src);
 t_token *create_new_token(t_minishell *ms, const char *word, int did_expand);
+
 /**
  * @brief #### Tokenize input string into tokens array
  * @brief - Allocate token array based on input length
