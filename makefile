@@ -5,7 +5,6 @@ GREEN	=	\033[32m
 YELLOW	=	\033[33m
 BLUE	=	\033[34m
 
-
 # Standard
 NAME	= minishell
 
@@ -30,8 +29,6 @@ LEXER_AND_TOKENIZER_DIR =	$(PROG_DIR)lexer_and_tokenizer/
 SIGNALS_DIR				=	$(PROG_DIR)signals/
 ERRORS_DIR 				= 	$(PROG_DIR)errors/
 DEBUG_DIR				=	$(PROG_DIR)debug/
-
-
 
 HEREDOC_DIR				= 	$(MINILIB_DIR)heredoc/
 PIPE_DIR				= 	$(MINILIB_DIR)pipe/

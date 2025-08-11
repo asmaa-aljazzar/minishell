@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-void fill_normal_token(t_minishell *ms, char *word, int glued, int *k)
+void	fill_normal_token(t_minishell *ms, char *word, int glued, int *k)
 {
 	ms->tok[*k] = calloc(1, sizeof(t_token));
 	if (!ms->tok[*k])

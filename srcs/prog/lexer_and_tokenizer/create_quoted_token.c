@@ -1,7 +1,8 @@
 
 #include "minishell.h"
 
-void create_quoted_token(t_minishell *ms, int *k, char *word, char quote, int glued)
+void	create_quoted_token(t_minishell *ms, int *k, char *word, char quote,
+		int glued)
 {
 	ms->tok[*k] = ft_calloc(1, sizeof(t_token));
 	if (!ms->tok[*k])

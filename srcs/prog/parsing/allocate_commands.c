@@ -1,20 +1,21 @@
 
 #include "minishell.h"
 
-void allocate_commands(t_minishell *ms)
+void	allocate_commands(t_minishell *ms) //todo 25 line norm error
 {
-	t_command *head;
-	t_command *curr;
-	int count;
-	int i;
-	
+	t_command	*head;
+	t_command	*curr;
+	int			count;
+	int			i;
+	t_command	*new;
+
 	head = NULL;
 	curr = NULL;
 	count = ms->pipe_count;
 	i = 0;
 	while (i <= count)
 	{
-		t_command *new = init_command(ms);
+		new = init_command(ms);
 		if (!head)
 		{
 			head = new;

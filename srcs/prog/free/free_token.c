@@ -1,10 +1,10 @@
 
 #include "minishell.h"
 
-void free_token(t_token *token)
+void	free_token(t_token *token)
 {
 	if (!token)
-		return;
+		return ;
 	free(token->word);
 	free(token);
 }

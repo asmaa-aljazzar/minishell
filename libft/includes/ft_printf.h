@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   ft_printf.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: baah-moh <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/08/10 16:00:54 by baah-moh          #+#    #+#             */
+/*   Updated: 2025/08/10 16:01:04 by baah-moh         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #ifndef FT_PRINTF_H
 # define FT_PRINTF_H
-# include <stdarg.h>
 # include "libft.h"
+# include <stdarg.h>
 
 // Functions Prototype
 int	ft_printf(const char *format, ...);
