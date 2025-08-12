@@ -51,18 +51,44 @@ static void remove_from_env_list(t_minishell *shell, const char *name)
     }
 }
 
-static void remove_from_envp_array(t_minishell *shell, const char *name)
+#include "minishell.h"
+
+static int count_envp(char **envp)
 {
-    char **new_envp;
     int count = 0;
-    int i, j;
-    int name_len = ft_strlen(name);
-
-    if (!shell->envp)
-        return;
-
-    while (shell->envp[count])
+    if (!envp)
+        return 0;
+    while (envp[count])
         count++;
+    return count;
+}
+
+static int is_name_match(const char *env_str, const char *name)
+{
+    int name_len = ft_strlen(name);
+    return (ft_strncmp(env_str, name, name_len) == 0 && env_str[name_len] == '=');
+}
+
+static void copy_envp_except_name(char **old_envp, char **new_envp, const char *name)
+{
+    int i = 0;
+    int j = 0;
+
+    while (old_envp[i])
+    {
+        if (!is_name_match(old_envp[i], name))
+            new_envp[j++] = old_envp[i];
+        else
+            free(old_envp[i]);
+        i++;
+    }
+    new_envp[j] = NULL;
+}
+
+void remove_from_envp_array(t_minishell *shell, const char *name)
+{
+    int count = count_envp(shell->envp);
+    char **new_envp;
 
     if (count == 0)
         return;
@@ -71,26 +97,12 @@ static void remove_from_envp_array(t_minishell *shell, const char *name)
     if (!new_envp)
         return;
 
-    i = 0;
-    j = 0;
-    while (i < count)
-    {
-        if (!(ft_strncmp(shell->envp[i], name, name_len) == 0 &&
-              shell->envp[i][name_len] == '='))
-        {
-            new_envp[j++] = shell->envp[i];
-        }
-        else
-        {
-            free(shell->envp[i]);
-        }
-        i++;
-    }
-    new_envp[j] = NULL;
+    copy_envp_except_name(shell->envp, new_envp, name);
 
     free(shell->envp);
     shell->envp = new_envp;
 }
+
 
 static int is_valid_identifier(const char *str)
 {

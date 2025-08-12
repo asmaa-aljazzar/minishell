@@ -16,6 +16,6 @@ void fill_argvs(t_minishell *ms)
     if (cmd)
     {
         cmd->argv[arg_idx] = NULL;
-        cmd->argv_expanded[arg_idx] = 0; // Optional sentinel
+        // cmd->argv_expanded[arg_idx] = 0;
     }
 }

@@ -16,5 +16,9 @@ void count_pipe(t_minishell *ms)
             count++;
         i++;
     }
+// <<<<<<< HEAD
     ms->pipe_count = count;
+// =======
+//     ms->pipe_count = pipes;
+// >>>>>>> be7c71c (split some functions)
 }

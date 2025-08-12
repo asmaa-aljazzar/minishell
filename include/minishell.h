@@ -71,6 +71,12 @@ typedef struct s_token
     int glued;     /* 1 → directly attached to previous char 0 → at least one white-space before it   */
 } t_token;
 
+typedef struct s_cd_path
+{
+    char *path;
+    char *display_path;
+    char *expanded_path;
+}   t_cd_path;
 
 //? “Can a command have both input redirection and input pipe?”
 //! ✅ !No.
@@ -324,10 +330,10 @@ void fill_argvs(t_minishell *ms);
 void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx);
 void argv_for_commands(t_minishell *minishell);
 void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
-void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
-void if_outputPipe(t_token *token, t_command **cmd, int *argc);
+void if_output_files_append(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+void if_output_pipe(t_token *token, t_command **cmd, int *argc);
 void tokens_to_commands(t_minishell *minishell);
-void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+void if_input_files_heredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
 
 
 //? [ Execution ]
@@ -337,6 +343,8 @@ int exec_builtin(t_minishell *shell);
 void execute_single_command(t_minishell *ms);
 int is_command_empty(t_command *cmd);
 void execute_external_command(t_minishell *shell);
+int prepare_command_processing(t_minishell *ms);
+void execute_commands(t_minishell *ms);
 
 //? [Heredoc]
 /* heredoc utils */

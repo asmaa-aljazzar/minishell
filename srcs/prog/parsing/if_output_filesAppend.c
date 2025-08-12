@@ -2,7 +2,7 @@
 #include "minishell.h"
 
 // Handles output redirections: OUTPUT_FILE and OUTPUT_APPEND
-void	if_output_filesAppend(t_minishell *minishell, t_token *token,
+void	if_output_files_append(t_minishell *minishell, t_token *token,
 		t_command **cmd, int *i)//todo norm name func error
 {
 	char	*file;

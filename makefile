@@ -132,6 +132,8 @@ REDIR_SRC	=	$(HEREDOC_SRC)\
 COMM_SRC	=	$(COMM_DIR)compare_commands.c\
 				$(COMM_DIR)exec_builtin.c\
 				$(COMM_DIR)exec_command.c\
+				$(COMM_DIR)execute_commands.c\
+				$(COMM_DIR)prepare_command_processing.c\
 				$(COMM_DIR)execute_single_command.c\
 				$(COMM_DIR)execute_external.c\
 
