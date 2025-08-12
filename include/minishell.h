@@ -105,6 +105,7 @@ typedef struct s_minishell
 //? [ Main ] 
 
 void main_loop (t_minishell *ms);
+int main_redirection(t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
 
