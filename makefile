@@ -45,6 +45,7 @@ HANDLE_DIR		 		=	$(LEXER_AND_TOKENIZER_DIR)handle/
 
 MAIN_SRC 	= 	$(MAIN_DIR)main.c\
 			 	$(MAIN_DIR)main_loop.c\
+			 	$(MAIN_DIR)main_redirection.c\
 
 MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)print_banner.c\
