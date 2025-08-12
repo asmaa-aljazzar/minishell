@@ -91,69 +91,59 @@ int is_command_empty(t_command *cmd)
     }
     return 0;
 }
-void execute_single_command(t_minishell *ms)
+static int save_and_apply_redirection(t_minishell *ms, int *saved_stdout)
 {
     t_command *cmd = ms->cmd;
-    pid_t pid;
+    *saved_stdout = -1;
+
+    if (cmd->output_type != OUTPUT_NONE || cmd->output_files)
+    {
+        *saved_stdout = dup(STDOUT_FILENO);
+        if (*saved_stdout < 0)
+        {
+            perror("dup");
+            ms->exit_code = 1;
+            return -1;
+        }
+        if (main_redirection(ms) != 0)
+        {
+            if (*saved_stdout >= 0)
+                close(*saved_stdout);
+            ms->exit_code = 1;
+            return -1;
+        }
+    }
+    return 0;
+}
+
+static void execute_builtin_and_restore(t_minishell *ms, int saved_stdout)
+{
+    compare_commands(ms); // Execute builtin
+
+    if (saved_stdout >= 0)
+    {
+        dup2(saved_stdout, STDOUT_FILENO);
+        close(saved_stdout);
+    }
+}
+
+static int handle_builtin_with_redirection(t_minishell *ms)
+{
+    int saved_stdout;
+
+    if (save_and_apply_redirection(ms, &saved_stdout) != 0)
+        return -1;
+
+    execute_builtin_and_restore(ms, saved_stdout);
+
+    return 0;
+}
+
+
+static void fork_and_execute_external(t_minishell *ms)
+{
+    pid_t pid = fork();
     int status;
-    int saved_stdout = -1;
-
-    if (!cmd || !cmd->argv)
-    {
-        ms->exit_code = 0;
-        return;
-    }
-    
-    if (handle_empty_command_with_output(ms))
-        return;
-
-    if (!cmd->argv[0])
-    {
-        ms->exit_code = 0;
-        return;
-    }
-
-    if (is_command_empty(cmd))
-    {
-        ms->exit_code = 0;
-        return;
-    }
-
-    if (is_builtin(cmd))
-    {
-        // Save stdout if redirection required
-        if (cmd->output_type != OUTPUT_NONE || cmd->output_files)
-        {
-            saved_stdout = dup(STDOUT_FILENO);
-            if (saved_stdout < 0)
-            {
-                perror("dup");
-                ms->exit_code = 1;
-                return;
-            }
-            if (main_redirection(ms) != 0)
-            {
-                if (saved_stdout >= 0)
-                    close(saved_stdout);
-                ms->exit_code = 1;
-                return;
-            }
-        }
-
-        compare_commands(ms); // execute builtin in parent
-
-        // Restore stdout if redirected
-        if (saved_stdout >= 0)
-        {
-            dup2(saved_stdout, STDOUT_FILENO);
-            close(saved_stdout);
-        }
-
-        return;
-    }
-
-    // For external commands: fork and apply redirection inside child
-    pid = fork();
     if (pid < 0)
     {
         perror("fork");
@@ -163,12 +153,9 @@ void execute_single_command(t_minishell *ms)
     else if (pid == 0)
     {
         setup_signals_child();
-
         if (main_redirection(ms) != 0)
             exit(EXIT_FAILURE);
-
         execute_external_command(ms);
-
         exit(EXIT_FAILURE);
     }
     else
@@ -180,3 +167,48 @@ void execute_single_command(t_minishell *ms)
             ms->exit_code = 128 + WTERMSIG(status);
     }
 }
+
+static int validate_command_for_execution(t_minishell *ms)
+{
+    t_command *cmd = ms->cmd;
+
+    if (!cmd || !cmd->argv)
+    {
+        ms->exit_code = 0;
+        return 0;
+    }
+    if (handle_empty_command_with_output(ms))
+        return 0;
+    if (!cmd->argv[0])
+    {
+        ms->exit_code = 0;
+        return 0;
+    }
+    if (is_command_empty(cmd))
+    {
+        ms->exit_code = 0;
+        return 0;
+    }
+    return 1;
+}
+
+static void handle_builtin_command(t_minishell *ms)
+{
+    if (handle_builtin_with_redirection(ms) != 0)
+        return;
+}
+
+void execute_single_command(t_minishell *ms)
+{
+    if (!validate_command_for_execution(ms))
+        return;
+
+    if (is_builtin(ms->cmd))
+    {
+        handle_builtin_command(ms);
+        return;
+    }
+
+    fork_and_execute_external(ms);
+}
+
