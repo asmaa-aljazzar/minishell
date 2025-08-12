@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-void handle_output_append_redir(t_minishell *minishell, int *k, int *i)
+void	handle_output_append_redir(t_minishell *minishell, int *k, int *i)
 {
 	minishell->tok[*k] = ft_calloc(1, sizeof(t_token));
 	if (!minishell->tok[*k])
@@ -9,7 +9,7 @@ void handle_output_append_redir(t_minishell *minishell, int *k, int *i)
 	minishell->tok[*k]->word = ft_strdup(">>");
 	if (!minishell->tok[*k]->word)
 	{
-		free (minishell->tok[*k]);
+		free(minishell->tok[*k]);
 		ft_exit(minishell, "Memory allocation failed", 1);
 	}
 	minishell->tok[*k]->type = OUTPUT_APPEND;

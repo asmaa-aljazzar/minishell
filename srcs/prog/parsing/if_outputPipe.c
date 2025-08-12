@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-void if_outputPipe(t_token *token, t_command **cmd, int *argc)
+void	if_outputPipe(t_token *token, t_command **cmd, int *argc) //todo norm name func error
 {
 	if (token->type == PIPE)
 	{

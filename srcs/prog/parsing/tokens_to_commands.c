@@ -1,14 +1,16 @@
 
 #include "minishell.h"
 
-void tokens_to_commands(t_minishell *minishell)
+void	tokens_to_commands(t_minishell *minishell)
 {
-	t_command *cmd;
-	t_token *token;
+	t_command	*cmd;
+	t_token		*token;
+	int			i;
+	int			argc;
 
 	cmd = minishell->cmd;
-	int i = 0;
-	int argc = 0;
+	i = 0;
+	argc = 0;
 	while (minishell->tok[i])
 	{
 		token = minishell->tok[i];
