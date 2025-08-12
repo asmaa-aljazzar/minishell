@@ -14,9 +14,9 @@ void	tokens_to_commands(t_minishell *minishell)
 	while (minishell->tok[i])
 	{
 		token = minishell->tok[i];
-		if_outputPipe(token, &cmd, &argc);
-		if_input_filesHeredoc(minishell, token, &cmd, &i);
-		if_output_filesAppend(minishell, token, &cmd, &i);
+		if_output_pipe(token, &cmd, &argc);
+		if_input_files_heredoc(minishell, token, &cmd, &i);
+		if_output_files_append(minishell, token, &cmd, &i);
 		if (token->type == INPUT_WORD)
 			cmd->argv[argc++] = token->word;
 		// pritnf("token %d = %s", i, minishell->tok[i]->word)

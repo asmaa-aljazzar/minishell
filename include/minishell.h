@@ -71,6 +71,18 @@ typedef struct s_token
     int glued;     /* 1 → directly attached to previous char 0 → at least one white-space before it   */
 } t_token;
 
+typedef struct s_cd_path
+{
+    char *path;
+    char *display_path;
+    char *expanded_path;
+}   t_cd_path;
+
+typedef struct s_token_out
+{
+    t_token **new_tokens;
+    int *new_count;
+} t_token_out;
 
 //? “Can a command have both input redirection and input pipe?”
 //! ✅ !No.
@@ -324,10 +336,10 @@ void fill_argvs(t_minishell *ms);
 void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx);
 void argv_for_commands(t_minishell *minishell);
 void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
-void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
-void if_outputPipe(t_token *token, t_command **cmd, int *argc);
+void if_output_files_append(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+void if_output_pipe(t_token *token, t_command **cmd, int *argc);
 void tokens_to_commands(t_minishell *minishell);
-void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
+void if_input_files_heredoc(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
 
 
 //? [ Execution ]
@@ -337,6 +349,8 @@ int exec_builtin(t_minishell *shell);
 void execute_single_command(t_minishell *ms);
 int is_command_empty(t_command *cmd);
 void execute_external_command(t_minishell *shell);
+int prepare_command_processing(t_minishell *ms);
+void execute_commands(t_minishell *ms);
 
 //? [Heredoc]
 /* heredoc utils */
@@ -411,13 +425,16 @@ char *handle_empty_expansion(char *token);
 void expand_tokens(t_minishell *ms);
 void expand_and_split_token(t_minishell *ms, t_token *token,
                             t_token **new_tokens, int *new_count);
-void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
-                                  t_token **new_tokens, int *new_count, int did_expand);
 void handle_single_quoted_token(t_token *token, t_token **new_tokens, int *new_count);
 void handle_double_quoted_token(t_token *token, char *expanded,
-                                       t_token **new_tokens, int *new_count, int did_expand);
-void handle_first_split_token(t_token *token, const char *word, int did_expand,
-                                     t_token **new_tokens, int *new_count);
+                                t_token_out *out, int did_expand);
+
+void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
+                           t_token_out *out, int did_expand);
+
+void handle_first_split_token(t_token *token, const char *word,
+                              int did_expand, t_token_out *out);
+
 
                             /**
  * @brief #### Update 'SHLVL' value
@@ -427,7 +444,7 @@ void handle_first_split_token(t_token *token, const char *word, int did_expand,
  * @param env  Env linked list
  * @return     Nothing
  */
-int	increase_SHLVL_var(t_minishell *ms, t_env *env);
+int	increase_shlvl_var(t_minishell *ms, t_env *env);
 
 /**
  * @brief #### Create a new env node from a string

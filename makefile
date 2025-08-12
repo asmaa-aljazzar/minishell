@@ -132,6 +132,8 @@ REDIR_SRC	=	$(HEREDOC_SRC)\
 COMM_SRC	=	$(COMM_DIR)compare_commands.c\
 				$(COMM_DIR)exec_builtin.c\
 				$(COMM_DIR)exec_command.c\
+				$(COMM_DIR)execute_commands.c\
+				$(COMM_DIR)prepare_command_processing.c\
 				$(COMM_DIR)execute_single_command.c\
 				$(COMM_DIR)execute_external.c\
 
@@ -143,7 +145,7 @@ EXECUTION_SRC	=	$(PIPE_SRC)\
 EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 				$(EXPAND_DIR)create_env_node.c\
 				$(EXPAND_DIR)get_env_value.c\
-				$(EXPAND_DIR)increase_SHLVL_var.c\
+				$(EXPAND_DIR)increase_shlvl_var.c\
 				$(EXPAND_DIR)update_env_var.c\
 				$(EXPAND_DIR)create_new_env_var.c\
 				$(EXPAND_DIR)update_existing_env_var.c\

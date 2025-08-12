@@ -37,11 +37,8 @@ static void wait_for_children(t_minishell *ms, pid_t *pids, int cmd_count)
     }
 }
 
-// --- Child process: set up pipes, redirection, execute command ---
-static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, int cmd_count)
+static void setup_pipes_and_redirection(int pipes[][2], int idx, int cmd_count)
 {
-    setup_signals_child();
-
     // Redirect stdin to previous pipe read end if not first command
     if (idx > 0 && dup2(pipes[idx - 1][0], STDIN_FILENO) < 0)
     {
@@ -57,9 +54,10 @@ static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, 
     }
 
     close_all_pipes(pipes, cmd_count - 1);
+}
 
-    ms->cmd = cmd;
-
+static void execute_command_in_child(t_minishell *ms, t_command *cmd)
+{
     if (is_command_empty(cmd))
         exit(0);
 
@@ -77,6 +75,17 @@ static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, 
         // execve should not return if successful
         exit(EXIT_FAILURE);
     }
+}
+
+static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, int cmd_count)
+{
+    setup_signals_child();
+
+    setup_pipes_and_redirection(pipes, idx, cmd_count);
+
+    ms->cmd = cmd;
+
+    execute_command_in_child(ms, cmd);
 }
 
 // --- Create all pipes for N commands: N-1 pipes ---

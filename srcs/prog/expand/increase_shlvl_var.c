@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-int	increase_SHLVL_var(t_minishell *ms, t_env *env) //todo norm name error
+int	increase_shlvl_var(t_minishell *ms, t_env *env) 
 {
 	char	*new;
 	char	*old; // old value of SHLVL
@@ -17,13 +17,14 @@ int	increase_SHLVL_var(t_minishell *ms, t_env *env) //todo norm name error
 	if (!update_env_var(ms, "SHLVL", new))
 	{
 		free(new);
-		return (0); // update env linked list //todo
+		return (0); // update env linked list
 	}
 	if (!update_envp_array(ms, "SHLVL", new))
 	{
 		free(new);
-		return (0); // update envp array //todo
+		return (0);
 	}
 	free(new); // free after ft_itoa
 	return (1);
 }
+

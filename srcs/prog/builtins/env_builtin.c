@@ -1,47 +1,94 @@
 #include "minishell.h"
 
-void env_builtin(t_minishell *minishell)
+//*#### Prints environment variables when no arguments to env command
+void env_builtin_print_env(t_minishell *minishell)
 {
-    t_command *cmd = minishell->cmd;
-
-    // Case: no arguments → print environment
-    if (cmd->argv[1] == NULL)
+    t_env *curr = minishell->env;
+    while (curr)
     {
-        t_env *curr = minishell->env;
-        while (curr)
-        {
-            if (curr->value)
-                printf("%s=%s\n", curr->name, curr->value);
-            curr = curr->next;
-        }
-        minishell->exit_code = 0;
-        return;
+        if (curr->value)
+            printf("%s=%s\n", curr->name, curr->value);
+        curr = curr->next;
     }
+    minishell->exit_code = 0;
+}
 
+//*#### Attempts to get executable path based on argument
+// Returns allocated path string or NULL on failure
+char *env_builtin_resolve_path(t_minishell *minishell, t_command *cmd)
+{
     char *path = NULL;
     int is_direct_path = (ft_strchr(cmd->argv[1], '/') != NULL);
-
     if (!is_direct_path)
     {
-        // Only search PATH if no slash is included in argv[1]
         t_command temp_cmd = {0};
         temp_cmd.argv = &cmd->argv[1];
-
         t_command *original_cmd = minishell->cmd;
         minishell->cmd = &temp_cmd;
         path = get_path(minishell);
         minishell->cmd = original_cmd;
-
         if (!path)
         {
             ft_putstr_fd("minishell: env: ", STDERR_FILENO);
             ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
             ft_putstr_fd(": No such file or directory\n", STDERR_FILENO);
             minishell->exit_code = 127;
-            return;
         }
     }
+    return path;
+}
 
+//*#### Executes command in a child process, handles execve errors and exit codes
+void env_builtin_execute_child(t_minishell *minishell, t_command *cmd, char *path)
+{
+    setup_signals_child();
+    int is_direct_path = (ft_strchr(cmd->argv[1], '/') != NULL);
+    if (is_direct_path)
+        execve(cmd->argv[1], &cmd->argv[1], minishell->envp);
+    else
+        execve(path, &cmd->argv[1], minishell->envp);
+    ft_putstr_fd("minishell: env: ", STDERR_FILENO);
+    ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
+    ft_putstr_fd(": ", STDERR_FILENO);
+    if (errno == EISDIR)
+        ft_putstr_fd("Not a directory\n", STDERR_FILENO);
+    else if (errno == ENOENT)
+        ft_putstr_fd("No such file or directory\n", STDERR_FILENO);
+    else if (errno == EACCES)
+        ft_putstr_fd("Permission denied\n", STDERR_FILENO);
+    else
+    {
+        ft_putstr_fd(strerror(errno), STDERR_FILENO);
+        ft_putstr_fd("\n", STDERR_FILENO);
+    }
+    if (errno == EACCES || errno == EISDIR)
+        exit(126);
+    else
+        exit(127);
+}
+
+//*#### Parent process waits for child and sets exit_code
+void env_builtin_wait_child(t_minishell *minishell, pid_t pid)
+{
+    int status;
+    waitpid(pid, &status, 0);
+    if (WIFEXITED(status))
+        minishell->exit_code = WEXITSTATUS(status);
+    else
+        minishell->exit_code = 1;
+}
+
+//*#### Main env builtin function orchestrating helpers
+void env_builtin(t_minishell *minishell)
+{
+    if (minishell->cmd->argv[1] == NULL)
+    {
+        env_builtin_print_env(minishell);
+        return;
+    }
+    char *path = env_builtin_resolve_path(minishell, minishell->cmd);
+    if (!path && minishell->exit_code == 127)
+        return;
     pid_t pid = fork();
     if (pid == -1)
     {
@@ -50,50 +97,13 @@ void env_builtin(t_minishell *minishell)
         minishell->exit_code = 1;
         return;
     }
-
     if (pid == 0)
     {
-        setup_signals_child();
-
-        // child: try to exec
-        if (is_direct_path)
-            execve(cmd->argv[1], &cmd->argv[1], minishell->envp);
-        else
-            execve(path, &cmd->argv[1], minishell->envp);
-
-        // If execve fails
-        ft_putstr_fd("minishell: env: ", STDERR_FILENO);
-        ft_putstr_fd(cmd->argv[1], STDERR_FILENO);
-        ft_putstr_fd(": ", STDERR_FILENO);
-
-        if (errno == EISDIR)
-            ft_putstr_fd("Not a directory\n", STDERR_FILENO);
-        else if (errno == ENOENT)
-            ft_putstr_fd("No such file or directory\n", STDERR_FILENO);
-        else if (errno == EACCES)
-            ft_putstr_fd("Permission denied\n", STDERR_FILENO);
-        else
-        {
-            ft_putstr_fd(strerror(errno), STDERR_FILENO);
-            ft_putstr_fd("\n", STDERR_FILENO);
-        }
-
-        // Exit code: 126 = permission/dir error, 127 = not found
-        if (errno == EACCES || errno == EISDIR)
-            exit(126);
-        else
-            exit(127);
+        env_builtin_execute_child(minishell, minishell->cmd, path);
     }
-
-    // parent: wait
-    int status;
-    waitpid(pid, &status, 0);
-
-    if (WIFEXITED(status))
-        minishell->exit_code = WEXITSTATUS(status);
     else
-        minishell->exit_code = 1;
-
-    if (path)
-        free(path);
+    {
+        env_builtin_wait_child(minishell, pid);
+    }
+    free(path);
 }

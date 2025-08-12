@@ -2,8 +2,8 @@
 #include "minishell.h"
 
 // Handles input redirections: INPUT_FILE and INPUT_HEREDOC
-void	if_input_filesHeredoc(t_minishell *minishell, t_token *token,
-		t_command **cmd, int *i)//todo norm name func error
+void	if_input_files_heredoc(t_minishell *minishell, t_token *token,
+		t_command **cmd, int *i)
 {
 	char	*file;
 

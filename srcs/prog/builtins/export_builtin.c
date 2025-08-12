@@ -5,85 +5,88 @@ static void update_or_add_env(t_minishell *minishell, char *name, char *value);
 static void export_without_value(t_minishell *minishell, char *name);
 static int has_valid_arguments(t_command *cmd);
 
-void export_builtin(t_minishell *minishell)
+static void print_invalid_identifier(const char *name, const char *value)
 {
-    t_command *cmd = minishell->cmd;
-    char *equal_position;
+    ft_putstr_fd((char *)"minishell: export: `", STDERR_FILENO);
+    ft_putstr_fd((char *)name, STDERR_FILENO);
+    if (value)
+    {
+        ft_putstr_fd("=", STDERR_FILENO);
+        ft_putstr_fd((char *)value, STDERR_FILENO);
+    }
+    ft_putstr_fd((char *)"': not a valid identifier\n", STDERR_FILENO);
+}
+
+
+static void process_assignment(t_minishell *shell, char *arg)
+{
+    char *equal_position = ft_strchr(arg, '=');
     char *name;
     char *value;
-    int i;
 
-    // Safety checks
-    if (!cmd || !cmd->argv || !cmd->argv[0])
+    *equal_position = '\0';
+    name = arg;
+    value = equal_position + 1;
+
+    if (is_valid_identifier(name))
+        update_or_add_env(shell, name, value);
+    else
     {
-        minishell->exit_code = 1;
-        return;
+        print_invalid_identifier(name, value);
+        shell->exit_code = 1;
     }
+    *equal_position = '=';
+}
 
-    minishell->exit_code = 0;
-
-    // Check if we have any valid (non-empty) arguments
-    if (!cmd->argv[1] || !has_valid_arguments(cmd))
+static void process_no_assignment(t_minishell *shell, char *arg)
+{
+    if (is_valid_identifier(arg))
+        export_without_value(shell, arg);
+    else
     {
-        print_sorted_env(minishell);
-        return;
+        print_invalid_identifier(arg, NULL);
+        shell->exit_code = 1;
     }
+}
 
-    // Process each argument
-    i = 1;
+static void process_export_args(t_minishell *shell, t_command *cmd)
+{
+    int i = 1;
+
     while (cmd->argv[i])
     {
-        // Skip empty arguments (from failed variable expansion)
-        if (!cmd->argv[i] || cmd->argv[i][0] == '\0')
+        if (!cmd->argv[i][0])
         {
             i++;
             continue;
         }
-
-        equal_position = ft_strchr(cmd->argv[i], '=');
-        if (equal_position)
-        {
-            // Split name and value
-            *equal_position = '\0';
-            name = cmd->argv[i];
-            value = equal_position + 1;
-            
-            // Validate and update
-            if (is_valid_identifier(name))
-            {
-                update_or_add_env(minishell, name, value);
-            }
-            else
-            {
-                ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-                ft_putstr_fd(name, STDERR_FILENO);
-                ft_putstr_fd("=", STDERR_FILENO);
-                ft_putstr_fd(value, STDERR_FILENO);
-                ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-                minishell->exit_code = 1;
-            }
-            
-            // Restore original string
-            *equal_position = '=';
-        }
+        if (ft_strchr(cmd->argv[i], '='))
+            process_assignment(shell, cmd->argv[i]);
         else
-        {
-            // Export without value
-            if (is_valid_identifier(cmd->argv[i]))
-            {
-                export_without_value(minishell, cmd->argv[i]);
-            }
-            else
-            {
-                ft_putstr_fd("minishell: export: `", STDERR_FILENO);
-                ft_putstr_fd(cmd->argv[i], STDERR_FILENO);
-                ft_putstr_fd("': not a valid identifier\n", STDERR_FILENO);
-                minishell->exit_code = 1;
-            }
-        }
+            process_no_assignment(shell, cmd->argv[i]);
         i++;
     }
 }
+
+void export_builtin(t_minishell *shell)
+{
+    t_command *cmd = shell->cmd;
+
+    if (!cmd || !cmd->argv || !cmd->argv[0])
+    {
+        shell->exit_code = 1;
+        return;
+    }
+    shell->exit_code = 0;
+
+    if (!cmd->argv[1] || !has_valid_arguments(cmd))
+    {
+        print_sorted_env(shell);
+        return;
+    }
+    process_export_args(shell, cmd);
+}
+
 
 static int has_valid_arguments(t_command *cmd)
 {
@@ -120,116 +123,117 @@ static int is_valid_identifier(const char *str)
     
     return 1;
 }
+#include "minishell.h"
 
-static void update_or_add_env(t_minishell *minishell, char *name, char *value)
+static void update_existing_env(t_minishell *shell, t_env *var, char *name, char *value)
 {
-    t_env *current;
+    if (var->value)
+        free(var->value);
+    var->value = ft_strdup(value);
+    update_envp_array(shell, name, value);
+}
+
+static void add_new_env(t_minishell *shell, char *name, char *value)
+{
     t_env *new_var;
+    t_env *current;
     
-    if (!minishell || !name || !value)
-        return;
-    
-    // Search for existing variable
-    current = minishell->env;
-    while (current)
-    {
-        if (current->name && ft_strcmp(current->name, name) == 0)
-        {
-            // Variable exists, update its value
-            if (current->value)
-                free(current->value);
-            current->value = ft_strdup(value);
-            
-            // Also update in envp array
-            update_envp_array(minishell, name, value);
-            return;
-        }
-        current = current->next;
-    }
-    
-    // Variable doesn't exist, create new one
     new_var = malloc(sizeof(t_env));
     if (!new_var)
         return;
-    
     new_var->name = ft_strdup(name);
     new_var->value = ft_strdup(value);
     new_var->next = NULL;
-    
     if (!new_var->name || !new_var->value)
     {
-        if (new_var->name)
-            free(new_var->name);
-        if (new_var->value)
-            free(new_var->value);
+        free(new_var->name);
+        free(new_var->value);
         free(new_var);
         return;
     }
-    
-    // Add to end of list
-    if (!minishell->env)
-    {
-        minishell->env = new_var;
-    }
+    if (!shell->env)
+        shell->env = new_var;
     else
     {
-        current = minishell->env;
+        current = shell->env;
         while (current->next)
             current = current->next;
         current->next = new_var;
     }
-    
-    // Update envp array
-    update_envp_array(minishell, name, value);
+    update_envp_array(shell, name, value);
 }
 
-static void export_without_value(t_minishell *minishell, char *name)
+void update_or_add_env(t_minishell *shell, char *name, char *value)
 {
     t_env *current;
-    t_env *new_var;
-    
-    if (!minishell || !name)
+
+    if (!shell || !name || !value)
         return;
-    
-    // Check if variable already exists
-    current = minishell->env;
+
+    current = shell->env;
     while (current)
     {
         if (current->name && ft_strcmp(current->name, name) == 0)
         {
-            // Variable exists, don't change its value
+            update_existing_env(shell, current, name, value);
             return;
         }
         current = current->next;
     }
+    add_new_env(shell, name, value);
+}
+
+
+#include "minishell.h"
+
+static int env_variable_exists(t_minishell *shell, char *name)
+{
+    t_env *current = shell->env;
+
+    while (current)
+    {
+        if (current->name && ft_strcmp(current->name, name) == 0)
+            return 1;
+        current = current->next;
+    }
+    return 0;
+}
+
+static void add_env_without_value(t_minishell *shell, char *name)
+{
+    t_env *new_var;
+    t_env *current;
     
-    // Variable doesn't exist, create it without value
     new_var = malloc(sizeof(t_env));
     if (!new_var)
         return;
-    
     new_var->name = ft_strdup(name);
-    new_var->value = NULL;  // No value assigned
+    new_var->value = NULL;
     new_var->next = NULL;
-    
     if (!new_var->name)
     {
         free(new_var);
         return;
     }
-    
-    // Add to end of list
-    if (!minishell->env)
-    {
-        minishell->env = new_var;
-    }
+    if (!shell->env)
+        shell->env = new_var;
     else
     {
-        current = minishell->env;
+        current = shell->env;
         while (current->next)
             current = current->next;
         current->next = new_var;
     }
-    
-    // Don't add to envp if no value
 }
+
+void export_without_value(t_minishell *shell, char *name)
+{
+    if (!shell || !name)
+        return;
+
+    if (env_variable_exists(shell, name))
+        return;
+
+    add_env_without_value(shell, name);
+}
+
