@@ -13,28 +13,29 @@ void main_loop(t_minishell *ms)
         expand_tokens(ms);     // expand tokens into its value
         merge_words(ms);       // merge with/without spaces need to
         // debug_print_tokens(ms->tok);//!
-        argv_for_commands(ms);    // word into argv array // todo
-        fill_argvs(ms);           // copies token strings into argv arrays
-        t_command *cmd = ms->cmd; //!
+        argv_for_commands(ms); // word into argv array // todo
+        fill_argvs(ms);        // copies token strings into argv arrays
+        // t_command *cmd = ms->cmd; //!
         tokens_to_commands(ms);
-        while (cmd)//!
-        {
-            debug_command(cmd);
-            cmd = cmd->next;
-        }//!
-        // if (!validate_pipeline(minishell))  // Add validation // todo
+        // while (cmd)//!
         // {
-        //     check_to_free(minishell); // todo
-        //     continue;
-        // }
-        // handle redirection in parent // todo
-        // todo
-        // if (!process_all_heredocs(minishell))// heredoc //! set with redirection
+        //     debug_command(cmd);
+        //     cmd = cmd->next;
+        // }//!
+        // if (!validate_pipeline(minishell)) validation //  todo may not do
         // {
         //     check_to_free(minishell);
         //     continue;
         // }
-        // execute_pipeline(minishell); // if there is another command // todo
-        // check_to_free(minishell);
+        if (!process_all_heredocs(ms))// heredoc
+        {
+             check_to_free(ms);
+             continue;
+        }
+        if (ms->pipe_count == 0)
+            execute_single_command(ms); // todo
+        else
+            execute_piped_commands(ms, ms->pipe_count + 1); // todo
+        check_to_free(ms);
     }
 }

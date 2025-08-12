@@ -3,7 +3,7 @@
 int check_pipe_syntax(t_minishell *ms, int i)
 {
     // Starts with pipe
-    if (i == 0)
+    if (i == 0 && ms->tok[i] && ((ms->tok[i + 1] && ms->tok[i + 1]->type != PIPE) || !ms->tok[i + 1])) 
     {
         ft_putendl_fd("minishell: syntax error near unexpected token `|'", 2);
         ms->exit_code = 2;

@@ -44,6 +44,13 @@ typedef enum e_type
     PIPE
 } t_type;
 
+typedef struct s_fd_backup
+{
+    int stdin_backup;
+    int stdout_backup;
+    int stderr_backup;
+} t_fd_backup;
+
 //* ----------- [ Structures ] -----------
 //
 typedef struct s_env
@@ -77,7 +84,7 @@ typedef struct s_command
     char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
     char *output_file; // the last redirection file
-    int heredoc_fd;
+    // int heredoc_fd;
     struct s_command *next; // Next command in pipe sequence
     char **input_files; // array of files before last one // todo: may need to fix
     char **output_files; // array of files berore last one // todo: may need to fix
@@ -105,6 +112,7 @@ typedef struct s_minishell
 //? [ Main ] 
 
 void main_loop (t_minishell *ms);
+int main_redirection(t_minishell *ms);
 
 //? [ Lexer & Tokenizer ]
 
@@ -322,8 +330,74 @@ void if_input_filesHeredoc(t_minishell *minishell, t_token *token, t_command **c
 
 
 //? [ Execution ]
+void execute_piped_commands(t_minishell *ms, int cmd_count);
+void compare_commands(t_minishell *shell);
+int exec_builtin(t_minishell *shell);
+void execute_single_command(t_minishell *ms);
+int is_command_empty(t_command *cmd);
+void execute_external_command(t_minishell *shell);
+
+//? [Heredoc]
+/* heredoc utils */
+char    *append_line_to_content(char *content, char *line);
+char    *append_single_char(char *result, char c);
+char    *append_to_result(char *result, char *to_append);
+int     create_heredoc_pipe(char *content);
+char    *expand_env_var(t_minishell *shell, char *content, char *result, int *i);
+char    *expand_exit_code(t_minishell *shell, char *result, int *i);
+char    *expand_heredoc_variables(t_minishell *shell, char *content);
+char    *extract_var_name(char *str, int *index);
+int     is_delimiter_line(char *line, char *delimiter);
+void    print_eof_warning(char *delimiter);
+int handle_redirection(t_minishell *shell);
+int input_redirection(t_command *cmd);
+int handle_output_redirection(t_command *cmd);
+
+/* heredoc main processing */
+int     process_all_heredocs(t_minishell *minishell);
+int     process_discarded_heredocs(t_minishell *minishell, t_command *cmd);
+int     process_final_heredoc(t_minishell *shell, t_command *cmd);
+char    *process_heredoc_readline(char *content, char *line, char *delimiter, int *should_break);
+char    *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
+char    *read_until_delimiter(char *delimiter);
+int     setup_heredoc_input(t_command *cmd);
+int     should_expand_heredoc(t_minishell *shell, char *delimiter);
 
 //? [ Builtins ]
+void cd_builtin(t_minishell *shell);
+void echo_builtin(t_minishell *shell);
+void env_builtin(t_minishell *shell);
+void exit_builtin(t_minishell *shell);
+void export_builtin(t_minishell *shell);
+void pwd_builtin(t_minishell *shell);
+void unset_builtin(t_minishell *shell);
+
+//? [ PATH]
+#ifndef PATH_UTILS_H
+#define PATH_UTILS_H
+
+#include "minishell.h"
+
+// Returns strdup'ed path if cmd already contains '/' and is executable, else NULL
+char *already_path(char *cmd);
+
+// Searches PATH env string for executable cmd, returns malloc'ed full path or NULL
+char *find_cmd_path(char *cmd, char *path_env);
+
+// Retrieves PATH environment variable value string from env linked list (no strdup)
+char *find_path(t_env *env);
+
+// Top-level function to get full command path (already absolute or resolved from PATH)
+char *get_path(t_minishell *shell);
+
+// Checks if given path is executable by current user
+int is_executable(char *path);
+
+// Concatenates directory path and cmd into a full path string
+char *join_path(const char *path, const char *cmd);
+
+#endif
+
 
 //? [ Signals ]
 
@@ -587,7 +661,9 @@ void check_to_free(t_minishell *minishell);
 
 void free_token(t_token *token);
 
+
 //? [ Minilib ]
+int is_builtin(t_command *cmd);
 int update_glued(t_minishell *ms, int *i, int token_index);
 void count_pipe(t_minishell *minishell);
 int count_max_tokens_after_expansion(t_minishell *ms);
@@ -600,7 +676,7 @@ int is_whitespace(char c);
 void copy_token_to_argvs(t_minishell *ms, t_command *cmd, t_token *tok, int arg_idx);
 char **add_to_list(char **old_list, char *value);
 int has_more_redirections(t_token **tokens, int start_index, t_type t1, t_type t2);
-
+void print_sorted_env(t_minishell *minishell);
 
 /**
  * @brief #### Check if string is a positive number
