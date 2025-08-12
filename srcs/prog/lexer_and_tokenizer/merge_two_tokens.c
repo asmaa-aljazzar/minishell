@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-void merge_two_tokens(t_minishell *minishell, t_token *dst, t_token *src)
+void	merge_two_tokens(t_minishell *minishell, t_token *dst, t_token *src)
 {
 	char *joined_word = ft_strjoin(dst->word, src->word);
 	if (!joined_word)

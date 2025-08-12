@@ -59,3 +59,4 @@ void debug_command(const t_command *cmd)
 
     printf("-----------------------------------\n");
 }
+

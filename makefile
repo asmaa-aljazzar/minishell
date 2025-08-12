@@ -5,7 +5,6 @@ GREEN	=	\033[32m
 YELLOW	=	\033[33m
 BLUE	=	\033[34m
 
-
 # Standard
 NAME	= minishell
 
@@ -37,6 +36,7 @@ COMM_DIR				= 	$(EXECUTION_DIR)command/
 REDIR_DIR				=	$(EXECUTION_DIR)redirection/
 HEREDOC_DIR				= 	$(REDIR_DIR)heredoc/
 I_O_A_DIR				= 	$(REDIR_DIR)input_output_append/
+
 
 # Source Files
 

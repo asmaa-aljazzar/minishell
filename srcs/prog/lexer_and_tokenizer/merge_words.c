@@ -1,16 +1,16 @@
 
 #include "minishell.h"
 
-void merge_words(t_minishell *minishell)
+void	merge_words(t_minishell *minishell)
 {
-	t_token **orig;
-	int i;
-	int k;
+	t_token	**orig;
+	int		i;
+	int		k;
 
-    i = 0;
-    k = 0;
+	i = 0;
+	k = 0;
 	if (!minishell || !minishell->tok)
-		return;
+		return ;
 	orig = minishell->tok; // origin token
 	while (orig[i])
 	{
