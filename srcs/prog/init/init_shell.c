@@ -31,5 +31,4 @@ void	init_shell(t_minishell *ms)
 		ms->exit_code = 2;
 		return ;
 	}
-	count_pipe(ms);
 }
