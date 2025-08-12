@@ -13,7 +13,6 @@ void main_loop(t_minishell *ms)
             continue;
 
         execute_commands(ms);
-
         check_to_free(ms);
     }
 }
