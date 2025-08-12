@@ -3,12 +3,14 @@
 char *process_heredoc_readline(char *content, char *line, char *delimiter, int *should_break)
 {
     *should_break = 0;
-    if (g_signal_received == SIG_INT)
+    // if (g_signal_received == SIG_INT)
+    if (g_signal_received == SIGINT)
     {
         if (line)
             free(line);
         free(content);
-        return (NULL);
+        g_signal_received = 0; // reset signal
+        return NULL;           // cause readline loop to exit
     }
     if (!line)
     {

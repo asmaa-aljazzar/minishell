@@ -1,17 +1,12 @@
 // output_redirection.c
 #include "minishell.h"
-// output_redirection.c
-#include "minishell.h"
-
-// Redirect stdout to the file specified in cmd->output_file
-// Returns 0 on success, -1 on failure (does not exit)
 int handle_output_redirection(t_command *cmd)
 {
     int fd;
     int flags;
 
-    if (!cmd->output_file)
-        return 0;
+    if (!cmd || !cmd->output_file)
+        return 0; // No output redirection needed
 
     if (cmd->output_type == OUTPUT_APPEND)
         flags = O_WRONLY | O_CREAT | O_APPEND;

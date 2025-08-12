@@ -321,6 +321,7 @@ void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
 //? [ Parser ]
 void allocate_commands(t_minishell *ms);
 void fill_argvs(t_minishell *ms);
+void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx);
 void argv_for_commands(t_minishell *minishell);
 void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
 void if_output_filesAppend(t_minishell *minishell, t_token *token, t_command **cmd, int *i);

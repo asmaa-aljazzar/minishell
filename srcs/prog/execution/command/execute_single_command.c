@@ -1,5 +1,65 @@
 #include "minishell.h"
 
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int handle_empty_command_with_output(t_minishell *ms)
+{
+    t_command *cmd = ms->cmd;
+    int i;
+
+    if (!cmd)
+        return 0;
+
+    if ((!cmd->argv || !cmd->argv[0] || is_command_empty(cmd)) &&
+        (cmd->output_type != OUTPUT_NONE || (cmd->output_files && cmd->output_files[0])))
+    {
+        if (cmd->output_files)
+        {
+            int last_index = 0;
+            while (cmd->output_files[last_index])
+                last_index++;
+            last_index--; // last valid index
+
+            for (i = 0; cmd->output_files[i]; i++)
+            {
+                int flags = O_WRONLY | O_CREAT | O_TRUNC;
+                if (i == last_index && cmd->output_type == OUTPUT_APPEND)
+                    flags = O_WRONLY | O_CREAT | O_APPEND;
+
+                int fd = open(cmd->output_files[i], flags, 0644);
+                if (fd < 0)
+                {
+                    perror(cmd->output_files[i]);
+                    ms->exit_code = 1;
+                    return -1;
+                }
+                close(fd);
+            }
+        }
+        else if (cmd->output_file)
+        {
+            int flags = O_WRONLY | O_CREAT | O_TRUNC;
+            if (cmd->output_type == OUTPUT_APPEND)
+                flags = O_WRONLY | O_CREAT | O_APPEND;
+
+            int fd = open(cmd->output_file, flags, 0644);
+            if (fd < 0)
+            {
+                perror(cmd->output_file);
+                ms->exit_code = 1;
+                return -1;
+            }
+            close(fd);
+        }
+        ms->exit_code = 0;
+        return 1;
+    }
+    return 0;
+}
+
+
 int is_command_empty(t_command *cmd)
 {
     if (!cmd || !cmd->argv)
@@ -17,32 +77,80 @@ int is_command_empty(t_command *cmd)
     }
     return 0;
 }
-
 void execute_single_command(t_minishell *ms)
 {
-    t_command *cmd = ms->cmd;// command list
-    if (!cmd || !cmd->argv || !cmd->argv[0]) // check empty
+    t_command *cmd = ms->cmd;
+    pid_t pid;
+    int status;
+    int saved_stdout = -1;
+
+// int i = 0;
+
+// ft_putstr_fd("Output files before handle_empty_command_with_output:\n", STDERR_FILENO);
+// while (cmd->output_files && cmd->output_files[i])
+// {
+//     ft_putstr_fd("  ", STDERR_FILENO);
+//     ft_putstr_fd(cmd->output_files[i], STDERR_FILENO);
+//     ft_putstr_fd("\n", STDERR_FILENO);
+//     i++;
+// }
+
+    if (!cmd || !cmd->argv)
     {
-        ms->exit_code = 0; // empty command, do nothing
+        ms->exit_code = 0;
         return;
     }
+    
+    if (handle_empty_command_with_output(ms))
+        return;
+
+    if (!cmd->argv[0])
+    {
+        ms->exit_code = 0;
+        return;
+    }
+
     if (is_command_empty(cmd))
     {
-        ms->exit_code = 0; // command is only whitespace, or $notExist do nothing
+        ms->exit_code = 0;
         return;
     }
-    if (main_redirection(ms) != 0) // todo
+
+    if (is_builtin(cmd))
     {
-        ms->exit_code = 1; // redirection error
+        // Save stdout if redirection required
+        if (cmd->output_type != OUTPUT_NONE || cmd->output_files)
+        {
+            saved_stdout = dup(STDOUT_FILENO);
+            if (saved_stdout < 0)
+            {
+                perror("dup");
+                ms->exit_code = 1;
+                return;
+            }
+            if (main_redirection(ms) != 0)
+            {
+                if (saved_stdout >= 0)
+                    close(saved_stdout);
+                ms->exit_code = 1;
+                return;
+            }
+        }
+
+        compare_commands(ms); // execute builtin in parent
+
+        // Restore stdout if redirected
+        if (saved_stdout >= 0)
+        {
+            dup2(saved_stdout, STDOUT_FILENO);
+            close(saved_stdout);
+        }
+
         return;
     }
-    //todo
-    if (is_builtin(cmd)) // If it's a builtin command, run it directly without forking
-    {
-        compare_commands(ms); // executes builtin, sets ms->exit_code // todo
-        return;
-    }
-    pid_t pid = fork();// For external commands, fork and exec
+
+    // For external commands: fork and apply redirection inside child
+    pid = fork();
     if (pid < 0)
     {
         perror("fork");
@@ -51,13 +159,17 @@ void execute_single_command(t_minishell *ms)
     }
     else if (pid == 0)
     {
-        setup_signals_child();// Child process
-        compare_commands(ms); // runs execve for external command //todo
-        exit(EXIT_FAILURE); // execve failed if reached here
+        setup_signals_child();
+
+        if (main_redirection(ms) != 0)
+            exit(EXIT_FAILURE);
+
+        execute_external_command(ms);
+
+        exit(EXIT_FAILURE);
     }
-    else // Parent process waits for child
+    else
     {
-        int status;
         waitpid(pid, &status, 0);
         if (WIFEXITED(status))
             ms->exit_code = WEXITSTATUS(status);

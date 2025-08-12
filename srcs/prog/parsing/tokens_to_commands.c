@@ -19,6 +19,7 @@ void	tokens_to_commands(t_minishell *minishell)
 		if_output_filesAppend(minishell, token, &cmd, &i);
 		if (token->type == INPUT_WORD)
 			cmd->argv[argc++] = token->word;
+		pritnf("token %d = %s", i, minishell->tok[i]->word)
 		i++;
 	}
 	if (cmd && cmd->argv)

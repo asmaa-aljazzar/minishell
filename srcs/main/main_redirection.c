@@ -1,16 +1,34 @@
-// main_redirection.c
 #include "minishell.h"
-
-// Returns 0 on success, -1 on failure
 int main_redirection(t_minishell *ms)
 {
+
     t_command *cmd = ms->cmd;
     int fd;
+
+    // //! Debug
+    // // int i = 0;
+    // // ft_putstr_fd("Output files in main_redirection:\n", STDERR_FILENO);
+    // // while (cmd->output_files && cmd->output_files[i])
+    // // {
+    // //     ft_putstr_fd("  ", STDERR_FILENO);
+    // //     ft_putstr_fd(cmd->output_files[i], STDERR_FILENO);
+    // //     ft_putstr_fd("\n", STDERR_FILENO);
+    // //     i++;
+    // // }
+
+    // ft_putstr_fd("Output type: ", STDERR_FILENO);
+    // if (cmd->output_type == OUTPUT_APPEND)
+    //     ft_putstr_fd("APPEND\n", STDERR_FILENO);
+    // else if (cmd->output_type == OUTPUT_FILE)
+    //     ft_putstr_fd("TRUNCATE\n", STDERR_FILENO);
+    // else
+    //     ft_putstr_fd("NONE or other\n", STDERR_FILENO);
+    // //! End Debug
 
     if (!cmd)
         return 0;
 
-    // Handle multiple input files: use last one
+    // Input redirection (last input file)
     if (cmd->input_files)
     {
         int i = 0;
@@ -42,7 +60,7 @@ int main_redirection(t_minishell *ms)
             return -1;
     }
 
-    // Handle multiple output files: create/truncate all, redirect last
+    // Output redirection (create/truncate all output files, redirect last)
     if (cmd->output_files)
     {
         int i = 0;
@@ -79,11 +97,7 @@ int main_redirection(t_minishell *ms)
             close(fd);
         }
     }
-    else if (cmd->output_type == OUTPUT_FILE || cmd->output_type == OUTPUT_APPEND)
-    {
-        if (handle_output_redirection(cmd) != 0)
-            return -1;
-    }
+
 
     return 0;
 }

@@ -2,7 +2,7 @@
 
 int main(int ac, char **av, char **environ)
 {
-	t_minishell ms; // t_minishell struct
+	t_minishell ms;
 	(void) ac;
 	(void) av;
 	setup_signals_parent();

@@ -88,6 +88,7 @@ PARS_SRC	=	$(PARS_DIR)allocate_commands.c\
 				$(PARS_DIR)allocate_argv.c\
 				$(PARS_DIR)argv_for_commands.c\
 				$(PARS_DIR)fill_argvs.c\
+				$(PARS_DIR)process_token_to_fill.c\
 				$(PARS_DIR)if_input_filesHeredoc.c\
 				$(PARS_DIR)if_output_filesAppend.c\
 				$(PARS_DIR)if_outputPipe.c\

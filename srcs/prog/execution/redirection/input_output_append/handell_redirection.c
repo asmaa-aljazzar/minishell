@@ -1,94 +1,63 @@
-// // handell_redirection.c - Fixed version
 #include "minishell.h"
+
+// Returns 0 on success, -1 on failure
 int handle_redirection(t_minishell *shell)
 {
     t_command *cmd = shell->cmd;
-    
+
     while (cmd)
     {
-        printf("Processing command...\n");
-        
-        // Process multiple output files
         if (cmd->output_files)
         {
-            printf("Found output_files array\n");
             int i = 0;
-            while (cmd->output_files[i])
+            int last_index = 0;
+
+            // Count output files
+            while (cmd->output_files[last_index])
+                last_index++;
+
+            if (last_index == 0)
             {
-                printf("Creating output file: '%s'\n", cmd->output_files[i]);
-                
-                int flags = O_WRONLY | O_CREAT | O_TRUNC;  // Always truncate for now
+                cmd = cmd->next;
+                continue;
+            }
+            last_index--; // index of last file
+
+            for (i = 0; cmd->output_files[i]; i++)
+            {
+                int flags = O_WRONLY | O_CREAT;
+
+                // Determine if append or truncate
+                if (cmd->output_type == OUTPUT_APPEND)
+                    flags |= O_APPEND;
+                else
+                    flags |= O_TRUNC;
+
                 int fd = open(cmd->output_files[i], flags, 0644);
-                
                 if (fd < 0)
                 {
-                    printf("ERROR: Failed to create file '%s'\n", cmd->output_files[i]);
                     ft_putstr_fd("minishell: ", STDERR_FILENO);
                     perror(cmd->output_files[i]);
-                    return 0;
+                    return -1;
                 }
-                else
+
+                // For the last output file, redirect stdout
+                if (i == last_index)
                 {
-                    printf("SUCCESS: Created file '%s' with fd=%d\n", cmd->output_files[i], fd);
+                    if (dup2(fd, STDOUT_FILENO) < 0)
+                    {
+                        perror("dup2");
+                        close(fd);
+                        return -1;
+                    }
                 }
                 close(fd);
-                i++;
             }
         }
-        else
-        {
-            printf("No output_files found\n");
-        }
-        
+        // Could add input files handling here if needed
+
         cmd = cmd->next;
     }
-    
-    printf("=== END REDIRECTION DEBUG ===\n");
-    return 1;
+
+    return 0;
 }
-// int handle_redirection(t_minishell *shell)
-// {
-//     t_command *cmd = shell->cmd;
-    
-//     while (cmd)
-//     {
-//         // Process multiple input files (only last one matters)
-//         if (cmd->input_files)
-//         {
-//             int i = 0;
-//             while (cmd->input_files[i])
-//             {
-//                 int fd = open(cmd->input_files[i], O_RDONLY);
-//                 if (fd < 0)
-//                 {
-//                     ft_putstr_fd("minishell: ", STDERR_FILENO);
-//                     perror(cmd->input_files[i]);
-//                     return 0;
-//                 }
-//                 close(fd);
-//                 i++;
-//             }
-//         }
-        
-//         // Process multiple output files
-//         if (cmd->output_files)
-//         {
-//             int i = 0;
-//             while (cmd->output_files[i])
-//             {
-//                 int fd = open(cmd->output_files[i], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-//                 if (fd < 0)
-//                 {
-//                     ft_putstr_fd("minishell: ", STDERR_FILENO);
-//                     perror(cmd->output_files[i]);
-//                     return 0;
-//                 }
-//                 close(fd);
-//                 i++;
-//             }
-//         }
-        
-//         cmd = cmd->next;
-//     }
-//     return 1;
-// }

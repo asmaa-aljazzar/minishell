@@ -1,16 +1,11 @@
 // input_redirection.c
 #include "minishell.h"
-// input_redirection.c
-#include "minishell.h"
-
-// Redirect stdin to the file specified in cmd->input_file
-// Returns 0 on success, -1 on failure (does not exit)
 int input_redirection(t_command *cmd)
 {
     int fd;
 
-    if (!cmd->input_file)
-        return 0;
+    if (!cmd || !cmd->input_file)
+        return 0; // No input redirection needed
 
     fd = open(cmd->input_file, O_RDONLY);
     if (fd < 0)

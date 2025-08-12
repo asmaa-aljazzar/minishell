@@ -37,26 +37,27 @@ static void wait_for_children(t_minishell *ms, pid_t *pids, int cmd_count)
     }
 }
 
-
-// --- 4. Child process code ---
-static void run_child(t_minishell *ms, t_command *cmd, int (*pipes)[2],
-                      int cmd_index, int cmd_count)
+// --- Child process: set up pipes, redirection, execute command ---
+static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, int cmd_count)
 {
     setup_signals_child();
 
-    // Set up pipes
-    if (cmd_index > 0 && dup2(pipes[cmd_index - 1][0], STDIN_FILENO) < 0)
+    // Redirect stdin to previous pipe read end if not first command
+    if (idx > 0 && dup2(pipes[idx - 1][0], STDIN_FILENO) < 0)
     {
-        perror("dup2");
+        perror("dup2 stdin");
         exit(EXIT_FAILURE);
     }
-    if (cmd_index < cmd_count - 1 && dup2(pipes[cmd_index][1], STDOUT_FILENO) < 0)
+
+    // Redirect stdout to next pipe write end if not last command
+    if (idx < cmd_count - 1 && dup2(pipes[idx][1], STDOUT_FILENO) < 0)
     {
-        perror("dup2");
+        perror("dup2 stdout");
         exit(EXIT_FAILURE);
     }
 
     close_all_pipes(pipes, cmd_count - 1);
+
     ms->cmd = cmd;
 
     if (is_command_empty(cmd))
@@ -64,8 +65,7 @@ static void run_child(t_minishell *ms, t_command *cmd, int (*pipes)[2],
 
     if (main_redirection(ms) != 0)
         exit(EXIT_FAILURE);
-    
-    // Execute command
+
     if (is_builtin(cmd))
     {
         compare_commands(ms);
@@ -73,15 +73,14 @@ static void run_child(t_minishell *ms, t_command *cmd, int (*pipes)[2],
     }
     else
     {
-        // For external commands, execute directly
         execute_external_command(ms);
-        // execute_external_command should not return
+        // execve should not return if successful
+        exit(EXIT_FAILURE);
     }
-    
-    exit(EXIT_FAILURE); // Should never reach here
 }
-// --- 2. Create all pipes ---
-static int create_all_pipes(int (*pipes)[2], int pipe_count)
+
+// --- Create all pipes for N commands: N-1 pipes ---
+static int create_all_pipes(int pipes[][2], int pipe_count)
 {
     for (int i = 0; i < pipe_count; i++)
     {
@@ -95,8 +94,8 @@ static int create_all_pipes(int (*pipes)[2], int pipe_count)
     return 0;
 }
 
-// --- 3. Fork children and execute commands ---
-static int fork_children(t_minishell *ms, int (*pipes)[2], pid_t *pids, int cmd_count)
+// --- Fork each child process for each command ---
+static int fork_children(t_minishell *ms, int pipes[][2], pid_t *pids, int cmd_count)
 {
     t_command *cmd = ms->cmd;
 
@@ -104,26 +103,23 @@ static int fork_children(t_minishell *ms, int (*pipes)[2], pid_t *pids, int cmd_
     {
         pids[i] = fork();
         if (pids[i] < 0)
-            return i; // Number of successful forks before failure
+            return i; // Return how many forks succeeded before failure
         if (pids[i] == 0)
-        {
             run_child(ms, cmd, pipes, i, cmd_count);
-            // never returns
-        }
     }
-    return cmd_count; // all forks succeeded
+    return cmd_count;
 }
 
-// --- 5. Parent cleanup and wait ---
-static void handle_parent_process(t_minishell *ms, int (*pipes)[2], pid_t *pids, int cmd_count)
+// --- Parent closes pipes and waits for children ---
+static void handle_parent_process(t_minishell *ms, int pipes[][2], pid_t *pids, int cmd_count)
 {
     close_all_pipes(pipes, cmd_count - 1);
     wait_for_children(ms, pids, cmd_count);
 }
-// Allocates pipes and pids arrays; returns 0 or -1 on failure
+
+// --- Allocate pipes and pids arrays ---
 static int allocate_resources(int cmd_count, int (**pipes)[2], pid_t **pids)
 {
-
     *pipes = malloc(sizeof(int[2]) * (cmd_count - 1));
     *pids = malloc(sizeof(pid_t) * cmd_count);
     if (!*pipes || !*pids)
@@ -136,8 +132,8 @@ static int allocate_resources(int cmd_count, int (**pipes)[2], pid_t **pids)
     return 0;
 }
 
-// Handles cleanup on fork failure: kills children, waits, closes pipes, frees memory
-static void cleanup_on_fork_failure(t_minishell *ms, pid_t *pids, int forked, int (*pipes)[2], int pipe_count)
+// --- Cleanup on fork failure ---
+static void cleanup_on_fork_failure(t_minishell *ms, pid_t *pids, int forked, int pipes[][2], int pipe_count)
 {
     ms->exit_code = EXIT_FAILURE;
     kill_children(pids, forked);
@@ -147,8 +143,8 @@ static void cleanup_on_fork_failure(t_minishell *ms, pid_t *pids, int forked, in
     free(pids);
     free(pipes);
 }
-// Función auxiliar que se encarga de preparar recursos, crear pipes y forkear hijos.
-// Retorna 0 en éxito, -1 en error.
+
+// --- Setup pipes, fork children ---
 static int setup_and_fork(t_minishell *ms, int cmd_count, int (**pipes)[2], pid_t **pids)
 {
     if (allocate_resources(cmd_count, pipes, pids) < 0)
@@ -164,28 +160,28 @@ static int setup_and_fork(t_minishell *ms, int cmd_count, int (**pipes)[2], pid_
     if (forked < cmd_count)
     {
         cleanup_on_fork_failure(ms, *pids, forked, *pipes, cmd_count - 1);
-        free(*pipes);
-        free(*pids);
         return -1;
     }
     return 0;
 }
 
-// Función principal orquestadora
+// --- Main function to execute piped commands ---
 void execute_piped_commands(t_minishell *ms, int cmd_count)
 {
-    if (cmd_count < 2) // no pipe
+    if (cmd_count < 2) // no pipe, nothing to do here
         return;
-    int (*pipes)[2]; // array of int[2] 
 
-    pipes = NULL;
+    int (*pipes)[2] = NULL;
     pid_t *pids = NULL;
-    if (setup_and_fork(ms, cmd_count, &pipes, &pids) < 0) //todo
+
+    if (setup_and_fork(ms, cmd_count, &pipes, &pids) < 0)
     {
         ms->exit_code = EXIT_FAILURE;
         return;
     }
-    handle_parent_process(ms, pipes, pids, cmd_count);//todo
+
+    handle_parent_process(ms, pipes, pids, cmd_count);
+
     free(pipes);
     free(pids);
 }

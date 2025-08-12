@@ -1,0 +1,23 @@
+[33mfda66d0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{0}: pull origin main --rebase (finish): returning to refs/heads/main
+[33mfda66d0[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m HEAD@{1}: pull origin main --rebase (pick): main_redirection
+[33m3ac68e1[m HEAD@{2}: pull origin main --rebase (pick): main_redirection
+[33mc66575a[m HEAD@{3}: pull origin main --rebase (start): checkout c66575a1ca52ef7ea33eabf0eca92c43137dfff6
+[33m48e4f91[m HEAD@{4}: commit: main_redirection
+[33m7b0541d[m HEAD@{5}: commit: main_redirection
+[33m1798402[m HEAD@{6}: checkout: moving from mini_test to main
+[33m96c6728[m[33m ([m[1;31morigin/mini_test[m[33m, [m[1;32mmini_test[m[33m)[m HEAD@{7}: commit: test branch
+[33m1798402[m HEAD@{8}: checkout: moving from main to mini_test
+[33m1798402[m HEAD@{9}: rebase (finish): returning to refs/heads/main
+[33m1798402[m HEAD@{10}: commit: main_loop
+[33m9ad981b[m HEAD@{11}: pull --rebase origin main (start): checkout 9ad981b7add579cd7cbee5a9a352f3fcc74f7d6e
+[33m9161055[m HEAD@{12}: commit: update main_loop
+[33m3e4b41c[m HEAD@{13}: checkout: moving from new_minishell to main
+[33m6e63543[m[33m ([m[1;32mnew_minishell[m[33m)[m HEAD@{14}: checkout: moving from main to new_minishell
+[33m3e4b41c[m HEAD@{15}: checkout: moving from new_minishell to main
+[33m6e63543[m[33m ([m[1;32mnew_minishell[m[33m)[m HEAD@{16}: commit: update main loop
+[33m07b95f7[m HEAD@{17}: commit: commands
+[33m975be4a[m HEAD@{18}: commit: argv & expanded for command
+[33m0d6d30f[m HEAD@{19}: commit: merge words
+[33m76a3816[m HEAD@{20}: commit: finish expand
+[33mfe0ce6f[m HEAD@{21}: commit: init command
+[33m4eebd41[m HEAD@{22}: commit: finish init_shell

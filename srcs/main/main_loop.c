@@ -1,41 +1,45 @@
 #include "minishell.h"
+
+int prepare_command_processing(t_minishell *ms)
+{
+    if (!ms->input || !ms->tok)
+        return 0;
+
+    allocate_commands(ms);
+    expand_tokens(ms);
+    merge_words(ms);
+    argv_for_commands(ms);
+    fill_argvs(ms);
+    tokens_to_commands(ms);
+
+    return 1;
+}
+
+void execute_commands(t_minishell *ms)
+{
+    if (!process_all_heredocs(ms))
+        return;
+
+    if (ms->pipe_count == 0)
+        execute_single_command(ms);
+    else
+        execute_piped_commands(ms, ms->pipe_count + 1);
+}
+
 void main_loop(t_minishell *ms)
 {
-    (void)ms;
     print_banner();
+
     while (1)
     {
-        setup_signals_readline(); // if signall recieved in setup each readline
-        init_shell(ms);           // initialize after and before readline
-        if (!ms->input || !ms->tok)
-            continue;          // if no input and tokens then its enter
-        allocate_commands(ms); // initialize commands list
-        expand_tokens(ms);     // expand tokens into its value
-        merge_words(ms);       // merge with/without spaces need to
-        // debug_print_tokens(ms->tok);//!
-        argv_for_commands(ms); // word into argv array // todo
-        fill_argvs(ms);        // copies token strings into argv arrays
-        // t_command *cmd = ms->cmd; //!
-        tokens_to_commands(ms);
-        // while (cmd)//!
-        // {
-        //     debug_command(cmd);
-        //     cmd = cmd->next;
-        // }//!
-        // if (!validate_pipeline(minishell)) validation //  todo may not do
-        // {
-        //     check_to_free(minishell);
-        //     continue;
-        // }
-        if (!process_all_heredocs(ms))// heredoc
-        {
-             check_to_free(ms);
-             continue;
-        }
-        if (ms->pipe_count == 0)
-            execute_single_command(ms); // todo
-        else
-            execute_piped_commands(ms, ms->pipe_count + 1); // todo
+        setup_signals_readline();
+        init_shell(ms);
+
+        if (!prepare_command_processing(ms))
+            continue;
+
+        execute_commands(ms);
+
         check_to_free(ms);
     }
 }
