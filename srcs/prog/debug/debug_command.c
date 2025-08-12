@@ -55,7 +55,6 @@ void debug_command(const t_command *cmd)
         printf("output_files is NULL\n");
     }
 
-    printf("heredoc_fd: %d\n", cmd->heredoc_fd);
     printf("Next command pointer: %p\n", (void *)cmd->next);
 
     printf("-----------------------------------\n");

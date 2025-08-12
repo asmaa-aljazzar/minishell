@@ -77,15 +77,3 @@ void execute_external_command(t_minishell *shell)
         exit(126);
     exit(127);
 }
-int is_command_empty(t_command *cmd)
-{
-    if (!cmd || !cmd->argv || !cmd->argv[0])
-        return 1;
-    
-    // Check if the first argument is empty or only whitespace
-    char *arg = cmd->argv[0];
-    while (*arg && (*arg == ' ' || *arg == '\t' || *arg == '\n'))
-        arg++;
-    
-    return (*arg == '\0');
-}

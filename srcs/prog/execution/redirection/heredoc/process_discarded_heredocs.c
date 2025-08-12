@@ -6,6 +6,8 @@ int process_discarded_heredocs(t_minishell *minishell, t_command *cmd)
     int should_expand;
     int i;
     
+    if (!cmd)
+        return (1);
     if (!cmd->input_files)
         return (1);
     i = 0;

@@ -23,19 +23,20 @@ PROG_DIR				=	$(SRCS_DIR)prog/
 INIT_DIR				=	$(PROG_DIR)init/
 FREE_DIR				=	$(PROG_DIR)free/
 PARS_DIR				=	$(PROG_DIR)parsing/
-BUILTINS_DIR			=	$(PROG_DIR)builtins/
+BUILTIN_DIR				=	$(PROG_DIR)builtins/
 EXPAND_DIR				=	$(PROG_DIR)expand/
 LEXER_AND_TOKENIZER_DIR =	$(PROG_DIR)lexer_and_tokenizer/
 SIGNALS_DIR				=	$(PROG_DIR)signals/
 ERRORS_DIR 				= 	$(PROG_DIR)errors/
 DEBUG_DIR				=	$(PROG_DIR)debug/
+EXECUTION_DIR			=	$(PROG_DIR)execution/
+PIPE_DIR				= 	$(EXECUTION_DIR)pipe/
+PATH_DIR				= 	$(EXECUTION_DIR)path/
+COMM_DIR				= 	$(EXECUTION_DIR)command/
+REDIR_DIR				=	$(EXECUTION_DIR)redirection/
+HEREDOC_DIR				= 	$(REDIR_DIR)heredoc/
+I_O_A_DIR				= 	$(REDIR_DIR)input_output_append/
 
-HEREDOC_DIR				= 	$(MINILIB_DIR)heredoc/
-PIPE_DIR				= 	$(MINILIB_DIR)pipe/
-REDIR_DIR				=	$(MINILIB_DIR)redirections/
-PATH_DIR				=	$(MINILIB_DIR)path/
-EXECUTION_DIR			=	$(MINILIB_DIR)exec_one_cmd/
-HANDLE_DIR		 		=	$(LEXER_AND_TOKENIZER_DIR)handle/
 
 # Source Files
 
@@ -51,6 +52,7 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)print_banner.c\
 				$(MINILIB_DIR)print_slowly.c\
 				$(MINILIB_DIR)handle_eof.c\
+				$(MINILIB_DIR)is_builtin.c\
 				$(MINILIB_DIR)update_glued.c\
 				$(MINILIB_DIR)count_pipe.c\
 				$(MINILIB_DIR)count_max_tokens_after_expansion.c\
@@ -63,6 +65,7 @@ MINILIB_SRC	=	$(MINILIB_DIR)is_positive_number.c\
 				$(MINILIB_DIR)copy_token_to_argvs.c\
 				$(MINILIB_DIR)add_to_list.c\
 				$(MINILIB_DIR)has_more_redirections.c\
+				$(MINILIB_DIR)print_sorted_env.c\
 
 INIT_SRC	=	$(INIT_DIR)init_env.c\
 				$(INIT_DIR)init.c\
@@ -90,6 +93,52 @@ PARS_SRC	=	$(PARS_DIR)allocate_commands.c\
 				$(PARS_DIR)if_outputPipe.c\
 				$(PARS_DIR)tokens_to_commands.c\
 
+PIPE_SRC	=	$(PIPE_DIR)pipe.c\
+
+PATH_SRC =	$(PATH_DIR)already_path.c\
+			$(PATH_DIR)find_cmd_path.c\
+			$(PATH_DIR)find_path.c\
+			$(PATH_DIR)get_path.c\
+			$(PATH_DIR)is_executable.c\
+			$(PATH_DIR)join_path.c
+
+HEREDOC_SRC =	$(HEREDOC_DIR)append_line_to_content.c\
+				$(HEREDOC_DIR)append_single_char.c\
+				$(HEREDOC_DIR)append_to_result.c\
+				$(HEREDOC_DIR)create_heredoc_pipe.c\
+				$(HEREDOC_DIR)expand_env_var.c\
+				$(HEREDOC_DIR)expand_exit_code.c\
+				$(HEREDOC_DIR)extract_var_name.c\
+				$(HEREDOC_DIR)is_delimiter_line.c\
+				$(HEREDOC_DIR)print_eof_warning.c\
+				$(HEREDOC_DIR)process_all_heredocs.c\
+				$(HEREDOC_DIR)process_discarded_heredocs.c\
+				$(HEREDOC_DIR)process_final_heredoc.c\
+				$(HEREDOC_DIR)process_heredoc_readline.c\
+				$(HEREDOC_DIR)read_heredoc_content.c\
+				$(HEREDOC_DIR)read_until_delimiter.c\
+				$(HEREDOC_DIR)should_expand_heredoc.c\
+				$(HEREDOC_DIR)setup_heredoc_input.c\
+				$(HEREDOC_DIR)expand_heredoc_variable.c\
+
+I_O_A_SRC	=	$(I_O_A_DIR)handell_redirection.c\
+				$(I_O_A_DIR)input_redirection.c\
+				$(I_O_A_DIR)output_redirection.c\
+
+REDIR_SRC	=	$(HEREDOC_SRC)\
+				$(I_O_A_SRC)
+
+COMM_SRC	=	$(COMM_DIR)compare_commands.c\
+				$(COMM_DIR)exec_builtin.c\
+				$(COMM_DIR)exec_command.c\
+				$(COMM_DIR)execute_single_command.c\
+				$(COMM_DIR)execute_external.c\
+
+EXECUTION_SRC	=	$(PIPE_SRC)\
+					$(PATH_SRC)\
+					$(COMM_SRC)\
+					$(REDIR_SRC)\
+
 EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 				$(EXPAND_DIR)create_env_node.c\
 				$(EXPAND_DIR)get_env_value.c\
@@ -113,7 +162,13 @@ EXPAND_SRC	=	$(EXPAND_DIR)append_env_node.c\
 				$(EXPAND_DIR)extract_literal.c\
 				$(EXPAND_DIR)expand_variable.c\
 
-BUILTINS_SRC	=	
+BUILTIN_SRC = 	$(BUILTIN_DIR)cd_builtin.c\
+				$(BUILTIN_DIR)echo_builtin.c\
+				$(BUILTIN_DIR)env_builtin.c\
+				$(BUILTIN_DIR)exit_builtin.c\
+				$(BUILTIN_DIR)export_builtin.c\
+				$(BUILTIN_DIR)pwd_builtin.c\
+				$(BUILTIN_DIR)unset_builtin.c
 
 LEXER_AND_TOKENIZER_SRC = 	$(LEXER_AND_TOKENIZER_DIR)get_tokens.c\
 						 	$(LEXER_AND_TOKENIZER_DIR)process_token.c\
@@ -160,7 +215,8 @@ PROG_SRC	=	$(INIT_SRC)\
 				$(EXPAND_SRC)\
  				$(FREE_SRC)\
  				$(PARS_SRC)\
- 				$(BUILTINS_SRC)\
+ 				$(BUILTIN_SRC)\
+ 				$(EXECUTION_SRC)\
  				$(LEXER_AND_TOKENIZER_SRC)\
  				$(ERRORS_SRC)\
 				$(SIGNALS_SRC)\
