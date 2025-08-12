@@ -3,7 +3,7 @@
 
 // Handles output redirections: OUTPUT_FILE and OUTPUT_APPEND
 void	if_output_files_append(t_minishell *minishell, t_token *token,
-		t_command **cmd, int *i)//todo norm name func error
+		t_command **cmd, int *i)
 {
 	char	*file;
 

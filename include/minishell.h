@@ -78,6 +78,12 @@ typedef struct s_cd_path
     char *expanded_path;
 }   t_cd_path;
 
+typedef struct s_token_out
+{
+    t_token **new_tokens;
+    int *new_count;
+} t_token_out;
+
 //? “Can a command have both input redirection and input pipe?”
 //! ✅ !No.
 //* A command cannot simultaneously have both.
@@ -419,13 +425,16 @@ char *handle_empty_expansion(char *token);
 void expand_tokens(t_minishell *ms);
 void expand_and_split_token(t_minishell *ms, t_token *token,
                             t_token **new_tokens, int *new_count);
-void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
-                                  t_token **new_tokens, int *new_count, int did_expand);
 void handle_single_quoted_token(t_token *token, t_token **new_tokens, int *new_count);
 void handle_double_quoted_token(t_token *token, char *expanded,
-                                       t_token **new_tokens, int *new_count, int did_expand);
-void handle_first_split_token(t_token *token, const char *word, int did_expand,
-                                     t_token **new_tokens, int *new_count);
+                                t_token_out *out, int did_expand);
+
+void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
+                           t_token_out *out, int did_expand);
+
+void handle_first_split_token(t_token *token, const char *word,
+                              int did_expand, t_token_out *out);
+
 
                             /**
  * @brief #### Update 'SHLVL' value
@@ -435,7 +444,7 @@ void handle_first_split_token(t_token *token, const char *word, int did_expand,
  * @param env  Env linked list
  * @return     Nothing
  */
-int	increase_SHLVL_var(t_minishell *ms, t_env *env);
+int	increase_shlvl_var(t_minishell *ms, t_env *env);
 
 /**
  * @brief #### Create a new env node from a string

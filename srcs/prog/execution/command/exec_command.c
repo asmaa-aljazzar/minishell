@@ -1,38 +1,3 @@
-// #include "minishell.h"
-
-// int exec_command(t_minishell *shell)
-// {
-//     int redir_status;
-
-//     if (!shell || !shell->cmd)
-//     {
-//         shell->exit_code = 127;
-//         return -1;
-//     }
-
-//     // Handle redirections first
-//     redir_status = handle_redirection(shell);
-//     if (redir_status != 0)
-//     {
-//         if (redir_status > 0)
-//             return 0; // Redirection-only command succeeded
-//         return -1;    // Redirection error
-//     }
-
-//     // Check environment (required for execve)
-//     if (!shell->envp)
-//     {
-//         shell->exit_code = 1;
-//         return -1;
-//     }
-
-//     // Delegate to the external command execution
-//     execute_external_command(shell);
-//     return -1; // Should not return if execve succeeds
-// }
-
-#include "minishell.h"
-
 #include "minishell.h"
 
 // Returns 1 if command argv is empty or all whitespace
@@ -52,78 +17,119 @@ static int is_command_empty_all(t_command *cmd)
     }
     return 1;
 }
-
-int exec_command(t_minishell *ms)
+static int check_null_argv(t_command *cmd, t_minishell *ms)
 {
-    t_command *cmd = ms->cmd;
-    int redir_status;
-
     if (!cmd || !cmd->argv)
     {
         ms->exit_code = 127;
         return -1;
     }
+    return 0;
+}
 
-    // If no arguments at all, treat as empty, do nothing
+static int check_empty_argv(t_command *cmd, t_minishell *ms)
+{
     if (!cmd->argv[0])
     {
         ms->exit_code = 0;
-        return 0;
+        return 1;
     }
+    return 0;
+}
 
-    // Check first argument empty string
+static int check_first_arg_empty(t_command *cmd, t_minishell *ms)
+{
     if (cmd->argv[0][0] == '\0')
     {
-        // Check argv_expanded flag for first arg
         if (cmd->argv_expanded && cmd->argv_expanded[0] == 0)
         {
-            // Literal empty string → print error
             ft_putstr_fd("minishell: : command not found\n", STDERR_FILENO);
             ms->exit_code = 127;
             return -1;
         }
         else
         {
-            // Expanded empty → silent success
             ms->exit_code = 0;
-            return 0;
+            return 1;
         }
     }
+    return 0;
+}
 
-    // Also treat commands where all argv are empty/whitespace only as empty
+static int check_all_args_empty(t_command *cmd, t_minishell *ms)
+{
     if (is_command_empty_all(cmd))
     {
         ms->exit_code = 0;
-        return 0;
+        return 1;
     }
+    return 0;
+}
 
-    // Handle redirections before execution
+static int validate_command(t_command *cmd, t_minishell *ms)
+{
+    int ret;
+
+    ret = check_null_argv(cmd, ms);
+    if (ret != 0)
+        return ret;
+
+    ret = check_empty_argv(cmd, ms);
+    if (ret != 0)
+        return ret;
+
+    ret = check_first_arg_empty(cmd, ms);
+    if (ret != 0)
+        return ret;
+
+    ret = check_all_args_empty(cmd, ms);
+    if (ret != 0)
+        return ret;
+
+    return 0;
+}
+
+
+static int handle_redirections()
+{
     // redir_status = handle_redirection(ms);
-     redir_status = 0;
+    int redir_status = 0;
+
     if (redir_status != 0)
     {
         if (redir_status > 0)
-            return 0; // redirection-only success
+            return 1; // redirection-only success
         return -1;    // redirection error
     }
+    return 0;
+}
 
-    // Must have envp for execve
+static int handle_builtin(t_minishell *ms)
+{
+    if (is_builtin(ms->cmd))
+    {
+        compare_commands(ms);
+        return 1; // builtin handled
+    }
+    return 0;
+}
+
+int exec_command(t_minishell *ms)
+{
+    int ret;
+    ret = validate_command(ms->cmd, ms);
+    if (ret != 0)
+        return (ret == 1) ? 0 : -1;
+    ret = handle_redirections();
+    if (ret != 0)
+        return ret == 1 ? 0 : -1;
     if (!ms->envp)
     {
         ms->exit_code = 1;
         return -1;
     }
-
-    // If builtin, handle accordingly (likely inside compare_commands)
-    if (is_builtin(cmd))
-    {
-        compare_commands(ms);
-        return 0; // builtins do not execve
-    }
-
-    // Otherwise execute external command (execve)
+    if (handle_builtin(ms))
+        return 0;
     // execute_external_command(ms);
-
-    // If execve returns, error occurred
     return -1;
 }

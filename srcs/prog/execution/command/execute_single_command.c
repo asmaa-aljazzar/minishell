@@ -1,13 +1,62 @@
 #include "minishell.h"
 
-#include <fcntl.h>
-#include <unistd.h>
-#include <stdio.h>
+static int open_multiple_output_files(t_command *cmd, t_minishell *ms)
+{
+    int i;
+    int last_index = 0;
+
+    while (cmd->output_files[last_index])
+        last_index++;
+    last_index--; // last valid index
+
+    for (i = 0; cmd->output_files[i]; i++)
+    {
+        int flags = O_WRONLY | O_CREAT | O_TRUNC;
+        if (i == last_index && cmd->output_type == OUTPUT_APPEND)
+            flags = O_WRONLY | O_CREAT | O_APPEND;
+
+        int fd = open(cmd->output_files[i], flags, 0644);
+        if (fd < 0)
+        {
+            perror(cmd->output_files[i]);
+            ms->exit_code = 1;
+            return -1;
+        }
+        close(fd);
+    }
+    return 0;
+}
+
+static int open_single_output_file(t_command *cmd, t_minishell *ms)
+{
+    int flags = O_WRONLY | O_CREAT | O_TRUNC;
+    if (cmd->output_type == OUTPUT_APPEND)
+        flags = O_WRONLY | O_CREAT | O_APPEND;
+
+    int fd = open(cmd->output_file, flags, 0644);
+    if (fd < 0)
+    {
+        perror(cmd->output_file);
+        ms->exit_code = 1;
+        return -1;
+    }
+    close(fd);
+    return 0;
+}
+
+static int open_output_files(t_command *cmd, t_minishell *ms)
+{
+    if (cmd->output_files)
+        return open_multiple_output_files(cmd, ms);
+    else if (cmd->output_file)
+        return open_single_output_file(cmd, ms);
+    return 0;
+}
+
 
 int handle_empty_command_with_output(t_minishell *ms)
 {
     t_command *cmd = ms->cmd;
-    int i;
 
     if (!cmd)
         return 0;
@@ -15,49 +64,14 @@ int handle_empty_command_with_output(t_minishell *ms)
     if ((!cmd->argv || !cmd->argv[0] || is_command_empty(cmd)) &&
         (cmd->output_type != OUTPUT_NONE || (cmd->output_files && cmd->output_files[0])))
     {
-        if (cmd->output_files)
-        {
-            int last_index = 0;
-            while (cmd->output_files[last_index])
-                last_index++;
-            last_index--; // last valid index
-
-            for (i = 0; cmd->output_files[i]; i++)
-            {
-                int flags = O_WRONLY | O_CREAT | O_TRUNC;
-                if (i == last_index && cmd->output_type == OUTPUT_APPEND)
-                    flags = O_WRONLY | O_CREAT | O_APPEND;
-
-                int fd = open(cmd->output_files[i], flags, 0644);
-                if (fd < 0)
-                {
-                    perror(cmd->output_files[i]);
-                    ms->exit_code = 1;
-                    return -1;
-                }
-                close(fd);
-            }
-        }
-        else if (cmd->output_file)
-        {
-            int flags = O_WRONLY | O_CREAT | O_TRUNC;
-            if (cmd->output_type == OUTPUT_APPEND)
-                flags = O_WRONLY | O_CREAT | O_APPEND;
-
-            int fd = open(cmd->output_file, flags, 0644);
-            if (fd < 0)
-            {
-                perror(cmd->output_file);
-                ms->exit_code = 1;
-                return -1;
-            }
-            close(fd);
-        }
+        if (open_output_files(cmd, ms) == -1)
+            return -1;
         ms->exit_code = 0;
         return 1;
     }
     return 0;
 }
+
 
 
 int is_command_empty(t_command *cmd)
@@ -83,17 +97,6 @@ void execute_single_command(t_minishell *ms)
     pid_t pid;
     int status;
     int saved_stdout = -1;
-
-// int i = 0;
-
-// ft_putstr_fd("Output files before handle_empty_command_with_output:\n", STDERR_FILENO);
-// while (cmd->output_files && cmd->output_files[i])
-// {
-//     ft_putstr_fd("  ", STDERR_FILENO);
-//     ft_putstr_fd(cmd->output_files[i], STDERR_FILENO);
-//     ft_putstr_fd("\n", STDERR_FILENO);
-//     i++;
-// }
 
     if (!cmd || !cmd->argv)
     {
