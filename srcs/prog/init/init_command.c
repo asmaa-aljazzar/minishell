@@ -11,9 +11,9 @@ t_command	*init_command(t_minishell *ms)
 	new->argv_expanded = NULL;
 	new->input_type = INPUT_NONE;
 	new->output_type = OUTPUT_NONE;
-	new->input_file = NULL;
+	// new->input_file = NULL;
 	new->input_files = NULL;
-	new->output_file = NULL;
+	// new->output_file = NULL;
 	new->output_files = NULL;
 	new->next = NULL;
 	return (new);

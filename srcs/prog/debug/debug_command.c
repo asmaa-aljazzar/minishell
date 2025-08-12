@@ -26,8 +26,8 @@ void debug_command(const t_command *cmd)
     }
 
     // Input redirection
-    printf("Input type: %d\n", cmd->input_type);
-    printf("Input file (last): %s\n", cmd->input_file ? cmd->input_file : "(null)");
+    // printf("Input type: %d\n", cmd->input_type);
+    // printf("Input file (last): %s\n", cmd->input_file ? cmd->input_file : "(null)");
 
     if (cmd->input_files)
     {
@@ -41,8 +41,8 @@ void debug_command(const t_command *cmd)
     }
 
     // Output redirection
-    printf("Output type: %d\n", cmd->output_type);
-    printf("Output file (last): %s\n", cmd->output_file ? cmd->output_file : "(null)");
+    // printf("Output type: %d\n", cmd->output_type);
+    // printf("Output file (last): %s\n", cmd->output_file ? cmd->output_file : "(null)");
 
     if (cmd->output_files)
     {

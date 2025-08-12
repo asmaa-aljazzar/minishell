@@ -1,10 +1,26 @@
 #include "minishell.h"
+
+// void ft_print_redirs(t_command *cmd)
+// {
+//     t_command *curr;
+
+//     curr = cmd;
+//     while(curr)
+//     {
+//         fprintf(stderr, "input type: %d\n", curr->input_type);
+//         fprintf(stderr, "last input file: %s\n", curr->input_file);
+//         fprintf(stderr, "output_type: %d\n", curr->output_type);
+//         fprintf(stderr, "last output file: %s\n", curr->output_file);
+//         curr = curr->next;
+//     }
+// }
+
 int main_redirection(t_minishell *ms)
 {
-
     t_command *cmd = ms->cmd;
     int fd;
 
+    // ft_print_redirs(cmd);
     // //! Debug
     // // int i = 0;
     // // ft_putstr_fd("Output files in main_redirection:\n", STDERR_FILENO);
@@ -69,7 +85,7 @@ int main_redirection(t_minishell *ms)
         while (cmd->output_files[i])
             i++;
         last_index = i - 1;
-
+        printf("i = %d, last_index = %d\n", i, last_index);
         for (i = 0; cmd->output_files[i]; i++)
         {
             int flags = O_WRONLY | O_CREAT;

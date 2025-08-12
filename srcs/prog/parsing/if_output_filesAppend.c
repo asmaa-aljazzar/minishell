@@ -12,20 +12,7 @@ void	if_output_filesAppend(t_minishell *minishell, t_token *token,
 		if (minishell->tok[(*i) + 1])
 		{
 			file = minishell->tok[++(*i)]->word;
-			// If more output redirections ahead,add current to output_files list
-			if (has_more_redirections(minishell->tok, *i + 1, OUTPUT_FILE,
-					OUTPUT_APPEND))
-			{
-				(*cmd)->output_files = add_to_list((*cmd)->output_files, file);
-			}
-			else
-			{
-				// Last output redirection: set output_type and output_file
-				(*cmd)->output_type = token->type;
-				if ((*cmd)->output_file)
-					free((*cmd)->output_file);
-				(*cmd)->output_file = ft_strdup(file);
-			}
+			(*cmd)->output_files = add_to_list((*cmd)->output_files, file);
 		}
 	}
 }

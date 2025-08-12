@@ -81,9 +81,9 @@ typedef struct s_command
     char **argv;       // ["cat"]
     int  *argv_expanded;//todo
     t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
-    char *input_file; // the last redirection file
+   // char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
-    char *output_file; // the last redirection file
+    //char *output_file; // the last redirection file
     // int heredoc_fd;
     struct s_command *next; // Next command in pipe sequence
     char **input_files; // array of files before last one // todo: may need to fix

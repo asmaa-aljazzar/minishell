@@ -38,21 +38,21 @@ int handle_empty_command_with_output(t_minishell *ms)
                 close(fd);
             }
         }
-        else if (cmd->output_file)
-        {
-            int flags = O_WRONLY | O_CREAT | O_TRUNC;
-            if (cmd->output_type == OUTPUT_APPEND)
-                flags = O_WRONLY | O_CREAT | O_APPEND;
+        // else if (cmd->output_file)
+        // {
+        //     int flags = O_WRONLY | O_CREAT | O_TRUNC;
+        //     if (cmd->output_type == OUTPUT_APPEND)
+        //         flags = O_WRONLY | O_CREAT | O_APPEND;
 
-            int fd = open(cmd->output_file, flags, 0644);
-            if (fd < 0)
-            {
-                perror(cmd->output_file);
-                ms->exit_code = 1;
-                return -1;
-            }
-            close(fd);
-        }
+        //     int fd = open(cmd->output_file, flags, 0644);
+        //     if (fd < 0)
+        //     {
+        //         perror(cmd->output_file);
+        //         ms->exit_code = 1;
+        //         return -1;
+        //     }
+        //     close(fd);
+        // }
         ms->exit_code = 0;
         return 1;
     }
@@ -77,6 +77,7 @@ int is_command_empty(t_command *cmd)
     }
     return 0;
 }
+
 void execute_single_command(t_minishell *ms)
 {
     t_command *cmd = ms->cmd;
