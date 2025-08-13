@@ -19,7 +19,7 @@ int cd_builtin_check_args(t_command *cmd, t_minishell *shell)
 // Returns 0 success, -1 failure
 int cd_builtin_resolve_path_home(t_minishell *shell, t_cd_path *cdp)
 {
-    cdp->path = get_env_value(shell->env, "HOME");
+    cdp->path = get_env_value(shell->env, "HOME", NULL);
     cdp->display_path = "HOME";
     if (!cdp->path)
     {
@@ -34,7 +34,7 @@ int cd_builtin_resolve_path_home(t_minishell *shell, t_cd_path *cdp)
 //*#### Retrieves HOME environment variable, returns NULL if not set and prints error
 char *cd_builtin_get_home(t_minishell *shell)
 {
-    char *home = get_env_value(shell->env, "HOME");
+    char *home = get_env_value(shell->env, "HOME", NULL);
     if (!home)
     {
         ft_putstr_fd("minishell: cd: HOME not set\n", STDERR_FILENO);
@@ -96,7 +96,7 @@ int cd_builtin_resolve_path_tilde(t_minishell *shell, t_cd_path *cdp, const char
 // Returns 0 success, -1 failure
 int cd_builtin_resolve_path_oldpwd(t_minishell *shell, t_cd_path *cdp)
 {
-    cdp->path = get_env_value(shell->env, "OLDPWD");
+    cdp->path = get_env_value(shell->env, "OLDPWD", NULL);
     cdp->display_path = "-";
     if (!cdp->path)
     {

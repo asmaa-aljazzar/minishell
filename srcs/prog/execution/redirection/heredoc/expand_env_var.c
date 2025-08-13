@@ -7,7 +7,7 @@ char *expand_env_var(t_minishell *shell, char *content, char *result, int *i)
     
     (*i)++;
     var_name = extract_var_name(content, i);
-    var_value = get_env_value(shell->env, var_name);
+    var_value = get_env_value(shell->env, var_name, NULL);
     if (var_value == NULL)
         result = append_to_result(result, "");
     else

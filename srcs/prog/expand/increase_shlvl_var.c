@@ -6,7 +6,7 @@ int	increase_shlvl_var(t_minishell *ms, t_env *env)
 	char	*old; // old value of SHLVL
 	int		lvl;   // This will be the level of the shell
 
-	old = get_env_value(env, "SHLVL"); // get the old value of SHLVL // todo
+	old = get_env_value(env, "SHLVL", NULL); // get the old value of SHLVL // todo
 	if (is_positive_number(old))       // If the value is positive
 		lvl = ft_atoi(old) + 1;        // add one to it
 	else
