@@ -24,10 +24,12 @@ static void kill_children(pid_t *pids, int count)
 static void wait_for_children(t_minishell *ms, pid_t *pids, int cmd_count)
 {
     int status;
+    pid_t pid;
+
     for (int i = 0; i < cmd_count; i++)
     {
-        waitpid(pids[i], &status, 0);
-        if (i == cmd_count - 1)
+        pid = waitpid(pids[i], &status, 0);
+        if (pid == pids[cmd_count - 1])
         {
             if (WIFEXITED(status))
                 ms->exit_code = WEXITSTATUS(status);

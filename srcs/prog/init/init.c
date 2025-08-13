@@ -1,7 +1,7 @@
 
 #include "minishell.h"
 
-void	init(t_minishell *ms, char **environ)//todo norm name func error
+void	init(t_minishell *ms, char **environ, char *argv)//todo norm name func error
 {
 	ms->tok = NULL;                       // tokens array
 	ms->input = NULL;                     // input string
@@ -10,7 +10,8 @@ void	init(t_minishell *ms, char **environ)//todo norm name func error
 	ms->pipe_count = 0;                  
 		// how many pipe we have = how many commands - 1
 	ms->exit_code = 0;                    // exit code for each command
-	ms->skip_execution = 0;              
+	ms->skip_execution = 0;
+	ms->mini_file = ft_strdup(argv);            
 		// if we don't need to execute [error or no need to handle]
 	ms->envp = ft_strdup_double(environ); // Initialize the envp array
 	if (!ms->envp)

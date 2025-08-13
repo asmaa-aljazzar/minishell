@@ -111,6 +111,7 @@ typedef struct s_minishell
     int in_single_quote;
     int in_double_quote;
     int last_token_end;
+    char *mini_file;
 } t_minishell;
 
 //* ----------- [ Functions ] -----------
@@ -470,7 +471,7 @@ void append_env_node(t_env *new_node, t_env **head, t_env **tail);
  * @param var  Variable name to search
  * @return     Pointer to value string, or "" if not found
  */
-char *get_env_value(t_env *env, const char *var);
+char *get_env_value(t_env *env, const char *var, char *argv);
 
 /**
  * @brief #### Update value of an existing env variable
@@ -580,7 +581,7 @@ char **init_split_array(char *str, int *word_count);
  * @param environ  Environment variables array
  * @return         None
  */
-void init(t_minishell *ms, char **environ);
+void	init(t_minishell *ms, char **environ, char *argv);
 
 /**
  * @brief #### Create env linked list from environ array
