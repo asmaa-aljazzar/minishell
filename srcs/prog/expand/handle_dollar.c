@@ -14,7 +14,7 @@ void	handle_dollar(t_minishell *ms, char *token, size_t *i, char **result)
 		should_free = 1;
 		(*i)++;
 	}
-	if (token[*i] == '0')
+	else if (token[*i] == '0')
 	{
 		value = "./minishell";
 		(*i)++;
