@@ -1,4 +1,5 @@
 #include "minishell.h"
+
 void expand_and_split_token(t_minishell *ms, t_token *token,
                             t_token **new_tokens, int *new_count)
 {
