@@ -1,23 +1,23 @@
 #ifndef MINISHELL_H
-#define MINISHELL_H
+# define MINISHELL_H
 
 //* ----------- [ Includes ] -----------
-#include <signal.h>
-#include <asm-generic/signal-defs.h> //! may delete // my system don't recognize sa
-#include "../libft/includes/libft.h"
-#include <sys/wait.h>
-#include <readline/readline.h>
-#include <readline/history.h>
-#include <errno.h>
-#include <fcntl.h>
-#include <sys/stat.h>
-#include <sys/types.h>
+# include <signal.h>
+# include <asm-generic/signal-defs.h> //! may delete // my system don't recognize sa
+# include "../libft/includes/libft.h"
+# include <sys/wait.h>
+# include <readline/readline.h>
+# include <readline/history.h>
+# include <errno.h>
+# include <fcntl.h>
+# include <sys/stat.h>
+# include <sys/types.h>
 
 //* ----------- [ Macros ] -----------
-#define PROMPT "\033[33mminishell\033[32m$ \033[0m"
-#define SIG_NONE 0
-#define SIG_INT 130   // Ctrl+C (128 + 2)
-#define SIG_QUIT 131  // Ctrl+\ (128 + 3)
+# define PROMPT "\033[33mminishell\033[32m$ \033[0m"
+# define SIG_NONE 0
+# define SIG_INT 130   // Ctrl+C (128 + 2)
+# define SIG_QUIT 131  // Ctrl+\ (128 + 3)
 
 //* ----------- [ Global ] -----------
 extern volatile sig_atomic_t g_signal_received;
@@ -34,14 +34,13 @@ typedef enum e_quote
 
 typedef enum e_type
 {
-    INPUT_NONE,
-    INPUT_FILE, 
-    INPUT_WORD,
-    INPUT_HEREDOC,
-    OUTPUT_NONE,
-    OUTPUT_FILE,
-    OUTPUT_APPEND,
-    PIPE
+	T_WORD,
+	T_FILE,
+	T_INPUT, 
+	T_HEREDOC,
+	T_OUTPUT,
+	T_APPEND,
+	PIPE
 } t_type;
 
 typedef struct s_fd_backup
@@ -84,22 +83,21 @@ typedef struct s_token_out
     int *new_count;
 } t_token_out;
 
-//? “Can a command have both input redirection and input pipe?”
-//! ✅ !No.
-//* A command cannot simultaneously have both.
+typedef struct	s_redirection
+{
+	t_type	type;
+	char	*file;
+	int		heredoc_fd;
+    struct s_redirection *next;
+    struct s_redirection *prev;
+}				t_redirection;
 
 typedef struct s_command
 {
     char **argv;       // ["cat"]
     int  *argv_expanded;//todo
-    t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
-   // char *input_file; // the last redirection file
-    t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
-    //char *output_file; // the last redirection file
-    // int heredoc_fd;
     struct s_command *next; // Next command in pipe sequence
-    char **input_files; // array of files before last one // todo: may need to fix
-    char **output_files; // array of files berore last one // todo: may need to fix
+	t_redirection	*redir;
 } t_command;
 
 typedef struct s_minishell
@@ -332,8 +330,9 @@ void fill_normal_token(t_minishell *ms, char *word, int glued, int *k);
 
 //? [ Parser ]
 void allocate_commands(t_minishell *ms);
-void fill_argvs(t_minishell *ms);
-void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx);
+t_command *create_command_list(t_minishell *ms, int count);
+int fill_argvs(t_minishell *ms);
+int process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx);
 void argv_for_commands(t_minishell *minishell);
 void allocate_argv(t_minishell *minishell, int *argc, t_command **cmd, int *i);
 void if_output_files_append(t_minishell *minishell, t_token *token, t_command **cmd, int *i);
@@ -354,7 +353,13 @@ void execute_commands(t_minishell *ms);
 
 //? [Heredoc]
 /* heredoc utils */
-char    *append_line_to_content(char *content, char *line);
+int     process_heredoc(t_minishell *shell, char *delimiter);
+int     should_expand_heredoc(t_minishell *shell, char *delimiter);
+int     read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
+int read_until_delimiter(t_minishell *shell, char *delimiter, 
+		int fd, int should_expand);
+int process_heredoc_readline(int fd, char *line, char *delimiter);
+
 char    *append_single_char(char *result, char c);
 char    *append_to_result(char *result, char *to_append);
 int     create_heredoc_pipe(char *content);
@@ -364,19 +369,14 @@ char    *expand_heredoc_variables(t_minishell *shell, char *content);
 char    *extract_var_name(char *str, int *index);
 int     is_delimiter_line(char *line, char *delimiter);
 void    print_eof_warning(char *delimiter);
-int handle_redirection(t_minishell *shell);
-int input_redirection(t_command *cmd);
-int handle_output_redirection(t_command *cmd);
+int     handle_redirection(t_minishell *shell);
+int     input_redirection(t_command *cmd, t_redirection *redir);
+int     handle_output_redirection(t_command *cmd);
 
 /* heredoc main processing */
 int     process_all_heredocs(t_minishell *minishell);
 int     process_discarded_heredocs(t_minishell *minishell, t_command *cmd);
-int     process_final_heredoc(t_minishell *shell, t_command *cmd);
-char    *process_heredoc_readline(char *content, char *line, char *delimiter, int *should_break);
-char    *read_heredoc_content(t_minishell *shell, char *delimiter, int should_expand);
-char    *read_until_delimiter(char *delimiter);
 int     setup_heredoc_input(t_command *cmd);
-int     should_expand_heredoc(t_minishell *shell, char *delimiter);
 
 //? [ Builtins ]
 void cd_builtin(t_minishell *shell);
@@ -388,10 +388,10 @@ void pwd_builtin(t_minishell *shell);
 void unset_builtin(t_minishell *shell);
 
 //? [ PATH]
-#ifndef PATH_UTILS_H
-#define PATH_UTILS_H
+# ifndef PATH_UTILS_H
+#  define PATH_UTILS_H
 
-#include "minishell.h"
+# include "minishell.h"
 
 // Returns strdup'ed path if cmd already contains '/' and is executable, else NULL
 char *already_path(char *cmd);
@@ -411,8 +411,7 @@ int is_executable(char *path);
 // Concatenates directory path and cmd into a full path string
 char *join_path(const char *path, const char *cmd);
 
-#endif
-
+# endif
 
 //? [ Signals ]
 
@@ -422,7 +421,7 @@ char *extract_literal(char *token, size_t *i);
 void handle_dollar(t_minishell *ms, char *token, size_t *i, char **result);
 char *extract_var_value(t_minishell *ms, char *token, size_t *i);
 char *handle_empty_expansion(char *token);
-void expand_tokens(t_minishell *ms);
+int expand_tokens(t_minishell *ms);
 void expand_and_split_token(t_minishell *ms, t_token *token,
                             t_token **new_tokens, int *new_count);
 void handle_single_quoted_token(t_token *token, t_token **new_tokens, int *new_count);
@@ -602,7 +601,7 @@ void init(t_minishell *ms, char **environ);
 t_env *init_env(t_minishell *minishell, char **environ);
 
 
-void init_shell(t_minishell *minishell); // todo func inside
+int init_shell(t_minishell *minishell); // todo func inside
 
 //? [ Free ]
 
@@ -756,4 +755,4 @@ void debug_print_env_list(t_env *env);
 // Print the tokens array
 void debug_print_tokens(t_token **tokens);
 
-# endif
+#endif

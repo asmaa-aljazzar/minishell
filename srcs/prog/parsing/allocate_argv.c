@@ -16,8 +16,8 @@ void	allocate_argv(t_minishell *minishell, int *argc, t_command **cmd,
 		*argc = 0;
 		*cmd = (*cmd)->next;
 	}
-	else if (token->type != INPUT_FILE && token->type != INPUT_HEREDOC
-		&& token->type != OUTPUT_FILE && token->type != OUTPUT_APPEND)
+	else if (token->type != T_INPUT && token->type != T_HEREDOC
+		&& token->type != T_OUTPUT && token->type != T_APPEND)
 	{
 		(*argc)++;
 	}

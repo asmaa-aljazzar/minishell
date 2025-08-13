@@ -10,8 +10,8 @@ int process_all_heredocs(t_minishell *minishell)
         if (!process_discarded_heredocs(minishell, cmd))
             return (0);
             
-        if (!process_final_heredoc(minishell, cmd))
-            return (0);
+        // if (!process_heredoc(minishell, cmd))
+        //     return (0);
 
         cmd = cmd->next;
     }

@@ -11,7 +11,7 @@ void	create_quoted_token(t_minishell *ms, int *k, char *word, char quote,
 		ft_exit(ms, "Memory allocation failed", 1);
 	}
 	ms->tok[*k]->word = word;
-	ms->tok[*k]->type = INPUT_WORD;
+	ms->tok[*k]->type = T_WORD;
 	if (quote == '"')
 		ms->tok[*k]->qtype = QUOTE_DOUBLE;
 	else

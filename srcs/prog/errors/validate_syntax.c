@@ -11,10 +11,10 @@ int validate_syntax(t_minishell *ms)
             if (!check_pipe_syntax(ms, i))
                 return (0);
         }
-        else if ((ms->tok[i]->type == INPUT_FILE ||
-                 ms->tok[i]->type == INPUT_HEREDOC ||
-                 ms->tok[i]->type == OUTPUT_FILE ||
-                 ms->tok[i]->type == OUTPUT_APPEND) && 
+        else if ((ms->tok[i]->type == T_INPUT ||
+                 ms->tok[i]->type == T_HEREDOC ||
+                 ms->tok[i]->type == T_OUTPUT ||
+                 ms->tok[i]->type == T_APPEND) && 
                  (ms->tok[i + 1] && ms->tok[i + 1]->type != PIPE))
         {
             if (!check_redirection_syntax(ms, &i))

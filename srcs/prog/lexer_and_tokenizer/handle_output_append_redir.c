@@ -12,7 +12,7 @@ void	handle_output_append_redir(t_minishell *minishell, int *k, int *i)
 		free(minishell->tok[*k]);
 		ft_exit(minishell, "Memory allocation failed", 1);
 	}
-	minishell->tok[*k]->type = OUTPUT_APPEND;
+	minishell->tok[*k]->type = T_APPEND;
 	minishell->tok[*k]->qtype = QUOTE_NONE;
 	(*k)++;
 	(*i) += 2;

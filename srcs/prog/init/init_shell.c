@@ -54,12 +54,13 @@ static int process_input_and_validate(t_minishell *ms)
     return 1;
 }
 
-void init_shell(t_minishell *ms)
+int init_shell(t_minishell *ms)
 {
     if (!read_and_prepare_input(ms))
-        return;
+        return (1);
 
     if (!process_input_and_validate(ms))
-        return;
+        return (1);
+    return (0);
 }
 

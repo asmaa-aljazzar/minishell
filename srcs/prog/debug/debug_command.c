@@ -7,9 +7,7 @@ void debug_command(const t_command *cmd)
         printf("[DEBUG] Command pointer is NULL.\n");
         return;
     }
-
     printf("---- Debugging Command at %p ----\n", (void *)cmd);
-
     // argv and argv_expanded
     if (cmd->argv)
     {
@@ -21,38 +19,19 @@ void debug_command(const t_command *cmd)
         }
     }
     else
-    {
         printf("argv is NULL\n");
-    }
-
-    // Input redirection
-    // printf("Input type: %d\n", cmd->input_type);
-    // printf("Input file (last): %s\n", cmd->input_file ? cmd->input_file : "(null)");
-
-    if (cmd->input_files)
+    if (cmd->redir)
     {
-        printf("Input files (before last):\n");
-        for (int i = 0; cmd->input_files[i] != NULL; i++)
-            printf("  input_files[%d]: %s\n", i, cmd->input_files[i]);
+        t_redirection *redir = cmd->redir;
+        while (redir)
+        {
+            printf("Redirection type: %d, file: %s\n", redir->type, redir->file);
+            redir = redir->next;
+        }
     }
     else
     {
-        printf("input_files is NULL\n");
-    }
-
-    // Output redirection
-    // printf("Output type: %d\n", cmd->output_type);
-    // printf("Output file (last): %s\n", cmd->output_file ? cmd->output_file : "(null)");
-
-    if (cmd->output_files)
-    {
-        printf("Output files (before last):\n");
-        for (int i = 0; cmd->output_files[i] != NULL; i++)
-            printf("  output_files[%d]: %s\n", i, cmd->output_files[i]);
-    }
-    else
-    {
-        printf("output_files is NULL\n");
+        printf("No redirections.\n");
     }
 
     printf("Next command pointer: %p\n", (void *)cmd->next);

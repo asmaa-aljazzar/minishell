@@ -6,7 +6,7 @@ int	select_tokenizer(t_minishell *ms, int *k, int *i, int glued)
 
 	c = ms->input[*i];
 	if (c == '|' && !ms->in_single_quote && !ms->in_double_quote)
-		tokenize_pipe_op(ms, k, i);
+	tokenize_pipe_op(ms, k, i);
 	else if (c == '<' && !ms->in_single_quote && !ms->in_double_quote)
 		tokenize_input_redir(ms, k, i);
 	else if (c == '>' && !ms->in_single_quote && !ms->in_double_quote)

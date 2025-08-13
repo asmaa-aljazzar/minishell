@@ -1,31 +1,31 @@
 #include "minishell.h"
 
-static int open_multiple_output_files(t_command *cmd, t_minishell *ms)
-{
-    int i;
-    int last_index = 0;
+// static int open_multiple_output_files(t_command *cmd, t_minishell *ms)
+// {
+//     int i;
+//     int last_index = 0;
 
-    while (cmd->output_files[last_index])
-        last_index++;
-    last_index--; // last valid index
+//     while (cmd->output_files[last_index])
+//         last_index++;
+//     last_index--; // last valid index
 
-    for (i = 0; cmd->output_files[i]; i++)
-    {
-        int flags = O_WRONLY | O_CREAT | O_TRUNC;
-        if (i == last_index && cmd->output_type == OUTPUT_APPEND)
-            flags = O_WRONLY | O_CREAT | O_APPEND;
+//     for (i = 0; cmd->output_files[i]; i++)
+//     {
+//         int flags = O_WRONLY | O_CREAT | O_TRUNC;
+//         if (i == last_index && cmd->output_type == OUTPUT_APPEND)
+//             flags = O_WRONLY | O_CREAT | O_APPEND;
 
-        int fd = open(cmd->output_files[i], flags, 0644);
-        if (fd < 0)
-        {
-            perror(cmd->output_files[i]);
-            ms->exit_code = 1;
-            return -1;
-        }
-        close(fd);
-    }
-    return 0;
-}
+//         int fd = open(cmd->output_files[i], flags, 0644);
+//         if (fd < 0)
+//         {
+//             perror(cmd->output_files[i]);
+//             ms->exit_code = 1;
+//             return -1;
+//         }
+//         close(fd);
+//     }
+//     return 0;
+// }
 
 // static int open_single_output_file(t_command *cmd, t_minishell *ms)
 // {
@@ -44,14 +44,14 @@ static int open_multiple_output_files(t_command *cmd, t_minishell *ms)
 //     return 0;
 // }
 
-static int open_output_files(t_command *cmd, t_minishell *ms)
-{
-    if (cmd->output_files)
-        return open_multiple_output_files(cmd, ms);
-    // else if (cmd->output_file)
-    //     return open_single_output_file(cmd, ms);
-    return 0;
-}
+// static int open_output_files(t_command *cmd, t_minishell *ms)
+// {
+//     if (cmd->output_files)
+//         return open_multiple_output_files(cmd, ms);
+//     // else if (cmd->output_file)
+//     //     return open_single_output_file(cmd, ms);
+//     return 0;
+// }
 
 
 int handle_empty_command_with_output(t_minishell *ms)
@@ -62,9 +62,9 @@ int handle_empty_command_with_output(t_minishell *ms)
         return 0;
 
     if ((!cmd->argv || !cmd->argv[0] || is_command_empty(cmd)) &&
-        (cmd->output_type != OUTPUT_NONE || (cmd->output_files && cmd->output_files[0])))
+        (cmd->redir))
     {
-        if (open_output_files(cmd, ms) == -1)
+        if (main_redirection(ms) == -1)
             return -1;
         ms->exit_code = 0;
         return 1;
@@ -96,7 +96,7 @@ static int save_and_apply_redirection(t_minishell *ms, int *saved_stdout)
     t_command *cmd = ms->cmd;
     *saved_stdout = -1;
 
-    if (cmd->output_type != OUTPUT_NONE || cmd->output_files)
+    if (cmd->redir)
     {
         *saved_stdout = dup(STDOUT_FILENO);
         if (*saved_stdout < 0)

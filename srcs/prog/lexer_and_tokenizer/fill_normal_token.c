@@ -10,7 +10,7 @@ void	fill_normal_token(t_minishell *ms, char *word, int glued, int *k)
 		ft_exit(ms, "Memory allocation failed", 1);
 	}
 	ms->tok[*k]->word = word;
-	ms->tok[*k]->type = INPUT_WORD;
+	ms->tok[*k]->type = T_WORD;
 	ms->tok[*k]->qtype = QUOTE_NONE;
 	ms->tok[*k]->glued = glued;
 	ms->tok[*k]->expanded = 0;

@@ -1,6 +1,6 @@
 #include "minishell.h"
 
-void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx)
+int process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *arg_idx)
 {
     if (tok->type == PIPE)
     {
@@ -8,11 +8,16 @@ void process_token_to_fill(t_minishell *ms, t_command **cmd, t_token *tok, int *
         (*cmd)->argv_expanded[*arg_idx] = 0;
         *cmd = (*cmd)->next;
         *arg_idx = 0;
+		return (1); // Indicate that we moved to the next command
     }
-    else if (tok->type != INPUT_FILE && tok->type != INPUT_HEREDOC
-        && tok->type != OUTPUT_FILE && tok->type != OUTPUT_APPEND)
+	if (tok->type == T_INPUT || tok->type == T_HEREDOC 
+		|| tok->type == T_OUTPUT || tok->type == T_APPEND)
+		return (2); // Indicate that we are processing a redirection
+    else if (tok->type == T_WORD)
     {
         copy_token_to_argvs(ms, *cmd, tok, *arg_idx);
         (*arg_idx)++;
+		return (0);
     }
+	return (3); // Indicate that we are processing a different type of token
 }

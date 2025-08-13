@@ -2,12 +2,13 @@
 
 static const char *token_type_to_str(t_type type)
 {
-    if (type == INPUT_WORD) return "WORD";
+    if (type == T_WORD) return "WORD";
     if (type == PIPE) return "PIPE";
-    if (type == INPUT_FILE) return "INPUT_FILE";
-    if (type == INPUT_HEREDOC) return "INPUT_HEREDOC";
-    if (type == OUTPUT_FILE) return "OUTPUT_FILE";
-    if (type == OUTPUT_APPEND) return "OUTPUT_APPEND";
+    if (type == T_INPUT) return "INPUT_FILE";
+    if (type == T_HEREDOC) return "INPUT_HEREDOC";
+    if (type == T_OUTPUT) return "OUTPUT_FILE";
+    if (type == T_APPEND) return "OUTPUT_APPEND";
+    if (type == T_FILE) return "FILE"; // For generic file tokens
     // Add others as needed
     return "UNKNOWN";
 }
