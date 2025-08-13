@@ -3,7 +3,6 @@
 void main_loop(t_minishell *ms)
 {
     print_banner();
-
     while (1)
     {
         setup_signals_readline();

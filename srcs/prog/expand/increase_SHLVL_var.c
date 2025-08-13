@@ -6,8 +6,8 @@ int	increase_SHLVL_var(t_minishell *ms, t_env *env) //todo norm name error
 	char	*old; // old value of SHLVL
 	int		lvl;   // This will be the level of the shell
 
-	old = get_env_value(env, "SHLVL"); // get the old value of SHLVL // todo
-	if (is_positive_number(old))       // If the value is positive
+	old = get_env_value(env, "SHLVL"); // get the old value of SHLVL
+	if (is_positive_number(old))       // If the value is positive //todo
 		lvl = ft_atoi(old) + 1;        // add one to it
 	else
 		lvl = 1;        // reset to 1 if it is negative
@@ -17,12 +17,12 @@ int	increase_SHLVL_var(t_minishell *ms, t_env *env) //todo norm name error
 	if (!update_env_var(ms, "SHLVL", new))
 	{
 		free(new);
-		return (0); // update env linked list //todo
+		return (0); 
 	}
 	if (!update_envp_array(ms, "SHLVL", new))
 	{
 		free(new);
-		return (0); // update envp array //todo
+		return (0); // update envp array 
 	}
 	free(new); // free after ft_itoa
 	return (1);

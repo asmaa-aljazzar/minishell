@@ -23,9 +23,9 @@ void	init(t_minishell *ms, char **environ)//todo norm name func error
 		free_2d(ms->envp);
 		exit(1);
 	}
-	ms->in_single_quote = 0;                 
+	ms->in_single_quote = 0;                
 		// Initialize token position if single.
-	ms->in_double_quote = 0;                 
+	ms->in_double_quote = 0;          
 		// Initialize token position if double.
 	ft_memset(ms->buff, 0, sizeof(ms->buff)); // set 0 values to the buffer
 	if (!increase_SHLVL_var(ms, ms->env))
