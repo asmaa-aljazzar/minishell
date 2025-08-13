@@ -56,8 +56,8 @@ int main_redir_input(t_command *cmd, t_redirection *redir)
     if (!cmd)
         return 0;
     if (redir->type == T_HEREDOC)
-        if (!setup_heredoc_input(cmd))
-            return -1;
+        if (setup_heredoc_input(redir) < 0)
+            return (-1);
     if (redir->type == T_INPUT)
         if (input_redirection(cmd, redir) < 0)
             return -1;

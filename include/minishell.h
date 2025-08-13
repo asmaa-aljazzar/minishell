@@ -376,7 +376,7 @@ int     handle_output_redirection(t_command *cmd);
 /* heredoc main processing */
 int     process_all_heredocs(t_minishell *minishell);
 int     process_discarded_heredocs(t_minishell *minishell, t_command *cmd);
-int     setup_heredoc_input(t_command *cmd);
+int     setup_heredoc_input(t_redirection *redir);
 
 //? [ Builtins ]
 void cd_builtin(t_minishell *shell);
