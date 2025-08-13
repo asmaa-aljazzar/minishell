@@ -2,14 +2,15 @@
 
 void compare_commands(t_minishell *shell)
 {
-    t_command *cmd;
+    t_command *cmd = shell->cmd;
 
-    cmd = shell->cmd;
     if (!cmd || !cmd->argv || !cmd->argv[0])
     {
         shell->exit_code = 0;
         return;
     }
+
+    // Use exact string comparison to avoid partial matches
     if (ft_strcmp(cmd->argv[0], "echo") == 0)
         echo_builtin(shell);
     else if (ft_strcmp(cmd->argv[0], "cd") == 0)
@@ -25,5 +26,7 @@ void compare_commands(t_minishell *shell)
     else if (ft_strcmp(cmd->argv[0], "exit") == 0)
         exit_builtin(shell);
     else
+    {
         execute_external_command(shell);
+    }
 }

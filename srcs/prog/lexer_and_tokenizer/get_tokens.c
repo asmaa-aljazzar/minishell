@@ -21,7 +21,7 @@ int	get_tokens(t_minishell *ms)
 			i++;
 		if (!ms->input[i])
 			break ;
-		if (!process_token(ms, &k, &i))
+		if (!process_token(ms, &k, &i))//todo
 			return (0); // stop tokenizing on error
 	}
 	ms->tok[k] = NULL;

@@ -13,6 +13,26 @@ char    *get_path(t_minishell *shell)
     cmd = shell->cmd;
     if (!cmd || !cmd->argv || !cmd->argv[0])
         return (NULL);
+
+// if (!cmd) {
+//     printf("Debug: cmd is NULL\n");
+//     return NULL;
+// }
+// if (!cmd->argv) {
+//     printf("Debug: cmd->argv is NULL\n");
+//     return NULL;
+// }
+// if (!cmd->argv[0]) {
+//     printf("Debug: cmd->argv[0] is NULL\n");
+//     return NULL;
+// }
+// if (cmd->argv[0][0] == '\0') {
+//     printf("Debug: cmd->argv[0] is empty string\n");
+//     return NULL;
+// }
+
+// printf("Debug: command to execute is '%s'\n", cmd->argv[0]);
+
     if((path =already_path(cmd->argv[0]))) //if input is already  /usr/bin/cat
     {
             if(!path)

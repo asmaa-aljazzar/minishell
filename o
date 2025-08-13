@@ -1,0 +1,11 @@
+et --hard HEAD@{4}
+FETCH_HEAD
+include
+leaks.sh
+libft
+makefile
+minishell
+o
+o7
+objs
+srcs
