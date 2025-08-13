@@ -3,7 +3,6 @@
 void main_loop(t_minishell *ms)
 {
     print_banner();
-
     while (1)
     {
         setup_signals_readline();
@@ -13,7 +12,6 @@ void main_loop(t_minishell *ms)
             continue;
 
         execute_commands(ms);
-
         check_to_free(ms);
     }
 }

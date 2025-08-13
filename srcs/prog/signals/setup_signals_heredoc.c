@@ -8,6 +8,7 @@ void sigint_handler_heredoc(int sig)
     write(1, "\n", 1);
     rl_replace_line("", 0);
     rl_done = 1;
+    close(0);
 }
 
 

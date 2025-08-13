@@ -78,12 +78,6 @@ typedef struct s_cd_path
     char *expanded_path;
 }   t_cd_path;
 
-typedef struct s_token_out
-{
-    t_token **new_tokens;
-    int *new_count;
-} t_token_out;
-
 //? “Can a command have both input redirection and input pipe?”
 //! ✅ !No.
 //* A command cannot simultaneously have both.
@@ -93,9 +87,9 @@ typedef struct s_command
     char **argv;       // ["cat"]
     int  *argv_expanded;//todo
     t_type input_type; // NONE / REDIR_IN / HEREDOC / PIPE_IN
-   // char *input_file; // the last redirection file
+    char *input_file; // the last redirection file
     t_type output_type; // NONE / REDIR_OUT / APPEND / PIPE_OUT
-    //char *output_file; // the last redirection file
+    char *output_file; // the last redirection file
     // int heredoc_fd;
     struct s_command *next; // Next command in pipe sequence
     char **input_files; // array of files before last one // todo: may need to fix
@@ -426,16 +420,13 @@ char *handle_empty_expansion(char *token);
 void expand_tokens(t_minishell *ms);
 void expand_and_split_token(t_minishell *ms, t_token *token,
                             t_token **new_tokens, int *new_count);
+void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
+                                  t_token **new_tokens, int *new_count, int did_expand);
 void handle_single_quoted_token(t_token *token, t_token **new_tokens, int *new_count);
 void handle_double_quoted_token(t_token *token, char *expanded,
-                                t_token_out *out, int did_expand);
-
-void handle_unquoted_token(t_minishell *ms, t_token *token, char *expanded,
-                           t_token_out *out, int did_expand);
-
-void handle_first_split_token(t_token *token, const char *word,
-                              int did_expand, t_token_out *out);
-
+                                       t_token **new_tokens, int *new_count, int did_expand);
+void handle_first_split_token(t_token *token, const char *word, int did_expand,
+                                     t_token **new_tokens, int *new_count);
 
                             /**
  * @brief #### Update 'SHLVL' value
@@ -445,7 +436,7 @@ void handle_first_split_token(t_token *token, const char *word,
  * @param env  Env linked list
  * @return     Nothing
  */
-int	increase_shlvl_var(t_minishell *ms, t_env *env);
+int	increase_SHLVL_var(t_minishell *ms, t_env *env);
 
 /**
  * @brief #### Create a new env node from a string
@@ -756,5 +747,8 @@ void debug_print_env_list(t_env *env);
 
 // Print the tokens array
 void debug_print_tokens(t_token **tokens);
-
+//hala edition
+void handlequit(int sig);
+void handle_c(int sig);
+void setup_sig_exc(int sig, void(*handler)(int));
 # endif

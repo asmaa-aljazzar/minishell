@@ -1,5 +1,7 @@
 #include "minishell.h"
 
+#include "minishell.h"
+
 //*#### Redirect stdin from the last input file in input_files array
 int main_redir_input_from_files(t_command *cmd)
 {
