@@ -11,6 +11,6 @@ void main_loop(t_minishell *ms)
         if (prepare_command_processing(ms) < 0)
             continue;
         execute_commands(ms);
-        // check_to_free(ms);
+        check_to_free(ms);
     }
 }
