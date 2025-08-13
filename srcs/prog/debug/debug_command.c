@@ -8,7 +8,6 @@ void debug_command(const t_command *cmd)
         return;
     }
     printf("---- Debugging Command at %p ----\n", (void *)cmd);
-    // argv and argv_expanded
     if (cmd->argv)
     {
         printf("argv:\n");
@@ -30,12 +29,8 @@ void debug_command(const t_command *cmd)
         }
     }
     else
-    {
         printf("No redirections.\n");
-    }
-
     printf("Next command pointer: %p\n", (void *)cmd->next);
-
     printf("-----------------------------------\n");
 }
 
