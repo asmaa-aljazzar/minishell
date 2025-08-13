@@ -9,5 +9,6 @@ void handle_first_split_token(t_token *token, const char *word,
         return; // TODO: add free here
     token->qtype = QUOTE_NONE;
     token->expanded = did_expand;
+    // token->glued = 0; //! if 1 will glued always , if 0 will unglued always
     out->new_tokens[(*out->new_count)++] = token;
 }
