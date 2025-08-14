@@ -184,15 +184,16 @@ char *cd_builtin_get_oldpwd(t_minishell *shell)
 {
     char *oldpwd = getcwd(NULL, 0);
     if (!oldpwd)
+    {
+        ft_putendl_fd ("/minishell: error retrieving current directory: getcwd: cannot access parent directories: No such file or directory ", 2);
         shell->exit_code = 1;
+    }
     return oldpwd;
 }
 
 //*#### Frees allocated resources in cd builtin after operation finishes or errors
-void cd_builtin_cleanup(t_cd_path *cdp, char *oldpwd)
+void cd_builtin_cleanup(t_cd_path *cdp)
 {
-    if (oldpwd)
-        free(oldpwd);
     if (cdp->expanded_path)
         free(cdp->expanded_path);
 }
@@ -217,11 +218,11 @@ void cd_builtin(t_minishell *shell)
     }
     if (cd_builtin_change_dir(shell, &cdp, oldpwd) < 0)
     {
-        cd_builtin_cleanup(&cdp, oldpwd);
+        cd_builtin_cleanup(&cdp);
         return;
     }
     cd_builtin_update_env(shell, oldpwd, &cdp);
     shell->exit_code = 0;
-    cd_builtin_cleanup(&cdp, NULL);
+    cd_builtin_cleanup(&cdp);
 }
 

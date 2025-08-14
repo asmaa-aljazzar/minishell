@@ -17,7 +17,6 @@ static void print_invalid_identifier(const char *name, const char *value)
     ft_putstr_fd((char *)"': not a valid identifier\n", STDERR_FILENO);
 }
 
-
 static void process_assignment(t_minishell *shell, char *arg)
 {
     char *equal_position = ft_strchr(arg, '=');
@@ -87,31 +86,30 @@ void export_builtin(t_minishell *shell)
     process_export_args(shell, cmd);
 }
 
-
 static int has_valid_arguments(t_command *cmd)
 {
     int i = 1;
-    
+
     while (cmd->argv[i])
     {
-        if (cmd->argv[i][0] != '\0')  // Found a non-empty argument
+        if (cmd->argv[i][0] != '\0') // Found a non-empty argument
             return 1;
         i++;
     }
-    return 0;  // All arguments are empty
+    return 0; // All arguments are empty
 }
 
 static int is_valid_identifier(const char *str)
 {
     int i = 0;
-    
+
     if (!str || str[0] == '\0')
         return 0;
-    
+
     // First character must be letter or underscore
     if (!ft_isalpha(str[0]) && str[0] != '_')
         return 0;
-    
+
     // Rest must be alphanumeric or underscore
     i = 1;
     while (str[i])
@@ -120,13 +118,26 @@ static int is_valid_identifier(const char *str)
             return 0;
         i++;
     }
-    
+
     return 1;
 }
 #include "minishell.h"
 
 static void update_existing_env(t_minishell *shell, t_env *var, char *name, char *value)
 {
+    if (ft_strcmp(name, "SHLVL") == 0)
+    {
+        if (!is_positive_number(value))
+        {
+            value = "1";
+        }
+        if (ft_atoi(value) > 10)
+        {
+            ft_putstr_fd("./minishell: warning: shell level (1000) too high, resetting to '1'\n", 2);
+            value = "1";
+        }
+        
+    }
     if (var->value)
         free(var->value);
     var->value = ft_strdup(value);
@@ -137,7 +148,7 @@ static void add_new_env(t_minishell *shell, char *name, char *value)
 {
     t_env *new_var;
     t_env *current;
-    
+
     new_var = malloc(sizeof(t_env));
     if (!new_var)
         return;
@@ -183,7 +194,6 @@ void update_or_add_env(t_minishell *shell, char *name, char *value)
     add_new_env(shell, name, value);
 }
 
-
 #include "minishell.h"
 
 static int env_variable_exists(t_minishell *shell, char *name)
@@ -203,7 +213,7 @@ static void add_env_without_value(t_minishell *shell, char *name)
 {
     t_env *new_var;
     t_env *current;
-    
+
     new_var = malloc(sizeof(t_env));
     if (!new_var)
         return;
@@ -236,4 +246,3 @@ void export_without_value(t_minishell *shell, char *name)
 
     add_env_without_value(shell, name);
 }
-

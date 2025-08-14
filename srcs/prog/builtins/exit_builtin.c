@@ -52,7 +52,7 @@ static void exit_with_numeric(t_minishell *minishell, const char *arg)
     }
     else
     {
-        fprintf(stderr, "minishell: exit: %s: numeric argument required\n", arg);
+        ft_putendl_fd ("minishell: exit: %s: numeric argument required\n", 2);
         handle_exit(minishell, 2);
     }
 }
@@ -61,7 +61,8 @@ static void handle_multiple_args(t_minishell *minishell, const char *arg)
 {
     if (validate_exit_arg(arg))
     {
-        fprintf(stderr, "minishell: exit: too many arguments\n");
+
+        ft_putendl_fd ("minishell: exit: too many arguments\n", 2);
         minishell->exit_code = 1;
     }
     else
@@ -71,8 +72,9 @@ static void handle_multiple_args(t_minishell *minishell, const char *arg)
 void exit_builtin(t_minishell *minishell)
 {
     int arg_count = get_exit_arg_count(minishell->cmd);
-
-    fprintf(stderr, "exit\n");
+    
+    if (minishell->pipe_count == 0)
+        ft_putendl_fd("exit", 2);
 
     if (arg_count == 0)
         handle_exit(minishell, 0);
