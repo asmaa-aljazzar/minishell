@@ -42,6 +42,7 @@ static void wait_for_children(t_minishell *ms, pid_t *pids, int cmd_count)
 // --- Child process: set up pipes, redirection, execute command ---
 static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, int cmd_count)
 {
+    setup_signals_child();
     // Redirect stdin to previous pipe read end if not first command
     if (idx > 0 && dup2(pipes[idx - 1][0], STDIN_FILENO) < 0)
     {
@@ -113,8 +114,11 @@ static int fork_children(t_minishell *ms, int pipes[][2], pid_t *pids, int cmd_c
 // --- Parent closes pipes and waits for children ---
 static void handle_parent_process(t_minishell *ms, int pipes[][2], pid_t *pids, int cmd_count)
 {
+    signal(SIGQUIT, handlequit);
+    signal(SIGINT, handle_c);
     close_all_pipes(pipes, cmd_count - 1);
     wait_for_children(ms, pids, cmd_count);
+    setup_signals_parent();
 }
 
 // --- Allocate pipes and pids arrays ---
