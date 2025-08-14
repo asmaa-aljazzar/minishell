@@ -1,6 +1,5 @@
 
 #include "minishell.h"
-
 // void	if_input_files_heredoc(t_minishell *minishell, t_token *token,
 // 		t_command **cmd, int *i)
 // {
@@ -48,14 +47,17 @@ int add_redirection(t_minishell *minishell, t_redirection **root, t_token *token
 			current = current->next;
 		current->next = new_redir;
 		new_redir->prev = current;
-		if (new_redir->prev->heredoc_fd != -1)
-		{
-			close(new_redir->prev->heredoc_fd);
-			new_redir->prev->heredoc_fd = -1; // Reset fd after closing
-		}
+		// if (new_redir->prev->heredoc_fd != -1)
+		// {
+		// 	close(new_redir->prev->heredoc_fd);
+		// 	new_redir->prev->heredoc_fd = -1; // Reset fd after closing
+		// }
 	}
 	if (new_redir->type == T_HEREDOC)
+	{
 		new_redir->heredoc_fd = process_heredoc(minishell, file);
+		// fprintf(stderr, "---->%d \n", new_redir->heredoc_fd);
+	}
 	return (1);
 }
 
@@ -85,6 +87,22 @@ int fill_redirections(t_minishell *minishell, t_token *token,
 	return (0);
 }
 
+void print_re(t_command *cmd)
+{
+	t_redirection *re;
+
+	re = cmd->redir;
+	while (re)
+	{
+		fprintf(stderr, "%d   ", re->type);
+		if (re->type == T_HEREDOC)
+			fprintf(stderr, "%d\n", re->heredoc_fd);
+		else
+			fprintf(stderr, "%s\n", re->file);
+		re = re->next;
+	}
+}
+
 void	tokens_to_commands(t_minishell *minishell)
 {
 	t_command	*cmd;
@@ -104,6 +122,7 @@ void	tokens_to_commands(t_minishell *minishell)
 			cmd->argv[argc++] = tokens[i]->word;
 		i++;
 	}
+	// print_re(cmd);
 	if (cmd && cmd->argv)
 		cmd->argv[argc] = NULL;
 }

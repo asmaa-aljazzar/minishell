@@ -116,6 +116,7 @@ int main_redirection(t_minishell *ms)
     redir = cmd->redir;
     while (redir)
     {
+        // fprintf(stderr, "%d\n", redir->type);
         if (redir->type == T_HEREDOC || redir->type == T_INPUT)
         {
             if (main_redir_input(cmd, redir) < 0)

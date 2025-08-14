@@ -2,8 +2,13 @@
 
 void execute_commands(t_minishell *ms)
 {
-    if (ms->pipe_count == 0)
-        execute_single_command(ms);
-    else
-        execute_piped_commands(ms, ms->pipe_count + 1);
+    if(g_signal_received != 2)
+    {
+        // printf("here");
+        if (ms->pipe_count == 0)
+            execute_single_command(ms);
+        else
+            execute_piped_commands(ms, ms->pipe_count + 1);
+    }
+
 }

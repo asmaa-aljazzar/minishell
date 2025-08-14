@@ -5,6 +5,7 @@ void	if_output_pipe(t_token *token, t_command **cmd, int *argc) //todo norm name
 {
 	if (token->type == PIPE)
 	{
+		// print_re(*cmd);
 		if (*cmd && (*cmd)->argv)
 			(*cmd)->argv[*argc] = NULL;
 		if (*cmd)

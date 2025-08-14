@@ -53,7 +53,6 @@
 //     return 0;
 // }
 
-
 int handle_empty_command_with_output(t_minishell *ms)
 {
     t_command *cmd = ms->cmd;
@@ -72,11 +71,9 @@ int handle_empty_command_with_output(t_minishell *ms)
     return 0;
 }
 
-
-
 int is_command_empty(t_command *cmd)
 {
-    if (!cmd || !cmd->argv)
+    if (!cmd || !cmd->argv || !cmd->argv[0])
         return 1;
     char *arg = cmd->argv[0];
     while (*arg && (*arg == ' ' || *arg == '\t' || *arg == '\n'))
@@ -139,7 +136,6 @@ static int handle_builtin_with_redirection(t_minishell *ms)
     return 0;
 }
 
-
 static void fork_and_execute_external(t_minishell *ms)
 {
     pid_t pid = fork();
@@ -153,6 +149,7 @@ static void fork_and_execute_external(t_minishell *ms)
     else if (pid == 0)
     {
         setup_signals_child();
+
         if (main_redirection(ms) != 0)
             exit(EXIT_FAILURE);
         execute_external_command(ms);
@@ -177,13 +174,6 @@ static int validate_command_for_execution(t_minishell *ms)
         ms->exit_code = 0;
         return 0;
     }
-    if (handle_empty_command_with_output(ms))
-        return 0;
-    if (!cmd->argv[0])
-    {
-        ms->exit_code = 0;
-        return 0;
-    }
     if (is_command_empty(cmd))
     {
         ms->exit_code = 0;
@@ -203,7 +193,7 @@ void execute_single_command(t_minishell *ms)
     if (!validate_command_for_execution(ms))
         return;
 
-    if (is_builtin(ms->cmd))
+    if (ms->cmd && is_builtin(ms->cmd))
     {
         handle_builtin_command(ms);
         return;
@@ -211,4 +201,3 @@ void execute_single_command(t_minishell *ms)
 
     fork_and_execute_external(ms);
 }
-

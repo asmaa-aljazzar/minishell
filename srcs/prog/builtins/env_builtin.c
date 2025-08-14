@@ -41,6 +41,7 @@ char *env_builtin_resolve_path(t_minishell *minishell, t_command *cmd)
 //*#### Executes command in a child process, handles execve errors and exit codes
 void env_builtin_execute_child(t_minishell *minishell, t_command *cmd, char *path)
 {
+    // struct stat st;
     setup_signals_child();
     int is_direct_path = (ft_strchr(cmd->argv[1], '/') != NULL);
     if (is_direct_path)
@@ -62,9 +63,9 @@ void env_builtin_execute_child(t_minishell *minishell, t_command *cmd, char *pat
         ft_putstr_fd("\n", STDERR_FILENO);
     }
     if (errno == EACCES || errno == EISDIR)
-        exit(126);
-    else
         exit(127);
+    else
+        exit(126);
 }
 
 //*#### Parent process waits for child and sets exit_code

@@ -743,6 +743,7 @@ void sigint_handler(int sig);
 //? [ Debug ]
 
 void debug_command(const t_command *cmd);
+void print_re(t_command *cmd);
 
 //#### Print the environment variables array
 void debug_print_envp_array(char **envp);

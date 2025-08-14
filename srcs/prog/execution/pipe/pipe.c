@@ -60,12 +60,12 @@ static void run_child(t_minishell *ms, t_command *cmd, int pipes[][2], int idx, 
     close_all_pipes(pipes, cmd_count - 1);
 
     ms->cmd = cmd;
+    if (main_redirection(ms) != 0)
+        exit(EXIT_FAILURE);
 
     if (is_command_empty(cmd))
         exit(0);
 
-    if (main_redirection(ms) != 0)
-        exit(EXIT_FAILURE);
 
     if (is_builtin(cmd))
     {

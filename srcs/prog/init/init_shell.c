@@ -1,5 +1,6 @@
 
 #include "minishell.h"
+
 static void initialize_fields(t_minishell *ms)
 {
     ms->tok = NULL;
